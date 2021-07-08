@@ -42,7 +42,7 @@ http {
                          keys_zone=NAME:10m;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location / {
@@ -86,7 +86,7 @@ sub fastcgi_daemon {
 		}
 
 		print <<EOF;
-Location: http://127.0.0.1:8080/redirect
+Location: http://127.0.0.1:8888/redirect
 Content-Type: text/html
 
 SEE-THIS

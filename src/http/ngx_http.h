@@ -19,10 +19,7 @@ typedef struct ngx_http_cache_s       ngx_http_cache_t;
 typedef struct ngx_http_file_cache_s  ngx_http_file_cache_t;
 typedef struct ngx_http_log_ctx_s     ngx_http_log_ctx_t;
 typedef struct ngx_http_chunked_s     ngx_http_chunked_t;
-
-#if (NGX_HTTP_V2)
 typedef struct ngx_http_v2_stream_s   ngx_http_v2_stream_t;
-#endif
 
 typedef ngx_int_t (*ngx_http_header_handler_pt)(ngx_http_request_t *r,
     ngx_table_elt_t *h, ngx_uint_t offset);
@@ -91,6 +88,10 @@ void ngx_http_close_connection(ngx_connection_t *c);
 #if (NGX_HTTP_SSL && defined SSL_CTRL_SET_TLSEXT_HOSTNAME)
 int ngx_http_ssl_servername(ngx_ssl_conn_t *ssl_conn, int *ad, void *arg);
 #endif
+#if (NGX_HTTP_SSL && defined SSL_R_CERT_CB_ERROR)
+int ngx_http_ssl_certificate(ngx_ssl_conn_t *ssl_conn, void *arg);
+#endif
+
 
 ngx_int_t ngx_http_parse_request_line(ngx_http_request_t *r, ngx_buf_t *b);
 ngx_int_t ngx_http_parse_uri(ngx_http_request_t *r);

@@ -41,7 +41,7 @@ http {
                        keys_zone=NAME:10m;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location / {
@@ -140,7 +140,7 @@ sub http_start {
 		alarm(3);
 		$s = IO::Socket::INET->new(
 			Proto => 'tcp',
-			PeerAddr => '127.0.0.1:8080'
+			PeerAddr => '127.0.0.1:8888'
 		);
 		log_out($request);
 		$s->print($request);

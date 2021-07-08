@@ -108,7 +108,7 @@ CORE_LIBS="$CORE_LIBS kernel32.lib user32.lib"
 # msvc under Wine issues
 # C1902: Program database manager mismatch; please check your installation
 if [ -z "$NGX_WINE" ]; then
-   CFLAGS="$CFLAGS -Zi"
+   CFLAGS="$CFLAGS -Zi -Fd$NGX_OBJS/nginx.pdb"
    CORE_LINK="$CORE_LINK -debug"
 fi
 
@@ -142,7 +142,6 @@ ngx_pic_opt=
 ngx_objout="-Fo"
 ngx_binout="-Fe"
 ngx_objext="obj"
-ngx_binext=".exe"
 
 ngx_long_start='@<<
 	'

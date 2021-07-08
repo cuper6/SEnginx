@@ -53,6 +53,20 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
 
 #endif
 
+#if (NGX_HAVE_EPOLLRDHUP)
+
+    if (ngx_event_flags & NGX_USE_EPOLL_EVENT) {
+        ngx_log_debug2(NGX_LOG_DEBUG_EVENT, c->log, 0,
+                       "readv: eof:%d, avail:%d",
+                       rev->pending_eof, rev->available);
+
+        if (rev->available == 0 && !rev->pending_eof) {
+            return NGX_AGAIN;
+        }
+    }
+
+#endif
+
     prev = NULL;
     iov = NULL;
     size = 0;
@@ -139,6 +153,58 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
                  */
 
                 if (rev->available <= 0) {
+                    if (!rev->pending_eof) {
+                        rev->ready = 0;
+                    }
+
+                    rev->available = 0;
+                }
+
+                return n;
+            }
+
+#endif
+
+#if (NGX_HAVE_FIONREAD)
+
+            if (rev->available >= 0) {
+                rev->available -= n;
+
+                /*
+                 * negative rev->available means some additional bytes
+                 * were received between kernel notification and readv(),
+                 * and therefore ev->ready can be safely reset even for
+                 * edge-triggered event methods
+                 */
+
+                if (rev->available < 0) {
+                    rev->available = 0;
+                    rev->ready = 0;
+                }
+
+                ngx_log_debug1(NGX_LOG_DEBUG_EVENT, c->log, 0,
+                               "readv: avail:%d", rev->available);
+
+            } else if (n == size) {
+
+                if (ngx_socket_nread(c->fd, &rev->available) == -1) {
+                    n = ngx_connection_error(c, ngx_socket_errno,
+                                             ngx_socket_nread_n " failed");
+                    break;
+                }
+
+                ngx_log_debug1(NGX_LOG_DEBUG_EVENT, c->log, 0,
+                               "readv: avail:%d", rev->available);
+            }
+
+#endif
+
+#if (NGX_HAVE_EPOLLRDHUP)
+
+            if ((ngx_event_flags & NGX_USE_EPOLL_EVENT)
+                && ngx_use_epoll_rdhup)
+            {
+                if (n < size) {
                     if (!rev->pending_eof) {
                         rev->ready = 0;
                     }

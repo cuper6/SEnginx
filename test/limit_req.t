@@ -42,7 +42,7 @@ http {
     limit_req_zone  $binary_remote_addr  zone=fast:10m  rate=1000r/s;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
         location / {
             limit_req    zone=one  burst=1  nodelay;

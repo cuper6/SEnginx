@@ -44,7 +44,7 @@ http {
     ip_blacklist_syscmd "/bin/touch $test_dir/%V";
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location / {

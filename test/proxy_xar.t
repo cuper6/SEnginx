@@ -36,11 +36,11 @@ http {
     %%TEST_GLOBALS_HTTP%%
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location /proxy {
-            proxy_pass http://127.0.0.1:8080/return-xar;
+            proxy_pass http://127.0.0.1:8888/return-xar;
         }
         location /return-xar {
             add_header  X-Accel-Redirect     /index.html;

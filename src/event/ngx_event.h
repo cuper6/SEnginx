@@ -76,11 +76,6 @@ struct ngx_event_s {
 
     unsigned         cancelable:1;
 
-#if (NGX_WIN32)
-    /* setsockopt(SO_UPDATE_ACCEPT_CONTEXT) was successful */
-    unsigned         accept_context_updated:1;
-#endif
-
 #if (NGX_HAVE_KQUEUE)
     unsigned         kq_vnode:1;
 
@@ -100,13 +95,10 @@ struct ngx_event_s {
      *
      * otherwise:
      *   accept:     1 if accept many, 0 otherwise
+     *   read:       bytes to read when event is ready, -1 if not known
      */
 
-#if (NGX_HAVE_KQUEUE) || (NGX_HAVE_IOCP)
     int              available;
-#else
-    unsigned         available:1;
-#endif
 
     ngx_event_handler_pt  handler;
 
@@ -153,11 +145,11 @@ struct ngx_event_aio_s {
     ngx_event_handler_pt       handler;
     ngx_file_t                *file;
 
-#if (NGX_HAVE_AIO_SENDFILE)
+    ngx_fd_t                   fd;
+
+#if (NGX_HAVE_AIO_SENDFILE || NGX_COMPAT)
     ssize_t                  (*preload_handler)(ngx_buf_t *file);
 #endif
-
-    ngx_fd_t                   fd;
 
 #if (NGX_HAVE_EVENTFD)
     int64_t                    res;
@@ -196,6 +188,9 @@ typedef struct {
 
 
 extern ngx_event_actions_t   ngx_event_actions;
+#if (NGX_HAVE_EPOLLRDHUP)
+extern ngx_uint_t            ngx_use_epoll_rdhup;
+#endif
 
 
 /*
@@ -365,6 +360,9 @@ extern ngx_event_actions_t   ngx_event_actions;
 #define NGX_ONESHOT_EVENT  EPOLLONESHOT
 #endif
 
+#if (NGX_HAVE_EPOLLEXCLUSIVE)
+#define NGX_EXCLUSIVE_EVENT  EPOLLEXCLUSIVE
+#endif
 
 #elif (NGX_HAVE_POLL)
 
@@ -390,6 +388,11 @@ extern ngx_event_actions_t   ngx_event_actions;
 #define NGX_IOCP_ACCEPT      0
 #define NGX_IOCP_IO          1
 #define NGX_IOCP_CONNECT     2
+#endif
+
+
+#if (NGX_TEST_BUILD_EPOLL)
+#define NGX_EXCLUSIVE_EVENT  0
 #endif
 
 
@@ -420,6 +423,7 @@ extern ngx_os_io_t  ngx_io;
 #define ngx_send             ngx_io.send
 #define ngx_send_chain       ngx_io.send_chain
 #define ngx_udp_send         ngx_io.udp_send
+#define ngx_udp_send_chain   ngx_io.udp_send_chain
 
 
 #define NGX_EVENT_MODULE      0x544E5645  /* "EVNT" */
@@ -488,16 +492,23 @@ extern ngx_module_t           ngx_event_core_module;
 
 
 #define ngx_event_get_conf(conf_ctx, module)                                  \
-             (*(ngx_get_conf(conf_ctx, ngx_events_module))) [module.ctx_index];
+             (*(ngx_get_conf(conf_ctx, ngx_events_module))) [module.ctx_index]
 
 
 
 void ngx_event_accept(ngx_event_t *ev);
 #if !(NGX_WIN32)
 void ngx_event_recvmsg(ngx_event_t *ev);
+void ngx_udp_rbtree_insert_value(ngx_rbtree_node_t *temp,
+    ngx_rbtree_node_t *node, ngx_rbtree_node_t *sentinel);
 #endif
+void ngx_delete_udp_connection(void *data);
 ngx_int_t ngx_trylock_accept_mutex(ngx_cycle_t *cycle);
+ngx_int_t ngx_enable_accept_events(ngx_cycle_t *cycle);
 u_char *ngx_accept_log_error(ngx_log_t *log, u_char *buf, size_t len);
+#if (NGX_DEBUG)
+void ngx_debug_accepted_connection(ngx_event_conf_t *ecf, ngx_connection_t *c);
+#endif
 
 
 void ngx_process_events_and_timers(ngx_cycle_t *cycle);

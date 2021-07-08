@@ -25,9 +25,9 @@ select STDOUT; $| = 1;
 plan(skip_all => 'win32') if $^O eq 'MSWin32';
 
 my @domain_name = (
-    "www.senginx.org",
-    "bbs.senginx.org",
-    "mail.senginx.org");
+    "www.debian.org",
+    "bits.debian.org",
+    "planet.debian.org");
 
 my %resolve_count;
 
@@ -42,7 +42,6 @@ for (my $i = 0; $i < @addrs; $i++) {
         die("Config $addrs[$i] to lo:$i failed!\n");
     }
 }
-
 
 my @port_array = (8081, 8082, 8083);
 
@@ -79,11 +78,11 @@ http {
         server www.baidu.com:$port_array[0];
     }
 
-    resolver 127.0.0.1:53530 valid=1 ipv6=off;
+    resolver 127.0.0.1:53530 valid=1s ipv6=off;
     resolver_timeout 1s;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
         location / {
             proxy_pass http://pool;
@@ -129,8 +128,8 @@ my $msg_num = @msg;
 my $port = $msg[$msg_num - 1];
 sleep 2;
 $r = http_get('/dyn_resolve');
-like($r, qr/TEST-DR-OK-IF-YOU-SEE-THIS-FROM-3/m, "get response after reslove changed");
-like($r, qr/$port/m, "get response after reslove changed");
+like($r, qr/TEST-DR-OK-IF-YOU-SEE-THIS-FROM-3/m, "get response after resolve changed");
+like($r, qr/$port/m, "get response after resolve changed");
 like(http_get('/dyn_resolve_error '), qr/502 Bad Gateway/, 'get 502 when resolve failed');
 
 for (my $i = 0; $i < @addrs; $i++) {

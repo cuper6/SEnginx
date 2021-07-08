@@ -279,6 +279,13 @@ ngx_mail_core_server(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
     *cf = pcf;
 
+    if (rv == NGX_CONF_OK && !cscf->listen) {
+        ngx_log_error(NGX_LOG_EMERG, cf->log, 0,
+                      "no \"listen\" is defined for server in %s:%ui",
+                      cscf->file_name, cscf->line);
+        return NGX_CONF_ERROR;
+    }
+
     return rv;
 }
 
@@ -288,19 +295,14 @@ ngx_mail_core_listen(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_mail_core_srv_conf_t  *cscf = conf;
 
-    size_t                      len, off;
-    in_port_t                   port;
-    ngx_str_t                  *value;
+    ngx_str_t                  *value, size;
     ngx_url_t                   u;
-    ngx_uint_t                  i, m;
-    struct sockaddr            *sa;
-    ngx_mail_listen_t          *ls;
+    ngx_uint_t                  i, n, m;
+    ngx_mail_listen_t          *ls, *als;
     ngx_mail_module_t          *module;
-    struct sockaddr_in         *sin;
     ngx_mail_core_main_conf_t  *cmcf;
-#if (NGX_HAVE_INET6)
-    struct sockaddr_in6        *sin6;
-#endif
+
+    cscf->listen = 1;
 
     value = cf->args->elts;
 
@@ -321,73 +323,19 @@ ngx_mail_core_listen(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
     cmcf = ngx_mail_conf_get_module_main_conf(cf, ngx_mail_core_module);
 
-    ls = cmcf->listen.elts;
-
-    for (i = 0; i < cmcf->listen.nelts; i++) {
-
-        sa = &ls[i].u.sockaddr;
-
-        if (sa->sa_family != u.family) {
-            continue;
-        }
-
-        switch (sa->sa_family) {
-
-#if (NGX_HAVE_INET6)
-        case AF_INET6:
-            off = offsetof(struct sockaddr_in6, sin6_addr);
-            len = 16;
-            sin6 = &ls[i].u.sockaddr_in6;
-            port = ntohs(sin6->sin6_port);
-            break;
-#endif
-
-#if (NGX_HAVE_UNIX_DOMAIN)
-        case AF_UNIX:
-            off = offsetof(struct sockaddr_un, sun_path);
-            len = sizeof(((struct sockaddr_un *) sa)->sun_path);
-            port = 0;
-            break;
-#endif
-
-        default: /* AF_INET */
-            off = offsetof(struct sockaddr_in, sin_addr);
-            len = 4;
-            sin = &ls[i].u.sockaddr_in;
-            port = ntohs(sin->sin_port);
-            break;
-        }
-
-        if (ngx_memcmp(ls[i].u.sockaddr_data + off, u.sockaddr + off, len)
-            != 0)
-        {
-            continue;
-        }
-
-        if (port != u.port) {
-            continue;
-        }
-
-        ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
-                           "duplicate \"%V\" address and port pair", &u.url);
-        return NGX_CONF_ERROR;
-    }
-
-    ls = ngx_array_push(&cmcf->listen);
+    ls = ngx_array_push_n(&cmcf->listen, u.naddrs);
     if (ls == NULL) {
         return NGX_CONF_ERROR;
     }
 
     ngx_memzero(ls, sizeof(ngx_mail_listen_t));
 
-    ngx_memcpy(&ls->u.sockaddr, u.sockaddr, u.socklen);
-
-    ls->socklen = u.socklen;
     ls->backlog = NGX_LISTEN_BACKLOG;
-    ls->wildcard = u.wildcard;
+    ls->rcvbuf = -1;
+    ls->sndbuf = -1;
     ls->ctx = cf->ctx;
 
-#if (NGX_HAVE_INET6 && defined IPV6_V6ONLY)
+#if (NGX_HAVE_INET6)
     ls->ipv6only = 1;
 #endif
 
@@ -432,38 +380,54 @@ ngx_mail_core_listen(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
             continue;
         }
 
-        if (ngx_strncmp(value[i].data, "ipv6only=o", 10) == 0) {
-#if (NGX_HAVE_INET6 && defined IPV6_V6ONLY)
-            u_char  buf[NGX_SOCKADDR_STRLEN];
+        if (ngx_strncmp(value[i].data, "rcvbuf=", 7) == 0) {
+            size.len = value[i].len - 7;
+            size.data = value[i].data + 7;
 
-            sa = &ls->u.sockaddr;
+            ls->rcvbuf = ngx_parse_size(&size);
+            ls->bind = 1;
 
-            if (sa->sa_family == AF_INET6) {
-
-                if (ngx_strcmp(&value[i].data[10], "n") == 0) {
-                    ls->ipv6only = 1;
-
-                } else if (ngx_strcmp(&value[i].data[10], "ff") == 0) {
-                    ls->ipv6only = 0;
-
-                } else {
-                    ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
-                                       "invalid ipv6only flags \"%s\"",
-                                       &value[i].data[9]);
-                    return NGX_CONF_ERROR;
-                }
-
-                ls->bind = 1;
-
-            } else {
-                len = ngx_sock_ntop(sa, ls->socklen, buf,
-                                    NGX_SOCKADDR_STRLEN, 1);
-
+            if (ls->rcvbuf == NGX_ERROR) {
                 ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
-                                   "ipv6only is not supported "
-                                   "on addr \"%*s\", ignored", len, buf);
+                                   "invalid rcvbuf \"%V\"", &value[i]);
+                return NGX_CONF_ERROR;
             }
 
+            continue;
+        }
+
+        if (ngx_strncmp(value[i].data, "sndbuf=", 7) == 0) {
+            size.len = value[i].len - 7;
+            size.data = value[i].data + 7;
+
+            ls->sndbuf = ngx_parse_size(&size);
+            ls->bind = 1;
+
+            if (ls->sndbuf == NGX_ERROR) {
+                ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                                   "invalid sndbuf \"%V\"", &value[i]);
+                return NGX_CONF_ERROR;
+            }
+
+            continue;
+        }
+
+        if (ngx_strncmp(value[i].data, "ipv6only=o", 10) == 0) {
+#if (NGX_HAVE_INET6 && defined IPV6_V6ONLY)
+            if (ngx_strcmp(&value[i].data[10], "n") == 0) {
+                ls->ipv6only = 1;
+
+            } else if (ngx_strcmp(&value[i].data[10], "ff") == 0) {
+                ls->ipv6only = 0;
+
+            } else {
+                ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                                   "invalid ipv6only flags \"%s\"",
+                                   &value[i].data[9]);
+                return NGX_CONF_ERROR;
+            }
+
+            ls->bind = 1;
             continue;
 #else
             ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
@@ -475,7 +439,16 @@ ngx_mail_core_listen(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
         if (ngx_strcmp(value[i].data, "ssl") == 0) {
 #if (NGX_MAIL_SSL)
+            ngx_mail_ssl_conf_t  *sslcf;
+
+            sslcf = ngx_mail_conf_get_module_srv_conf(cf, ngx_mail_ssl_module);
+
+            sslcf->listen = 1;
+            sslcf->file = cf->conf_file->file.name.data;
+            sslcf->line = cf->conf_file->line;
+
             ls->ssl = 1;
+
             continue;
 #else
             ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
@@ -578,6 +551,32 @@ ngx_mail_core_listen(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
                            "the invalid \"%V\" parameter", &value[i]);
         return NGX_CONF_ERROR;
+    }
+
+    als = cmcf->listen.elts;
+
+    for (n = 0; n < u.naddrs; n++) {
+        ls[n] = ls[0];
+
+        ls[n].sockaddr = u.addrs[n].sockaddr;
+        ls[n].socklen = u.addrs[n].socklen;
+        ls[n].addr_text = u.addrs[n].name;
+        ls[n].wildcard = ngx_inet_wildcard(ls[n].sockaddr);
+
+        for (i = 0; i < cmcf->listen.nelts - u.naddrs + n; i++) {
+
+            if (ngx_cmp_sockaddr(als[i].sockaddr, als[i].socklen,
+                                 ls[n].sockaddr, ls[n].socklen, 1)
+                != NGX_OK)
+            {
+                continue;
+            }
+
+            ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+                               "duplicate \"%V\" address and port pair",
+                               &ls[n].addr_text);
+            return NGX_CONF_ERROR;
+        }
     }
 
     return NGX_CONF_OK;

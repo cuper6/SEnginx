@@ -41,7 +41,7 @@ events {
 
 mail {
     proxy_pass_error_message  on;
-    auth_http  http://127.0.0.1:8080/mail/auth;
+    auth_http  http://127.0.0.1:8888/mail/auth;
     xclient    off;
 
     server {
@@ -55,7 +55,7 @@ http {
     %%TEST_GLOBALS_HTTP%%
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location = /mail/auth {

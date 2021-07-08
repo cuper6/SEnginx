@@ -33,9 +33,9 @@ static ngx_uint_t     nevents;
 static ngx_event_t  **event_index;
 
 
-static ngx_str_t    select_name = ngx_string("select");
+static ngx_str_t           select_name = ngx_string("select");
 
-ngx_event_module_t  ngx_select_module_ctx = {
+static ngx_event_module_t  ngx_select_module_ctx = {
     &select_name,
     NULL,                                  /* create configuration */
     ngx_select_init_conf,                  /* init configuration */
@@ -330,6 +330,7 @@ ngx_select_process_events(ngx_cycle_t *cycle, ngx_msec_t timer,
 
         if (found) {
             ev->ready = 1;
+            ev->available = -1;
 
             queue = ev->accept ? &ngx_posted_accept_events
                                : &ngx_posted_events;

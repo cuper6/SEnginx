@@ -19,6 +19,8 @@
 #define CLOCK_REALTIME          0
 typedef int     clockid_t;
 typedef void *  timer_t;
+#elif (NGX_DARWIN)
+typedef void *  timer_t;
 #endif
 
 /* Solaris declarations */
@@ -169,7 +171,7 @@ static ngx_command_t  ngx_eventport_commands[] = {
 };
 
 
-ngx_event_module_t  ngx_eventport_module_ctx = {
+static ngx_event_module_t  ngx_eventport_module_ctx = {
     &eventport_name,
     ngx_eventport_create_conf,             /* create configuration */
     ngx_eventport_init_conf,               /* init configuration */
@@ -248,9 +250,7 @@ ngx_eventport_init(ngx_cycle_t *cycle, ngx_msec_t timer)
 
         ngx_memzero(&sev, sizeof(struct sigevent));
         sev.sigev_notify = SIGEV_PORT;
-#if !(NGX_TEST_BUILD_EVENTPORT)
         sev.sigev_value.sival_ptr = &pn;
-#endif
 
         if (timer_create(CLOCK_REALTIME, &sev, &event_timer) == -1) {
             ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
@@ -432,7 +432,7 @@ ngx_eventport_notify(ngx_event_handler_pt handler)
 }
 
 
-ngx_int_t
+static ngx_int_t
 ngx_eventport_process_events(ngx_cycle_t *cycle, ngx_msec_t timer,
     ngx_uint_t flags)
 {
@@ -540,13 +540,11 @@ ngx_eventport_process_events(ngx_cycle_t *cycle, ngx_msec_t timer,
                               (int) event_list[i].portev_object, revents);
             }
 
-            if ((revents & (POLLERR|POLLHUP|POLLNVAL))
-                 && (revents & (POLLIN|POLLOUT)) == 0)
-            {
+            if (revents & (POLLERR|POLLHUP|POLLNVAL)) {
+
                 /*
-                 * if the error events were returned without POLLIN or POLLOUT,
-                 * then add these flags to handle the events at least in one
-                 * active handler
+                 * if the error events were returned, add POLLIN and POLLOUT
+                 * to handle the events at least in one active handler
                  */
 
                 revents |= POLLIN|POLLOUT;
@@ -561,6 +559,7 @@ ngx_eventport_process_events(ngx_cycle_t *cycle, ngx_msec_t timer,
 
             if (revents & POLLIN) {
                 rev->ready = 1;
+                rev->available = -1;
 
                 if (flags & NGX_POST_EVENTS) {
                     queue = rev->accept ? &ngx_posted_accept_events

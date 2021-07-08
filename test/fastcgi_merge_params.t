@@ -44,7 +44,7 @@ http {
     fastcgi_param       HTTP_X_BLAH  "blah";
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         fastcgi_cache  NAME;
@@ -123,7 +123,7 @@ sub fastcgi_daemon {
 		my $blah = $ENV{HTTP_X_BLAH};
 
 		print <<EOF;
-Location: http://127.0.0.1:8080/redirect
+Location: http://127.0.0.1:8888/redirect
 Content-Type: text/html
 
 ims=$ims;iums=$iums;blah=$blah;

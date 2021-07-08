@@ -113,11 +113,24 @@ ngx_event_pipe_read_upstream(ngx_event_pipe_t *p)
     }
 
 #if (NGX_THREADS)
+
     if (p->aio) {
         ngx_log_debug0(NGX_LOG_DEBUG_EVENT, p->log, 0,
                        "pipe read upstream: aio");
         return NGX_AGAIN;
     }
+
+    if (p->writing) {
+        ngx_log_debug0(NGX_LOG_DEBUG_EVENT, p->log, 0,
+                       "pipe read upstream: writing");
+
+        rc = ngx_event_pipe_write_chain_to_temp_file(p);
+
+        if (rc != NGX_OK) {
+            return rc;
+        }
+    }
+
 #endif
 
     ngx_log_debug1(NGX_LOG_DEBUG_EVENT, p->log, 0,
@@ -159,7 +172,11 @@ ngx_event_pipe_read_upstream(ngx_event_pipe_t *p)
              */
 
             if (p->upstream->read->available == 0
-                && p->upstream->read->pending_eof)
+                && p->upstream->read->pending_eof
+#if (NGX_SSL)
+                && !p->upstream->ssl
+#endif
+                )
             {
                 p->upstream->read->ready = 0;
                 p->upstream->read->eof = 1;
@@ -300,7 +317,7 @@ ngx_event_pipe_read_upstream(ngx_event_pipe_t *p)
 
             if (n == NGX_ERROR) {
                 p->upstream_error = 1;
-                return NGX_ERROR;
+                break;
             }
 
             if (n == NGX_AGAIN) {

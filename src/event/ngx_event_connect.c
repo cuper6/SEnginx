@@ -10,6 +10,12 @@
 #include <ngx_event.h>
 #include <ngx_event_connect.h>
 
+
+#if (NGX_HAVE_TRANSPARENT_PROXY)
+static ngx_int_t ngx_event_connect_set_transparent(ngx_peer_connection_t *pc,
+    ngx_socket_t s);
+#endif
+
 #if (NGX_DYNAMIC_RESOLVE)
 ngx_int_t
 ngx_event_connect_peer(ngx_peer_connection_t *pc)
@@ -27,7 +33,6 @@ ngx_event_connect_peer(ngx_peer_connection_t *pc)
 }
 #endif
 
-
 ngx_int_t
 #if (NGX_DYNAMIC_RESOLVE)
 _ngx_event_connect_peer(ngx_peer_connection_t *pc)
@@ -35,7 +40,10 @@ _ngx_event_connect_peer(ngx_peer_connection_t *pc)
 ngx_event_connect_peer(ngx_peer_connection_t *pc)
 #endif
 {
-    int                rc, type;
+    int                rc, type, value;
+#if (NGX_HAVE_IP_BIND_ADDRESS_NO_PORT || NGX_LINUX)
+    in_port_t          port;
+#endif
     ngx_int_t          event;
     ngx_err_t          err;
     ngx_uint_t         level;
@@ -69,7 +77,7 @@ ngx_event_connect_peer(ngx_peer_connection_t *pc)
     if (c == NULL) {
         if (ngx_close_socket(s) == -1) {
             ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
-                          ngx_close_socket_n "failed");
+                          ngx_close_socket_n " failed");
         }
 
         return NGX_ERROR;
@@ -87,6 +95,18 @@ ngx_event_connect_peer(ngx_peer_connection_t *pc)
         }
     }
 
+    if (pc->so_keepalive) {
+        value = 1;
+
+        if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE,
+                       (const void *) &value, sizeof(int))
+            == -1)
+        {
+            ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
+                          "setsockopt(SO_KEEPALIVE) failed, ignored");
+        }
+    }
+
     if (ngx_nonblocking(s) == -1) {
         ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
                       ngx_nonblocking_n " failed");
@@ -95,6 +115,62 @@ ngx_event_connect_peer(ngx_peer_connection_t *pc)
     }
 
     if (pc->local) {
+
+#if (NGX_HAVE_TRANSPARENT_PROXY)
+        if (pc->transparent) {
+            if (ngx_event_connect_set_transparent(pc, s) != NGX_OK) {
+                goto failed;
+            }
+        }
+#endif
+
+#if (NGX_HAVE_IP_BIND_ADDRESS_NO_PORT || NGX_LINUX)
+        port = ngx_inet_get_port(pc->local->sockaddr);
+#endif
+
+#if (NGX_HAVE_IP_BIND_ADDRESS_NO_PORT)
+
+        if (pc->sockaddr->sa_family != AF_UNIX && port == 0) {
+            static int  bind_address_no_port = 1;
+
+            if (bind_address_no_port) {
+                if (setsockopt(s, IPPROTO_IP, IP_BIND_ADDRESS_NO_PORT,
+                               (const void *) &bind_address_no_port,
+                               sizeof(int)) == -1)
+                {
+                    err = ngx_socket_errno;
+
+                    if (err != NGX_EOPNOTSUPP && err != NGX_ENOPROTOOPT) {
+                        ngx_log_error(NGX_LOG_ALERT, pc->log, err,
+                                      "setsockopt(IP_BIND_ADDRESS_NO_PORT) "
+                                      "failed, ignored");
+
+                    } else {
+                        bind_address_no_port = 0;
+                    }
+                }
+            }
+        }
+
+#endif
+
+#if (NGX_LINUX)
+
+        if (pc->type == SOCK_DGRAM && port != 0) {
+            int  reuse_addr = 1;
+
+            if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR,
+                           (const void *) &reuse_addr, sizeof(int))
+                 == -1)
+            {
+                ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
+                              "setsockopt(SO_REUSEADDR) failed");
+                goto failed;
+            }
+        }
+
+#endif
+
         if (bind(s, pc->local->sockaddr, pc->local->socklen) == -1) {
             ngx_log_error(NGX_LOG_CRIT, pc->log, ngx_socket_errno,
                           "bind(%V) failed", &pc->local->name);
@@ -124,6 +200,7 @@ ngx_event_connect_peer(ngx_peer_connection_t *pc)
     } else { /* type == SOCK_DGRAM */
         c->recv = ngx_udp_recv;
         c->send = ngx_send;
+        c->send_chain = ngx_udp_send_chain;
     }
 
     c->log_error = pc->log_error;
@@ -270,6 +347,103 @@ failed:
 
     return NGX_ERROR;
 }
+
+
+#if (NGX_HAVE_TRANSPARENT_PROXY)
+
+static ngx_int_t
+ngx_event_connect_set_transparent(ngx_peer_connection_t *pc, ngx_socket_t s)
+{
+    int  value;
+
+    value = 1;
+
+#if defined(SO_BINDANY)
+
+    if (setsockopt(s, SOL_SOCKET, SO_BINDANY,
+                   (const void *) &value, sizeof(int)) == -1)
+    {
+        ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
+                      "setsockopt(SO_BINDANY) failed");
+        return NGX_ERROR;
+    }
+
+#else
+
+    switch (pc->local->sockaddr->sa_family) {
+
+    case AF_INET:
+
+#if defined(IP_TRANSPARENT)
+
+        if (setsockopt(s, IPPROTO_IP, IP_TRANSPARENT,
+                       (const void *) &value, sizeof(int)) == -1)
+        {
+            ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
+                          "setsockopt(IP_TRANSPARENT) failed");
+            return NGX_ERROR;
+        }
+
+#elif defined(IP_BINDANY)
+
+        if (setsockopt(s, IPPROTO_IP, IP_BINDANY,
+                       (const void *) &value, sizeof(int)) == -1)
+        {
+            ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
+                          "setsockopt(IP_BINDANY) failed");
+            return NGX_ERROR;
+        }
+
+#endif
+
+        break;
+
+#if (NGX_HAVE_INET6)
+
+    case AF_INET6:
+
+#if defined(IPV6_TRANSPARENT)
+
+        if (setsockopt(s, IPPROTO_IPV6, IPV6_TRANSPARENT,
+                       (const void *) &value, sizeof(int)) == -1)
+        {
+            ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
+                          "setsockopt(IPV6_TRANSPARENT) failed");
+            return NGX_ERROR;
+        }
+
+#elif defined(IPV6_BINDANY)
+
+        if (setsockopt(s, IPPROTO_IPV6, IPV6_BINDANY,
+                       (const void *) &value, sizeof(int)) == -1)
+        {
+            ngx_log_error(NGX_LOG_ALERT, pc->log, ngx_socket_errno,
+                          "setsockopt(IPV6_BINDANY) failed");
+            return NGX_ERROR;
+        }
+
+#else
+
+        ngx_log_error(NGX_LOG_ALERT, pc->log, 0,
+                      "could not enable transparent proxying for IPv6 "
+                      "on this platform");
+
+        return NGX_ERROR;
+
+#endif
+
+        break;
+
+#endif /* NGX_HAVE_INET6 */
+
+    }
+
+#endif /* SO_BINDANY */
+
+    return NGX_OK;
+}
+
+#endif
 
 
 ngx_int_t

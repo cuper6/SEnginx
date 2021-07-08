@@ -39,7 +39,7 @@ http {
     ip_behavior_zone zone=abc:10m sample_base=10 sample_cycle=1s;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         ip_behavior zone=abc type=sensitive_url;

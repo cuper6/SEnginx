@@ -1216,8 +1216,7 @@ ngx_http_upstream_fair_set_session(ngx_peer_connection_t *pc, void *data)
     rc = ngx_ssl_set_session(pc->connection, ssl_session);
 
     ngx_log_debug2(NGX_LOG_DEBUG_HTTP, pc->log, 0,
-                   "set session: %p:%d",
-                   ssl_session, ssl_session ? ssl_session->references : 0);
+                   "save session: %p:%d", ssl_session, 0);
 
     /* ngx_unlock_mutex(fp->peers->mutex); */
 
@@ -1242,7 +1241,7 @@ ngx_http_upstream_fair_save_session(ngx_peer_connection_t *pc, void *data)
     }
 
     ngx_log_debug2(NGX_LOG_DEBUG_HTTP, pc->log, 0,
-                   "save session: %p:%d", ssl_session, ssl_session->references);
+                   "save session: %p:%d", ssl_session, 0);
 
     peer = &fp->peers->peer[fp->current];
 
@@ -1258,7 +1257,7 @@ ngx_http_upstream_fair_save_session(ngx_peer_connection_t *pc, void *data)
 
         ngx_log_debug2(NGX_LOG_DEBUG_HTTP, pc->log, 0,
                        "old session: %p:%d",
-                       old_ssl_session, old_ssl_session->references);
+                       old_ssl_session, 0);
 
         /* TODO: may block */
 

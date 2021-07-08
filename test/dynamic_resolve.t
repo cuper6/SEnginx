@@ -32,8 +32,6 @@ my $t = Test::Nginx->new()->has(qw/http proxy/)->plan(10);
 my @server_addrs = ("127.0.0.1", "127.0.0.2", "127.0.0.3", "127.0.0.4");
 my @domain_addrs = ("127.0.0.2", "127.0.0.3");
 
-my $ipv6 = $t->has_module("ipv6") ? "ipv6=off" : "";
-
 $t->write_file_expand('nginx.conf', <<"EOF");
 
 %%TEST_GLOBALS%%
@@ -46,7 +44,7 @@ events {
 http {
     %%TEST_GLOBALS_HTTP%%
 
-    resolver 127.0.0.1:53530 valid=1s $ipv6;
+    resolver 127.0.0.1:53530 valid=1s ipv6=off;
     resolver_timeout 1s;
 
     upstream backend {
@@ -74,7 +72,7 @@ http {
     }
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location /static {

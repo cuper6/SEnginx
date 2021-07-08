@@ -39,7 +39,7 @@ http {
     statistics_zone 10m;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  traffic_server;
 
         virtual_server_name traffic_server;
@@ -49,7 +49,7 @@ http {
     }
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  stats_server;
 
         location /stats {

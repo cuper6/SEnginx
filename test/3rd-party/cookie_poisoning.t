@@ -42,7 +42,7 @@ http {
 
     session_max_size 1000;
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         session on;

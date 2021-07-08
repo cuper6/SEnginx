@@ -40,7 +40,7 @@ http {
                        keys_zone=NAME:10m;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         gzip on;

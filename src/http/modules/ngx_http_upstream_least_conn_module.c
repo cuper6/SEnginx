@@ -12,7 +12,6 @@
 #include <ngx_http_upstream_persistence.h>
 #endif
 
-
 static ngx_int_t ngx_http_upstream_init_least_conn_peer(ngx_http_request_t *r,
     ngx_http_upstream_srv_conf_t *us);
 static ngx_int_t ngx_http_upstream_get_least_conn_peer(
@@ -64,7 +63,6 @@ ngx_module_t  ngx_http_upstream_least_conn_module = {
     NGX_MODULE_V1_PADDING
 };
 
-
 #if (NGX_DYNAMIC_RESOLVE)
 static ngx_int_t
 ngx_http_upstream_reinit_least_conn(ngx_http_request_t *r, ngx_pool_t *pool,
@@ -78,7 +76,6 @@ ngx_http_upstream_reinit_least_conn(ngx_http_request_t *r, ngx_pool_t *pool,
 }
 #endif
 
-
 static ngx_int_t
 ngx_http_upstream_init_least_conn(ngx_conf_t *cf,
     ngx_http_upstream_srv_conf_t *us)
@@ -91,6 +88,7 @@ ngx_http_upstream_init_least_conn(ngx_conf_t *cf,
     }
 
     us->peer.init = ngx_http_upstream_init_least_conn_peer;
+
 #if (NGX_DYNAMIC_RESOLVE)
     us->peer.reinit_upstream = ngx_http_upstream_reinit_least_conn;
 #endif
@@ -226,6 +224,11 @@ ngx_http_upstream_get_least_conn_peer(ngx_peer_connection_t *pc, void *data)
             break;
         }
 #endif
+
+        if (peer->max_conns && peer->conns >= peer->max_conns) {
+            continue;
+        }
+
         /*
          * select peer with least number of connections; if there are
          * multiple peers with the same number of connections, select
@@ -291,6 +294,10 @@ ngx_http_upstream_get_least_conn_peer(ngx_peer_connection_t *pc, void *data)
                 continue;
             }
 
+            if (peer->max_conns && peer->conns >= peer->max_conns) {
+                continue;
+            }
+
             peer->current_weight += peer->effective_weight;
             total += peer->effective_weight;
 
@@ -314,6 +321,7 @@ ngx_http_upstream_get_least_conn_peer(ngx_peer_connection_t *pc, void *data)
     pc->sockaddr = best->sockaddr;
     pc->socklen = best->socklen;
     pc->name = &best->name;
+
 #if (NGX_DYNAMIC_RESOLVE)
     pc->host = &best->host;
     pc->dyn_resolve = best->dyn_resolve;
@@ -363,12 +371,6 @@ failed:
         ngx_http_upstream_rr_peers_wlock(peers);
     }
 
-    /* all peers failed, mark them as live for quick recovery */
-
-    for (peer = peers->peer; peer; peer = peer->next) {
-        peer->fails = 0;
-    }
-
     ngx_http_upstream_rr_peers_unlock(peers);
 
     pc->name = peers->name;
@@ -393,6 +395,7 @@ ngx_http_upstream_least_conn(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
     uscf->flags = NGX_HTTP_UPSTREAM_CREATE
                   |NGX_HTTP_UPSTREAM_WEIGHT
+                  |NGX_HTTP_UPSTREAM_MAX_CONNS
                   |NGX_HTTP_UPSTREAM_MAX_FAILS
                   |NGX_HTTP_UPSTREAM_FAIL_TIMEOUT
                   |NGX_HTTP_UPSTREAM_DOWN

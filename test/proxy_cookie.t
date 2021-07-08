@@ -37,7 +37,7 @@ http {
     %%TEST_GLOBALS_HTTP%%
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location / {
@@ -110,7 +110,7 @@ is(http_get_set_cookie('/?domain=www.example.org&path=/path/test.html'),
 
 sub http_get_set_cookie {
 	my ($uri) = @_;
-	http_get("http://127.0.0.1:8080$uri") =~ /^Set-Cookie:\s(.+?)\x0d?$/mi;
+	http_get("http://127.0.0.1:8888$uri") =~ /^Set-Cookie:\s(.+?)\x0d?$/mi;
 	return $1;
 }
 

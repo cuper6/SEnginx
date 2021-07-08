@@ -40,11 +40,11 @@ http {
     gzip on;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location /proxy/ {
-            proxy_pass http://127.0.0.1:8080/local/;
+            proxy_pass http://127.0.0.1:8888/local/;
         }
         location = /local/blah {
             return 204;

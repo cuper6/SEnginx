@@ -33,6 +33,7 @@ struct ngx_http_upstream_rr_peer_s {
     ngx_int_t                       weight;
 
     ngx_uint_t                      conns;
+    ngx_uint_t                      max_conns;
 
     ngx_uint_t                      fails;
     time_t                          accessed;
@@ -40,23 +41,28 @@ struct ngx_http_upstream_rr_peer_s {
 
     ngx_uint_t                      max_fails;
     time_t                          fail_timeout;
+    ngx_msec_t                      slow_start;
+    ngx_msec_t                      start_time;
 
 #if (NGX_HTTP_UPSTREAM_CHECK)
     ngx_uint_t                      check_index;
 #endif
 
-    ngx_uint_t                      down;          /* unsigned  down:1; */
+    ngx_uint_t                      down;
 
-#if (NGX_HTTP_SSL)
+#if (NGX_HTTP_SSL || NGX_COMPAT)
     void                           *ssl_session;
     int                             ssl_session_len;
 #endif
 
-    ngx_http_upstream_rr_peer_t    *next;
-
 #if (NGX_HTTP_UPSTREAM_ZONE)
     ngx_atomic_t                    lock;
 #endif
+
+    ngx_http_upstream_rr_peer_t    *next;
+
+    NGX_COMPAT_BEGIN(32)
+    NGX_COMPAT_END
 };
 
 
@@ -134,11 +140,11 @@ struct ngx_http_upstream_rr_peers_s {
 
 
 typedef struct {
+    ngx_uint_t                      config;
     ngx_http_upstream_rr_peers_t   *peers;
     ngx_http_upstream_rr_peer_t    *current;
     uintptr_t                      *tried;
     uintptr_t                       data;
-
 #if (NGX_DYNAMIC_RESOLVE)
     ngx_http_upstream_rr_peers_t   *dyn_peers;
 #endif

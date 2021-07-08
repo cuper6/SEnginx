@@ -36,10 +36,10 @@ static void ngx_ip_blacklist_manager_process_cycle(ngx_cycle_t *cycle,
         void *data);
 static void ngx_ip_blacklist_manager_process_handler(ngx_event_t *ev);
 
-
 ngx_uint_t    ngx_process;
 ngx_uint_t    ngx_worker;
 ngx_pid_t     ngx_pid;
+ngx_pid_t     ngx_parent;
 
 sig_atomic_t  ngx_reap;
 sig_atomic_t  ngx_sigio;
@@ -72,7 +72,6 @@ static ngx_cache_manager_ctx_t  ngx_cache_loader_ctx = {
     ngx_cache_loader_process_handler, "cache loader process", 60000
 };
 
-
 static ngx_session_manager_ctx_t  ngx_session_manager_ctx = {
     ngx_session_manager_process_handler, "session manager process", 5000
 };
@@ -82,7 +81,6 @@ static ngx_ip_blacklist_manager_ctx_t  ngx_ip_blacklist_manager_ctx = {
     "IP blacklist manager process",
     1000
 };
-
 
 static ngx_cycle_t      ngx_exit_cycle;
 static ngx_log_t        ngx_exit_log;
@@ -768,12 +766,8 @@ ngx_worker_process_cycle(ngx_cycle_t *cycle, void *data)
     for ( ;; ) {
 
         if (ngx_exiting) {
-            ngx_event_cancel_timers();
-
-            if (ngx_event_timer_rbtree.root == ngx_event_timer_rbtree.sentinel)
-            {
+            if (ngx_event_no_timers_left() == NGX_OK) {
                 ngx_log_error(NGX_LOG_NOTICE, cycle->log, 0, "exiting");
-
                 ngx_worker_process_exit(cycle);
             }
         }
@@ -784,7 +778,6 @@ ngx_worker_process_cycle(ngx_cycle_t *cycle, void *data)
 
         if (ngx_terminate) {
             ngx_log_error(NGX_LOG_NOTICE, cycle->log, 0, "exiting");
-
             ngx_worker_process_exit(cycle);
         }
 
@@ -796,6 +789,7 @@ ngx_worker_process_cycle(ngx_cycle_t *cycle, void *data)
 
             if (!ngx_exiting) {
                 ngx_exiting = 1;
+                ngx_set_shutdown_timer(cycle);
                 ngx_close_listening_sockets(cycle);
                 ngx_close_idle_connections(cycle);
             }
@@ -815,6 +809,7 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
 {
     sigset_t          set;
     ngx_int_t         n;
+    ngx_time_t       *tp;
     ngx_uint_t        i;
     ngx_cpuset_t     *cpu_affinity;
     struct rlimit     rlmt;
@@ -871,12 +866,44 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
                           ccf->username, ccf->group);
         }
 
+#if (NGX_HAVE_PR_SET_KEEPCAPS && NGX_HAVE_CAPABILITIES)
+        if (ccf->transparent && ccf->user) {
+            if (prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) == -1) {
+                ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                              "prctl(PR_SET_KEEPCAPS, 1) failed");
+                /* fatal */
+                exit(2);
+            }
+        }
+#endif
+
         if (setuid(ccf->user) == -1) {
             ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
                           "setuid(%d) failed", ccf->user);
             /* fatal */
             exit(2);
         }
+
+#if (NGX_HAVE_CAPABILITIES)
+        if (ccf->transparent && ccf->user) {
+            struct __user_cap_data_struct    data;
+            struct __user_cap_header_struct  header;
+
+            ngx_memzero(&header, sizeof(struct __user_cap_header_struct));
+            ngx_memzero(&data, sizeof(struct __user_cap_data_struct));
+
+            header.version = _LINUX_CAPABILITY_VERSION_1;
+            data.effective = CAP_TO_MASK(CAP_NET_RAW);
+            data.permitted = data.effective;
+
+            if (syscall(SYS_capset, &header, &data) == -1) {
+                ngx_log_error(NGX_LOG_EMERG, cycle->log, ngx_errno,
+                              "capset() failed");
+                /* fatal */
+                exit(2);
+            }
+        }
+#endif
     }
 
     if (worker >= 0) {
@@ -914,7 +941,8 @@ ngx_worker_process_init(ngx_cycle_t *cycle, ngx_int_t worker)
                       "sigprocmask() failed");
     }
 
-    srandom((ngx_pid << 16) ^ ngx_time());
+    tp = ngx_timeofday();
+    srandom(((unsigned) ngx_pid << 16) ^ tp->sec ^ tp->msec);
 
     /*
      * disable deleting previous events for the listening sockets because
@@ -1176,11 +1204,11 @@ ngx_cache_manager_process_cycle(ngx_cycle_t *cycle, void *data)
 static void
 ngx_cache_manager_process_handler(ngx_event_t *ev)
 {
-    time_t        next, n;
     ngx_uint_t    i;
+    ngx_msec_t    next, n;
     ngx_path_t  **path;
 
-    next = 60 * 60;
+    next = 60 * 60 * 1000;
 
     path = ngx_cycle->paths.elts;
     for (i = 0; i < ngx_cycle->paths.nelts; i++) {
@@ -1198,7 +1226,7 @@ ngx_cache_manager_process_handler(ngx_event_t *ev)
         next = 1;
     }
 
-    ngx_add_timer(ev, next * 1000);
+    ngx_add_timer(ev, next);
 }
 
 

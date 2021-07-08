@@ -39,7 +39,7 @@ http {
     server_names_hash_bucket_size 64;
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  localhost;
 
         location / {
@@ -49,7 +49,7 @@ http {
     }
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  www.example.com;
 
         location / {
@@ -59,7 +59,7 @@ http {
     }
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  ~^EXAMPLE\.COM$;
 
         location / {
@@ -69,7 +69,7 @@ http {
     }
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  ~^(?P<name>.+)\Q.example.com\E$;
 
         location / {
@@ -80,7 +80,7 @@ http {
     }
 
     server {
-        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8888;
         server_name  "~^(?P<name>www\p{N}+)\.example\.com$";
 
         location / {
