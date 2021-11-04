@@ -7,7 +7,7 @@
 %global  senginx_webroot       %{senginx_datadir}/html
 
 Name:              senginx
-Version:           1.6.2
+Version:           1.8.0
 Release:           0%{?dist}
 
 Summary:           SEnginx puts multiple third-party load-balancing/security modules into nginx.
@@ -15,7 +15,7 @@ Group:             System Environment/Daemons
 # BSD License (two clause)
 # http://www.freebsd.org/copyright/freebsd-license.html
 License:           BSD
-URL:               http://www.senginx.org
+URL:               http://senginx.ru
 
 %define _sourcedir %_topdir/SOURCES
 Source0:           %{name}-%{version}.tar.gz

@@ -65,4 +65,4 @@ Example:
 
 Other
 -----
-More information, check our website: http://www.senginx.org
+More information, check website: http://senginx.ru
