@@ -373,6 +373,8 @@ ngx_http_statistics_content_handler(ngx_http_request_t *r)
                 "\"dt\":%ui,"
                 "\"evade\":%ui,"
                 "\"fu\":%ui,"
+                "\"libinjection_xss\":%ui,"
+                "\"libinjection_sql\":%ui,"
                 "\"cp\":%ui,"
                 "\"wd\":%ui,"
                 "\"rm\":%ui,"
@@ -392,6 +394,8 @@ ngx_http_statistics_content_handler(ngx_http_request_t *r)
                 server->attacks[NGX_HTTP_STATS_ATTACK_DIR_TRAVERSAL],
                 server->attacks[NGX_HTTP_STATS_ATTACK_EVADING],
                 server->attacks[NGX_HTTP_STATS_ATTACK_FILE_UPLOAD],
+                server->attacks[NGX_HTTP_STATS_ATTACK_LIBINJECTION_XSS],
+                server->attacks[NGX_HTTP_STATS_ATTACK_LIBINJECTION_SQL],
                 server->attacks[NGX_HTTP_STATS_ATTACK_CP],
                 server->attacks[NGX_HTTP_STATS_ATTACK_WD],
                 server->attacks[NGX_HTTP_STATS_ATTACK_RM],
