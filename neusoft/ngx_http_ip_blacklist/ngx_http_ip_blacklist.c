@@ -32,8 +32,6 @@ ngx_http_ip_blacklist_request_cleanup_init(ngx_http_request_t *r);
 static void
 ngx_http_ip_blacklist_cleanup(void *data);
 static ngx_int_t
-ngx_http_ip_blacklist_pre_init(ngx_conf_t *cf);
-static ngx_int_t
 ngx_http_ip_blacklist_init_shm_zone(ngx_shm_zone_t *shm_zone, void *data);
 static char *
 ngx_http_ip_blacklist_show(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
@@ -48,7 +46,7 @@ ngx_http_ip_blacklist_flush(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 static ngx_shm_zone_t *ngx_http_ip_blacklist_shm_zone;
 static ngx_module_t *
-ngx_http_ip_blacklist_modules[NGX_HTTP_IP_BLACKLIST_MOD_NUM];
+ngx_http_ip_blacklist_modules[NGX_HTTP_IP_BLACKLIST_MOD_NUM] = {0}; // it's better to fill it zeros right here
 
 static ngx_conf_enum_t  ngx_http_ip_blacklist_mode[] = {
     { ngx_string("local"), NGX_HTTP_BLACKLIST_MODE_LOCAL },
@@ -115,11 +113,21 @@ static ngx_command_t ngx_http_ip_blacklist_commands[] = {
       offsetof(ngx_http_ip_blacklist_main_conf_t, mode),
       &ngx_http_ip_blacklist_mode },
 
+    { ngx_string("ip_blacklist_ttl"),
+      NGX_HTTP_MAIN_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_num_slot,
+      NGX_HTTP_MAIN_CONF_OFFSET,
+      offsetof(ngx_http_ip_blacklist_main_conf_t, ttl),
+      NULL },
+
     ngx_null_command,
 };
 
+static ngx_int_t blacklist_ttl;
+static ngx_int_t blacklist_timeout;
+
 static ngx_http_module_t ngx_http_ip_blacklist_module_ctx = {
-    ngx_http_ip_blacklist_pre_init,          /* preconfiguration */
+    NULL,                                 /* preconfiguration */
     ngx_http_ip_blacklist_init,              /* postconfiguration */
 
     ngx_http_ip_blacklist_create_main_conf,  /* create main configuration */
@@ -147,16 +155,6 @@ ngx_module_t ngx_http_ip_blacklist_module = {
     NULL,                                  /* exit master */
     NGX_MODULE_V1_PADDING
 };
-
-
-static ngx_int_t
-ngx_http_ip_blacklist_pre_init(ngx_conf_t *cf)
-{
-    memset(ngx_http_ip_blacklist_modules, 0,
-            sizeof(ngx_module_t *) * NGX_HTTP_IP_BLACKLIST_MOD_NUM);
-
-    return NGX_OK;
-}
 
 
 static ngx_int_t
@@ -265,7 +263,9 @@ ngx_http_ip_blacklist_create_main_conf(ngx_conf_t *cf)
     imcf->timeout = NGX_CONF_UNSET;
     imcf->size = NGX_CONF_UNSET;
     imcf->mode = NGX_CONF_UNSET;
-
+    imcf->ttl = NGX_CONF_UNSET;
+    blacklist_ttl = 1;
+    blacklist_timeout = NGX_CONF_UNSET;
     return imcf;
 }
 
@@ -289,6 +289,7 @@ ngx_http_ip_blacklist_init_main_conf(ngx_conf_t *cf, void *conf)
     if (imcf->timeout == NGX_CONF_UNSET) {
         imcf->timeout = 60;
     }
+    blacklist_timeout = imcf->timeout;
 
     if (imcf->size == NGX_CONF_UNSET) {
         imcf->size = 1024;
@@ -297,6 +298,11 @@ ngx_http_ip_blacklist_init_main_conf(ngx_conf_t *cf, void *conf)
     if (imcf->mode == NGX_CONF_UNSET) {
         imcf->mode = NGX_HTTP_BLACKLIST_MODE_LOCAL;
     }
+
+    if (imcf->ttl == NGX_CONF_UNSET) {
+        imcf->ttl = 1;
+    }
+    blacklist_ttl = imcf->ttl;
 
     /* set up shared memory for ip blacklist */
     shm_name = ngx_palloc(cf->pool, sizeof(*shm_name));
@@ -363,6 +369,8 @@ ngx_http_ip_blacklist_manager(void)
                 ngx_slab_free_locked(blacklist->shpool, bn);
             }
         } else {
+            if (bn->timeout - blacklist_timeout + blacklist_ttl <= ngx_time()) {
+                /* this node is not blacklisted but has reached maximum ttl since was last incremented -> delete it */
             if (bn->ref == 0) {
                 tmp = node;
                 node = ngx_queue_prev(node);
@@ -375,6 +383,7 @@ ngx_http_ip_blacklist_manager(void)
                 bn->timed = 1;
             }
         }
+    }
     }
 
 out:
@@ -791,7 +800,7 @@ ngx_http_ip_blacklist_flush(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
 static void
 ngx_http_ip_blacklist_write_attack_log(ngx_http_request_t *r,
-        ngx_str_t *addr, ngx_int_t sys)
+        ngx_str_t *addr, ngx_int_t sys, ngx_module_t *module)
 {
     char                        *do_action = "running ";
     ngx_connection_t            *connection;
@@ -811,8 +820,8 @@ ngx_http_ip_blacklist_write_attack_log(ngx_http_request_t *r,
     strcpy(log->action + ngx_strlen(do_action), module_name);
 
     ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
-            "%s: Blocked IP address: \"%V\", mode: %s,",
-            "ip_blacklist", addr, sys ? "sys" : "local");
+            "%s: Blocked IP address: \"%V\" from %s, mode: %s,",
+            "ip_blacklist", addr, module->name, sys ? "sys" : "local");
 }
 
 
@@ -861,6 +870,7 @@ ngx_http_ip_blacklist_update(ngx_http_request_t *r,
 
     if (r->ip_blacklist_node) {
         node = r->ip_blacklist_node;
+        node->timeout = ngx_time() + imcf->timeout;
     } else {
         /* maybe other requests set the node, so let's do a lookup */
         hash = ngx_crc32_short(addr->data, addr->len);
@@ -939,7 +949,7 @@ ngx_http_ip_blacklist_update(ngx_http_request_t *r,
                 ngx_shmtx_unlock(&blacklist->shpool->mutex);
 
                 if (ilcf->log_enabled) {
-                    ngx_http_ip_blacklist_write_attack_log(r, addr, sys);
+                    ngx_http_ip_blacklist_write_attack_log(r, addr, sys, module);
                 }
 
                 if (sys == 0) {
