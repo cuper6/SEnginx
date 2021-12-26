@@ -126,7 +126,7 @@ function refreshMonitor() {
             tbl_traffic.append(body_traffic);
 
             var tbl_attack = $("<table></table>");
-            var head_attack = $("<thead><tr><th>Server</th><th>Sql Injection</th><th>Cross Site Scripting</th><th>Remote File Inclusion</th><th>Directory Traversal</th><th>Evading Tricks</th><th>File Upload</th><th>Cookie Poisoning</th><th>Web Defacement</th><th>Robot Mitigation Challenges</th><th>Other Threats</th></tr></thead>");
+            var head_attack = $("<thead><tr><th>Server</th><th>Sql Injection</th><th>Cross Site Scripting</th><th>Remote File Inclusion</th><th>Directory Traversal</th><th>Evading Tricks</th><th>File Upload</th><th>Libinjection_xss</th><th>Libinjection_sql</th><th>Cookie Poisoning</th><th>Web Defacement</th><th>Robot Mitigation Challenges</th><th>Other Threats</th></tr></thead>");
             var body_attack = $("<tbody></tbody>");
             for (var i = 0; i < servers.length; ++i) {
                 var row = $("<tr></tr>");
@@ -138,6 +138,8 @@ function refreshMonitor() {
                 row.append($("<td></td>").text(cur_attack.dt));
                 row.append($("<td></td>").text(cur_attack.evade));
                 row.append($("<td></td>").text(cur_attack.fu));
+                row.append($("<td></td>").text(cur_attack.libinjection_xss));
+                row.append($("<td></td>").text(cur_attack.libinjection_sql));
                 row.append($("<td></td>").text(cur_attack.cp));
                 row.append($("<td></td>").text(cur_attack.wd));
                 row.append($("<td></td>").text(cur_attack.rm));
