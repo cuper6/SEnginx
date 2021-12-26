@@ -1,6 +1,8 @@
 SEnginx
 =======
-Security-Enhanced nginx by Neusoft corporation. 
+SEnginx (Security Enhanced Nginx) is a variant of nginx - the famous HTTP and reverse proxy server. It introduces web security features into original nginx and makes improvements on application delivery functionality. SEnginx inherit all original features from nginx and is compatible with nginx's configuration, besides SEnginx has also bundled some handy third party modules.
+
+SEnginx open source project was originally launched by Neusoft Corporation. Currently this fork maintained by upgrading sources to the latest stable versions of nginx and 3rd party modules, adding new functionality and fixing some bugs.
 
 Features
 --------
@@ -16,6 +18,7 @@ Features
     * Session Persistence
     * Caching Based on MIME Type
     * Server Health Monitor
+    * Statistics for Traffic and Attacks
 * Web Security
     * IP Access Behavior Module
     * Conditional limit_req module
@@ -38,7 +41,6 @@ Features
     * NetEye Security Layer
 * Managment
     * Syslog Support
-    * Statistics for Traffic and Attacks
 
 Installation
 ------------
@@ -48,7 +50,7 @@ The se-configure.sh script can also accept original configure.sh's parameters.
 
 Example:
 
-    ./se-configure.sh --prefix=/path/to/some/where
+    ./se-configure.sh --with-http_v2_module --prefix=/path/to/some/where
     make
     make install
 
@@ -60,7 +62,7 @@ We have prepared a set of test cases in the test directory, use the auto-test.sh
 Example:
 
     cd test/
-    ./auto-test.sh -s ./ -n /path/to/senginx/binary/file
+    ./auto-test.sh -s ./ -n /path/to/senginx/binary/file -r /path/to/naxsi_core.rules
 
 
 Other
