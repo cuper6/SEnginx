@@ -371,19 +371,19 @@ ngx_http_ip_blacklist_manager(void)
         } else {
             if (bn->timeout - blacklist_timeout + blacklist_ttl <= ngx_time()) {
                 /* this node is not blacklisted but has reached maximum ttl since was last incremented -> delete it */
-            if (bn->ref == 0) {
-                tmp = node;
-                node = ngx_queue_prev(node);
+                if (bn->ref == 0) {
+                    tmp = node;
+                    node = ngx_queue_prev(node);
 
-                ngx_rbtree_delete(&blacklist->blacklist, &bn->node);
-                ngx_queue_remove(tmp);
-                ngx_slab_free_locked(blacklist->shpool, bn);
-            } else {
-                /* wait for request cleanup handler to delete this */
-                bn->timed = 1;
+                    ngx_rbtree_delete(&blacklist->blacklist, &bn->node);
+                    ngx_queue_remove(tmp);
+                    ngx_slab_free_locked(blacklist->shpool, bn);
+                } else {
+                    /* wait for request cleanup handler to delete this */
+                    bn->timed = 1;
+                }
             }
         }
-    }
     }
 
 out:
@@ -613,7 +613,7 @@ ngx_http_ip_blacklist_merge_loc_conf(ngx_conf_t *cf,
 static ngx_int_t
 ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
 {
-    ngx_int_t                          rc, j = 0;
+    ngx_int_t                          rc, i, j = 0;
     ngx_buf_t                         *b;
     ngx_chain_t                        out;
     ngx_str_t                         *test;
@@ -627,7 +627,7 @@ ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
     ngx_queue_t                       *node;
     char                               tmp[NGX_HTTP_IP_BLACKLIST_ADDR_LEN];
     ngx_uint_t                         total = 0;
-
+    ngx_module_t                      *module;
 
     imcf = ngx_http_get_module_main_conf(r, ngx_http_ip_blacklist_module);
 
@@ -671,22 +671,38 @@ ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
             node = ngx_queue_next(node)) {
         bn = ngx_queue_data(node, ngx_http_ip_blacklist_t, queue);
 
-        if (bn->blacklist) {
             memset(tmp, 0, NGX_HTTP_IP_BLACKLIST_ADDR_LEN);
             memcpy(tmp,
                     bn->addr,
                     bn->len < NGX_HTTP_IP_BLACKLIST_ADDR_LEN ? bn->len :
                     NGX_HTTP_IP_BLACKLIST_ADDR_LEN - 1);
 
-            j = sprintf((char *)(test->data + test->len),
-                    "addr: %s, timeout: %d, "
-                    "timed out: %d, blacklist: %d, ref: %d <br>",
-                    tmp, (int)(bn->timeout - ngx_time()),
-                    bn->timed, bn->blacklist, (int)bn->ref);
-
+        if (bn->blacklist) {
+            j = sprintf((char *)(test->data + test->len), "[blocked local] ");
             test->len += j;
-            total++;
+	}
+
+	j = sprintf((char *)(test->data + test->len),
+            "addr: %s, timeout: %d, ttl: %d "
+            "timed out: %d, blacklist: %d, ref: %d counters: ",
+            tmp, (int)(bn->timeout - ngx_time()), (int)(bn->timeout - blacklist_timeout + blacklist_ttl - ngx_time()),
+            bn->timed, bn->blacklist, (int)bn->ref);
+        test->len += j;
+
+        for (i = 0; i < NGX_HTTP_IP_BLACKLIST_MOD_NUM; i++) {
+            if (ngx_http_ip_blacklist_modules[i] != NULL) {
+                    module = bn->counts[i].module;
+                    if (module != NULL) {
+	                    j = sprintf((char *)(test->data + test->len), "%s[%d] ", module->name, (int)bn->counts[i].count);
+        	            test->len += j;
+                    }
+            }
         }
+
+        j = sprintf((char *)(test->data + test->len), "<br>");
+        test->len += j;
+
+        total++;
     }
 
     sprintf((char *)(test->data + 7), "%u", (unsigned int)total);
