@@ -678,21 +678,17 @@ ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
                     NGX_HTTP_IP_BLACKLIST_ADDR_LEN - 1);
 
         if (bn->blacklist) {
-            j = sprintf((char *)(test->data + test->len), "[blocked local] ");
+            j = sprintf((char *)(test->data + test->len), "<b>[blocked local]</b> <a href=\"https://www.nic.ru/whois/?searchWord=%s\" target=\"_blank\">%s</a>, timeout: %d, ", tmp, tmp, (int)(bn->timeout - ngx_time()));
+            test->len += j;
+	} else {
+            j = sprintf((char *)(test->data + test->len), "<a href=\"https://www.nic.ru/whois/?searchWord=%s\" target=\"_blank\">%s</a>, ttl: %d, ", tmp, tmp, (int)(bn->timeout - blacklist_timeout + blacklist_ttl - ngx_time()));
             test->len += j;
 	}
-
-	j = sprintf((char *)(test->data + test->len),
-            "addr: %s, timeout: %d, ttl: %d "
-            "timed out: %d, blacklist: %d, ref: %d counters: ",
-            tmp, (int)(bn->timeout - ngx_time()), (int)(bn->timeout - blacklist_timeout + blacklist_ttl - ngx_time()),
-            bn->timed, bn->blacklist, (int)bn->ref);
-        test->len += j;
 
         for (i = 0; i < NGX_HTTP_IP_BLACKLIST_MOD_NUM; i++) {
             if (ngx_http_ip_blacklist_modules[i] != NULL) {
                     module = bn->counts[i].module;
-                    if (module != NULL) {
+                    if (module != NULL && bn->counts[i].count != 0) {
 	                    j = sprintf((char *)(test->data + test->len), "%s[%d] ", module->name, (int)bn->counts[i].count);
         	            test->len += j;
                     }
