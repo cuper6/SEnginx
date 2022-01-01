@@ -23,6 +23,10 @@
 
 #include <ngx_http_whitelist.h> /* senginx */
 
+#if (NGX_HTTP_IP_BLACKLIST)
+#include <ngx_http_ip_blacklist.h> /* senginx ip blacklist */
+#endif
+
 extern ngx_module_t ngx_http_naxsi_module;
 
 /*
@@ -393,6 +397,10 @@ typedef struct
 
   /* whitelist senginx */
   ngx_http_wl_variables_t whitelist; 
+
+#if (NGX_HTTP_IP_BLACKLIST) /* senginx ip blacklist */
+  ngx_int_t blocked_count;
+#endif
 
 } ngx_http_naxsi_loc_conf_t;
 
