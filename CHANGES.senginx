@@ -1,3 +1,27 @@
+Changes with senginx 1.8.2                                      01 Jan 2022
+
+    *) Feature: the "ip_blacklist_ttl" directive.
+
+    *) Change: ngx_http_ip_blacklist_modules array is inialized at definition.
+
+    *) Change: enhanced algorithm for clearing not blocked ip_blacklist nodes (based on the ttl value).
+
+    *) Feature: ip_blackist log now shows which module caused IP blocking.
+
+    *) Feature: ip_blacklist_show page now shows all IP addreses (incl. unblocked). 
+	Format changes: added "blocked local" prefix, ttl, counters for modules registered at ip_blacklist, 
+	removed debug info ("timed out", "ref", "blacklist"), added link to whois for each IP. 
+
+    *) Feature: naxsi module now supports dynamic IP blocking by senginx ip_blacklist module. 
+
+    *) Feature: the "naxsi_blacklist" directive.  
+
+    *) Feature: the "naxsi_ip_blacklist.t" test script.
+
+    *) Change: demo.html now shows naxsi libinjection_xss and libinjection_sql attacks statistics.
+
+    *) Change: Updated SEnginx documentation at http://senginx.ru
+
 Changes with senginx 1.8.1                                      19 Nov 2021
     *) Feature: upgrade naxsi to 1.3.
 
