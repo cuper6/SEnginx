@@ -6,7 +6,7 @@ SEnginx open source project was originally launched by Neusoft Corporation. Curr
 
 Features
 --------
-* All features of original nginx, you can find more at: http://nginx.org/en/docs/
+* All features of original nginx 1.18.0, you can find more at: http://nginx.org/en/docs/
 * Application Delivery
     * TCP Proxy and Load Balancing
     * Enhanced "if" Direcitve in Rewrite Module
