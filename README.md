@@ -2,7 +2,9 @@ SEnginx
 =======
 SEnginx (Security Enhanced Nginx) is a variant of nginx - the famous HTTP and reverse proxy server. It introduces web security features into original nginx and makes improvements on application delivery functionality. SEnginx inherit all original features from nginx and is compatible with nginx's configuration, besides SEnginx has also bundled some handy third party modules.
 
-SEnginx open source project was originally launched by Neusoft Corporation. Currently this fork maintained by upgrading sources to the latest stable versions of nginx and 3rd party modules, adding new functionality and fixing some bugs.
+SEnginx open source project was originally launched by Neusoft Corporation. This fork is maintained independently from the abandoned Neusoft repository by upgrading sources to the latest stable versions of nginx and 3rd party modules, adding new functionality and fixing some bugs.
+
+SEnginx wiki site: http://senginx.ru
 
 Features
 --------
@@ -67,4 +69,4 @@ Example:
 
 Other
 -----
-More information, check website: http://senginx.ru
+Neusoft SEnginx repository: https://github.com/NeusoftSecurity/SEnginx
