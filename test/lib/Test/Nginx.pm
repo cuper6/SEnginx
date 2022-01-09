@@ -21,6 +21,7 @@ our %EXPORT_TAGS = (
 
 use File::Temp qw/ tempdir /;
 use IO::Socket;
+use POSIX qw/ waitpid WNOHANG /;
 use Socket qw/ CRLF /;
 use Test::More qw//;
 
@@ -225,25 +226,61 @@ sub waitforsocket($) {
 	return undef;
 }
 
-sub stop() {
-	my ($self) = @_;
+sub stop(;$) {
+	my ($self, $timeout) = @_;
 
 	return $self unless $self->{_started};
+
+	my $pid = $self->read_file('nginx.pid');
 
 	if ($^O eq 'MSWin32') {
 		my $testdir = $self->{_testdir};
 		my @globals = $self->{_test_globals} ?
 			() : ('-g', "pid $testdir/nginx.pid; "
 			. "error_log $testdir/error.log debug;");
-		system($NGINX, '-c', "$testdir/nginx.conf", '-s', 'stop',
-			@globals) == 0
+		my @error = $self->has_version('1.19.5') ?
+			('-e', 'error.log') : ();
+		system($NGINX, '-p', $testdir, '-c', "nginx.conf",
+			'-s', 'quit', @error, @globals) == 0
 			or die "system() failed: $?\n";
 
 	} else {
-		kill 'QUIT', `cat $self->{_testdir}/nginx.pid`;
+		kill 'QUIT', $pid;
 	}
 
-	wait;
+	my $exited;
+	my $max_timeout;
+
+	if (!defined $timeout) {
+		$max_timeout = 900;
+	} else {
+		$max_timeout = $timeout * 10;
+	}
+
+	for (1 .. $max_timeout) {
+		$exited = waitpid($pid, WNOHANG) != 0;
+		last if $exited;
+		select undef, undef, undef, 0.1;
+	}
+
+	if (!$exited) {
+		if ($^O eq 'MSWin32') {
+			my $testdir = $self->{_testdir};
+			my @globals = $self->{_test_globals} ?
+				() : ('-g', "pid $testdir/nginx.pid; "
+				. "error_log $testdir/error.log debug;");
+			my @error = $self->has_version('1.19.5') ?
+				('-e', 'error.log') : ();
+			system($NGINX, '-p', $testdir, '-c', "nginx.conf",
+				'-s', 'stop', @error, @globals) == 0
+				or die "system() failed: $?\n";
+
+		} else {
+			kill 'TERM', $pid;
+		}
+
+		waitpid($pid, 0);
+	}
 
 	$self->{_started} = 0;
 
@@ -260,6 +297,18 @@ sub stop_daemons() {
 	}
 
 	return $self;
+}
+
+sub read_file($) {
+	my ($self, $name) = @_;
+	local $/;
+
+	open F, '<', $self->{_testdir} . '/' . $name
+		or die "Can't open $name: $!";
+	my $content = <F>;
+	close F;
+
+	return $content;
 }
 
 sub write_file($$) {
