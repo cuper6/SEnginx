@@ -263,6 +263,8 @@ like(http_get_with_header('/ip_whitelist9', 'User-Agent: autotest'), qr/TEST-OK-
 like(http_get('/ip_whitelist9'), qr/rm-autotest/, 'http get request, ac method js');
 #Send http request with header and ip whitelist matched but domain not matched, expect get response from server
 like(http_get('/ip_whitelist10'), qr/TEST-OK-IF-YOU-SEE-THIS/, 'http get request with special user-agent and location to bypass anti-robot, ac method js');
+$t->stop(3); # send to nginx TERM signal in 3 seconds after QUIT signal
+
 ###############################################################################
 
 sub http_daemon {

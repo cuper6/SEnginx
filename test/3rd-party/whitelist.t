@@ -88,6 +88,9 @@ like(http_get_with_header('/', 'User-Agent: ua2'),
 
 like(http_get_with_header('/', 'User-Agent: Ua2'),
     qr/404/, 'http get with caseless whitelist matched, sould return 404');
+
+$t->stop(3); # send to nginx TERM signal in 3 seconds after QUIT signal
+
 ###############################################################################
 
 sub http_daemon {
