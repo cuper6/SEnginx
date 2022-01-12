@@ -38,11 +38,17 @@ Features
         * Directory Traversal
         * Remote File Inclusion
         * Evading Tricks
-        * ...
     * Secure Session Mechanism
     * NetEye Security Layer
-* Managment
-    * Syslog Support
+* 3rd-party modules for nginx
+    * ngx_headers_more
+    * ngx_http_lua_module
+    * ngx_memc
+    * ngx_cache_purge
+    * ngx_devel_kit
+    * ngx_http_substitutions_filter_module
+    * srcache-nginx-module
+
 
 Installation
 ------------
