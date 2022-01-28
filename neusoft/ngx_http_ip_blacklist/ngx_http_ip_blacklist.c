@@ -758,11 +758,22 @@ ngx_http_ip_blacklist_flush_handler(ngx_http_request_t *r)
     ngx_http_ip_blacklist_t           *bn;
     ngx_queue_t                       *node;
     ngx_queue_t                       *tmp;
+    ngx_int_t         		      rc;
+    ngx_buf_t                         *b;
+    ngx_chain_t                        out;
+    const char	                      *not_enabled = 
+        "IP blacklist is not enabled<br>";
+    const char      	              *empty = 
+        "IP blacklist is empty<br>";
+    const char              	      *flushed = 
+        "IP blacklist is flushed<br>";
+    const char	                      *message;
 
     imcf = ngx_http_get_module_main_conf(r, ngx_http_ip_blacklist_module);
 
     if (!imcf->enabled) {
-        return NGX_HTTP_CLOSE;
+        message = not_enabled;
+        goto not_enabled;
     }
 
     blacklist = ngx_http_ip_blacklist_shm_zone->data;
@@ -770,7 +781,8 @@ ngx_http_ip_blacklist_flush_handler(ngx_http_request_t *r)
 
     if (ngx_queue_empty(&blacklist->garbage)) {
         ngx_shmtx_unlock(&blacklist->shpool->mutex);
-        return NGX_HTTP_CLOSE;
+        message = empty;
+        goto empty;
     }
 
     for (node = ngx_queue_head(&blacklist->garbage);
@@ -793,8 +805,38 @@ ngx_http_ip_blacklist_flush_handler(ngx_http_request_t *r)
     }
 
     ngx_shmtx_unlock(&blacklist->shpool->mutex);
+    message = flushed;
 
-    return NGX_HTTP_CLOSE;
+empty:
+not_enabled:
+
+    b = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
+    if (b == NULL) {
+        ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
+                "Failed to allocate response buffer.");
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    out.buf = b;
+    out.next = NULL;
+
+    b->pos = (u_char *) message;
+    b->last = b->pos + strlen(message);
+
+    b->memory = 1;
+    b->last_buf = 1;
+
+    r->headers_out.content_type.len = sizeof("text/html") - 1;
+    r->headers_out.content_type.data = (u_char *) "text/html";
+    r->headers_out.status = NGX_HTTP_OK;
+    r->headers_out.content_length_n = strlen(message);
+    rc = ngx_http_send_header(r);
+
+    if (rc == NGX_ERROR || rc > NGX_OK || r->header_only) {
+        return rc;
+    }
+
+    return ngx_http_output_filter(r, &out);
 }
 
 
