@@ -613,7 +613,7 @@ ngx_http_ip_blacklist_merge_loc_conf(ngx_conf_t *cf,
 static ngx_int_t
 ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
 {
-    ngx_int_t                          rc, i, j = 0;
+    ngx_int_t                          rc, i, j = 0, debug = 0;
     ngx_buf_t                         *b;
     ngx_chain_t                        out;
     ngx_str_t                         *test;
@@ -628,6 +628,13 @@ ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
     char                               tmp[NGX_HTTP_IP_BLACKLIST_ADDR_LEN];
     ngx_uint_t                         total = 0;
     ngx_module_t                      *module;
+    ngx_str_t                          value;
+
+    if (r->args.len) {
+        if (ngx_http_arg(r, (u_char *) "debug", 5, &value) == NGX_OK) {
+            debug = 1;
+        }
+    }
 
     imcf = ngx_http_get_module_main_conf(r, ngx_http_ip_blacklist_module);
 
@@ -678,10 +685,14 @@ ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
                     NGX_HTTP_IP_BLACKLIST_ADDR_LEN - 1);
 
         if (bn->blacklist) {
-            j = sprintf((char *)(test->data + test->len), "<b>[blocked local]</b> <a href=\"https://www.nic.ru/whois/?searchWord=%s\" target=\"_blank\">%s</a>, timeout: %d, ", tmp, tmp, (int)(bn->timeout - ngx_time()));
+            j = sprintf((char *)(test->data + test->len),
+                    "<b>[blocked local]</b> <a href=\"https://www.nic.ru/whois/?searchWord=%s\" target=\"_blank\">%s</a>, timeout: %d, ",
+                    tmp, tmp, (int)(bn->timeout - ngx_time()));
             test->len += j;
 	} else {
-            j = sprintf((char *)(test->data + test->len), "<a href=\"https://www.nic.ru/whois/?searchWord=%s\" target=\"_blank\">%s</a>, ttl: %d, ", tmp, tmp, (int)(bn->timeout - blacklist_timeout + blacklist_ttl - ngx_time()));
+            j = sprintf((char *)(test->data + test->len),
+                    "<a href=\"https://www.nic.ru/whois/?searchWord=%s\" target=\"_blank\">%s</a>, ttl: %d, ",
+                    tmp, tmp, (int)(bn->timeout - blacklist_timeout + blacklist_ttl - ngx_time()));
             test->len += j;
 	}
 
@@ -694,6 +705,13 @@ ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
                     }
             }
         }
+
+        if (debug == 1) {
+            j = sprintf((char *)(test->data + test->len),
+                    " timed out: %d, blacklist: %d, ref: %d",
+                    bn->timed, bn->blacklist, (int)bn->ref);
+            test->len += j;
+	}
 
         j = sprintf((char *)(test->data + test->len), "<br>");
         test->len += j;
