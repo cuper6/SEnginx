@@ -1011,7 +1011,7 @@ ngx_http_ip_blacklist_update(ngx_http_request_t *r,
     /* otherwise, increase the count and check if it matches with max count */
     for (i = 0; i < NGX_HTTP_IP_BLACKLIST_MOD_NUM; i++) {
         if (node->counts[i].module == module) {
-            if (++(node->counts[i].count) == max) {
+            if (++(node->counts[i].count) >= max) {
                 if (imcf->mode == NGX_HTTP_BLACKLIST_MODE_LOCAL) {
                     node->blacklist = 1;
                 } else {
