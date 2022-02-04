@@ -7,7 +7,7 @@
 #include <ngx_hash.h>
 
 
-#define NGX_HTTP_WL_ADDR_TIMEOUT (5*1000)  //5s
+#define NGX_HTTP_WL_ADDR_TIMEOUT (3600*1000)  // 3600s = 1 hour
 #define NGX_HTTP_WL_ADDR_LEN 64
 
 typedef struct {
