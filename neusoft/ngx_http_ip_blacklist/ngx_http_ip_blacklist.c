@@ -630,10 +630,8 @@ ngx_http_ip_blacklist_show_handler(ngx_http_request_t *r)
     ngx_module_t                      *module;
     ngx_str_t                          value;
 
-    if (r->args.len) {
-        if (ngx_http_arg(r, (u_char *) "debug", 5, &value) == NGX_OK) {
-            debug = 1;
-        }
+    if (ngx_http_arg(r, (u_char *) "debug", 5, &value) == NGX_OK) {
+        debug = 1;
     }
 
     imcf = ngx_http_get_module_main_conf(r, ngx_http_ip_blacklist_module);
@@ -785,13 +783,22 @@ ngx_http_ip_blacklist_flush_handler(ngx_http_request_t *r)
         "IP blacklist is empty<br>";
     const char              	      *flushed = 
         "IP blacklist is flushed<br>";
+    const char              	      *remove_ip = 
+        "One IP removed from the blacklist<br>";
     const char	                      *message;
+    ngx_str_t                          addr = ngx_null_string;
 
     imcf = ngx_http_get_module_main_conf(r, ngx_http_ip_blacklist_module);
 
     if (!imcf->enabled) {
         message = not_enabled;
         goto not_enabled;
+    }
+
+    if (ngx_http_arg(r, (u_char *) "ip", 2, &addr) == NGX_OK) {
+        message = remove_ip;
+    } else {
+        message = flushed;
     }
 
     blacklist = ngx_http_ip_blacklist_shm_zone->data;
@@ -808,6 +815,10 @@ ngx_http_ip_blacklist_flush_handler(ngx_http_request_t *r)
             node = ngx_queue_next(node)) {
         bn = ngx_queue_data(node, ngx_http_ip_blacklist_t, queue);
 
+        if (addr.len != 0 && ngx_memn2cmp(addr.data, bn->addr, addr.len, bn->len) != 0) {
+            continue;
+        }
+
         if (bn->ref != 0) {
             /* force node to time out */
             bn->timed = 1;
@@ -823,7 +834,6 @@ ngx_http_ip_blacklist_flush_handler(ngx_http_request_t *r)
     }
 
     ngx_shmtx_unlock(&blacklist->shpool->mutex);
-    message = flushed;
 
 empty:
 not_enabled:
