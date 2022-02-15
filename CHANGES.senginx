@@ -1,3 +1,20 @@
+Changes with senginx 1.8.3                                      15 Feb 2022
+
+    *) Bugfix: coredump in ngx_http_whitelist: sometimes ngx_http_wl_resolve_addr_handler is called after r->pool already destroyed in the ngx_http_free_request. 
+	Now we do not call ngx_http_core_run_phases if r->pool is null (otherwise it will cause crash in the ngx_palloc).
+
+    *) Bugfix: ip_blacklist: now an IP is blocked not only if the count reaches max threshold (==), but if the count overs the max threshold too (>=). Otherwise some IPs already having non-zero failed count value may not be blocked at all if max threshold was decreased in the config without further flushing the blacklist.
+
+    *) Change: ip_blacklist_flush page shows the results, returns 200 instead of 444. Now it is possible to remove only one IP address from the blacklist.
+
+    *) Change: ip_blacklist_show page now accepts the "debug" parameter.
+
+    *) Change: whitelist - default timeout (caching time) for reverse dns lookup results (NGX_HTTP_WL_ADDR_TIMEOUT) changed from 5s to 1 hour.
+
+    *) Feature: [tests] Nginx.pm - optional timeout parameter and support for kill TERM in stop method. New read_file method.
+
+    *) Change: [tests] tests for ua_whitelist with reverse dns lookup are stopped in 3 sec (send to nginx TERM signal in 3 seconds after QUIT signal).
+
 Changes with senginx 1.8.2                                      01 Jan 2022
 
     *) Feature: the "ip_blacklist_ttl" directive.
