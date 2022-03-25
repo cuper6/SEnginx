@@ -1048,7 +1048,13 @@ ngx_http_ip_blacklist_update(ngx_http_request_t *r,
 
                     /* TODO: fix this */
                     ret = system((char *)imcf->buf);
-                    return (ret == 0) ? 1 : -1;
+                    if (ret == 0) {
+                        /* in sys mode, delete the node if system command had success */
+                        node->timed = 1;
+                        ngx_http_ip_blacklist_request_cleanup_init(r);
+                        return 1;
+                    }		
+                    return -1;
                 }
 
                 /* no sys comamnd provided */
