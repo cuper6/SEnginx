@@ -1028,37 +1028,34 @@ ngx_http_ip_blacklist_update(ngx_http_request_t *r,
                     sys = 1;
                 }
 
-                ngx_shmtx_unlock(&blacklist->shpool->mutex);
-
                 if (ilcf->log_enabled) {
                     ngx_http_ip_blacklist_write_attack_log(r, addr, sys, module);
                 }
 
                 if (sys == 0) {
                     /* in local mode, just return */
+                    ngx_shmtx_unlock(&blacklist->shpool->mutex);
                     return 1;
                 }
 
-                /* in sys mode */
+                /* in sys mode, run system command */
                 if (imcf->syscmd.len != 0) {
                     /* build up a command and call system */
                     memset(imcf->buf, 0, imcf->buf_len);
                     ngx_snprintf(imcf->buf,
                             imcf->buf_len, (char *)imcf->syscmd.data, addr);
 
-                    /* TODO: fix this */
-                    ret = system((char *)imcf->buf);
-                    if (ret == 0) {
-                        /* in sys mode, delete the node if system command had success */
+                    if (0 == system((char *)imcf->buf)) {
+                        /* delete the node if system command had success */
                         node->timed = 1;
+                        node->ref++;
                         ngx_http_ip_blacklist_request_cleanup_init(r);
-                        return 1;
-                    }		
-                    return -1;
-                }
+                        ret = 1;
+                    } else ret = -1; /* sys command returned error */
+                } else ret = 0; /* no sys command provided */
 
-                /* no sys comamnd provided */
-                return 0;
+                ngx_shmtx_unlock(&blacklist->shpool->mutex);
+                return ret;
             }
             break;
         }
