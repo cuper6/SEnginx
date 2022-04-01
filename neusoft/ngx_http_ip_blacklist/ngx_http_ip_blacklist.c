@@ -1000,6 +1000,12 @@ ngx_http_ip_blacklist_update(ngx_http_request_t *r,
 
             ngx_shmtx_unlock(&blacklist->shpool->mutex);
             return 0;
+        } else {
+            /* we found the node but it's not ref-linked to this request. Link it to the request */
+            r->ip_blacklist_node = node;
+            node->timeout = ngx_time() + imcf->timeout;
+            node->ref++;
+            ngx_http_ip_blacklist_request_cleanup_init(r);
         }
     }
 
@@ -1046,10 +1052,8 @@ ngx_http_ip_blacklist_update(ngx_http_request_t *r,
                             imcf->buf_len, (char *)imcf->syscmd.data, addr);
 
                     if (0 == system((char *)imcf->buf)) {
-                        /* delete the node if system command had success */
+                        /* mark the node for deleting if system command had success */
                         node->timed = 1;
-                        node->ref++;
-                        ngx_http_ip_blacklist_request_cleanup_init(r);
                         ret = 1;
                     } else ret = -1; /* sys command returned error */
                 } else ret = 0; /* no sys command provided */
