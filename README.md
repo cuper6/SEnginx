@@ -11,18 +11,6 @@ SEnginx wiki site: http://senginx.ru
 Features
 --------
 * All features of original nginx 1.18.0, you can find more at: http://nginx.org/en/docs/
-* Application Delivery
-    * TCP Proxy and Load Balancing
-    * Enhanced "if" Direcitve in Rewrite Module
-    * Dynamic DNS Resolve in Upstream
-    * Proxy HTTPS Client Certificate
-    * Load Balancing Algorithm
-        * Fastest Load Balancing Algorithm
-        * Fair Load Balancing Alogorithm
-    * Session Persistence
-    * Caching Based on MIME Type
-    * Server Health Monitor
-    * Statistics for Traffic and Attacks
 * Web Security
     * IP Access Behavior Module
     * Conditional limit_req module
@@ -42,6 +30,18 @@ Features
         * Evading Tricks
     * Secure Session Mechanism
     * NetEye Security Layer
+* Application Delivery
+    * TCP Proxy and Load Balancing
+    * Enhanced "if" Direcitve in Rewrite Module
+    * Dynamic DNS Resolve in Upstream
+    * Proxy HTTPS Client Certificate
+    * Load Balancing Algorithm
+        * Fastest Load Balancing Algorithm
+        * Fair Load Balancing Alogorithm
+    * Session Persistence
+    * Caching Based on MIME Type
+    * Server Health Monitor
+    * Statistics for Traffic and Attacks
 * 3rd-party modules for nginx
     * ngx_headers_more
     * ngx_http_lua_module
