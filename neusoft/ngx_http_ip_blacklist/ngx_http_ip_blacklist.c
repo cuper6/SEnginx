@@ -983,7 +983,6 @@ ngx_http_ip_blacklist_update(ngx_http_request_t *r,
 
                     if (ngx_http_ip_blacklist_modules[i] == module) {
                         node->counts[i].count++;
-                        break;
                     }
                 }
             }
