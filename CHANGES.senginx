@@ -1,3 +1,15 @@
+====
+Note: Changes with SEnginx Pro see at the file CHANGES.senginxPro 
+====
+
+Changes with senginx 1.8.4                                      6 May 2022
+
+    *) Fixed: In some cases existed ip_blacklist node might not be attached to the new request resulting incorrect ref-cleaning.   
+
+    *) Cnahge: after blocking ip_blacklist node in sys mode the node is deleted (marked as expired) after successfull calling the system command. 
+
+    *) Fixed: ip_blacklist: in some cases new node counters may be initialized for not all the calling modules. This may result missing some attacks.
+
 Changes with senginx 1.8.3                                      15 Feb 2022
 
     *) Bugfix: coredump in ngx_http_whitelist: sometimes ngx_http_wl_resolve_addr_handler is called after r->pool already destroyed in the ngx_http_free_request. 
