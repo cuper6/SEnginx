@@ -1,0 +1,23 @@
+Changes with senginx Pro 1.10.0                                      15 May 2022
+
+    *) Feature (Pro): the "ip_blacklist_use_remote_addr" directive.
+
+    *) Feature (Pro): the "robot_mitigation_force_update_blacklist" directive.
+
+    *) Change (Pro): ip_blacklist: If IP address is blocked in "sys" mode, it also blocked for some time in "local" mode to reject all other concurrent requests from opened connection.
+
+    *) Change (Pro): ip_blacklist_timeout and ip_blacklist_ttl directives now could be set at server or location config. Each blacklist node now have own ttl and timeout values based on corresponding config values of the location where node was created on calling ip_blacklist module.
+
+    *) Feature (Pro): Second argument (timeout) may be passed to the system command (ip_blacklist_syscmd directive).
+
+    *) Change (Pro): robot_mitigation: extra test of the Content-type value for POST request. Prevent ddos with incorrect POST requests.
+
+    *) Change (Pro): The ip_blackist nodes are not linked to the requests anymore because in some cases it leads to the "dead" expired nodes with not null ref count.
+		Now the expired nodes are deleted only by blacklist manager on timer.
+
+    *) Change (Pro): If the client successfully passed the robot mitigation test, the corresponding blacklist counter is decreased immediately. 
+		This prevents banning the humans under some configs.
+
+    *) Feature (Pro): robot_mitigation info level log.
+
+    *) Fixed: ip_blacklist: in some cases new node counters may be initialized for not all the calling modules. This may result missing some attacks.
