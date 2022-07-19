@@ -5,6 +5,9 @@ SEnginx
 SEnginx (Security Enhanced Nginx) is a variant of nginx - the famous HTTP and reverse proxy server. It introduces web security features into original nginx and makes improvements on application delivery functionality. SEnginx inherit all original features from nginx and is compatible with nginx's configuration, besides SEnginx has also bundled some handy third party modules.
 
 SEnginx open source project was originally launched by Neusoft Corporation. Since 2021 SEnginx is developed at new SEnginx GitHub repository because Neusoft project was abandoned at 2017.
+ 
+SEnginx is based on nginx 1.18.0.
+
 SEnginx is free.
 
 SEnginx wiki site: http://senginx.ru
@@ -12,11 +15,14 @@ SEnginx wiki site: http://senginx.ru
 SEnginx Pro
 =======
 SEnginx Pro (http://senginx.ru/en/senginxpro.html) is an evolution of SEnginx with some advanced security functions and options for andi-ddos protection. SEnginx Pro also gets nginx major updates in the first place.
+
+SEnginx Pro is based on nginx 1.22.0.
+
 SEnginx Pro is not free. 
 
 Features
 --------
-* All features of original nginx 1.18.0, you can find more at: http://nginx.org/en/docs/
+* All features of original nginx, you can find more at: http://nginx.org/en/docs/
 * Web Security
     * IP Access Behavior Module
     * Conditional limit_req module
