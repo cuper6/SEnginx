@@ -1,3 +1,7 @@
+Changes with senginx Pro 1.10.1                                      19 July 2022
+
+    *) Feature: upgrade to original nginx 1.22.0.
+
 Changes with senginx Pro 1.10.0                                      15 May 2022
 
     *) Feature (Pro): the "ip_blacklist_use_remote_addr" directive.
