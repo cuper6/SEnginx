@@ -236,16 +236,6 @@ static ngx_command_t ngx_http_naxsi_commands[] = {
     0,
     NULL },
 
-#if (NGX_HTTP_IP_BLACKLIST)
-  /* senginx ip blacklist*/
-  { ngx_string("naxsi_blacklist"),
-    NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
-    ngx_conf_set_num_slot,
-    NGX_HTTP_LOC_CONF_OFFSET,
-    offsetof(ngx_http_naxsi_loc_conf_t, blocked_count),
-    NULL },
-#endif
-
   ngx_null_command
 };
 
@@ -284,13 +274,6 @@ ngx_http_naxsi_create_main_conf(ngx_conf_t* cf)
 {
   ngx_http_naxsi_main_conf_t* mc;
 
-#if (NGX_HTTP_IP_BLACKLIST)
-    /* senginx ip blacklist */
-    if (ngx_http_ip_blacklist_register_mod(&ngx_http_naxsi_module) != NGX_OK) {
-        return (NGX_CONF_ERROR);
-    }
-#endif
-
   mc = ngx_pcalloc(cf->pool, sizeof(ngx_http_naxsi_main_conf_t));
   if (!mc)
     return (NGX_CONF_ERROR); /*LCOV_EXCL_LINE*/
@@ -311,9 +294,7 @@ ngx_http_naxsi_create_loc_conf(ngx_conf_t* cf)
     return NULL;
 
   ngx_http_wl_init_vars(&conf->whitelist); /* senginx */
-#if (NGX_HTTP_IP_BLACKLIST)
-  conf->blocked_count = NGX_CONF_UNSET; /* senginx ip blacklist */
-#endif
+
   return (conf);
 }
 
@@ -1021,15 +1002,6 @@ ngx_http_naxsi_access_handler(ngx_http_request_t* r)
   clock_t                    start, end;
   ngx_http_variable_value_t* lookup;
 
-#if (NGX_HTTP_IP_BLACKLIST)
-/* senginx ip blacklist */
-    ngx_str_t                          src_addr_text;
-#if (NGX_HTTP_X_FORWARDED_FOR) 
-    ngx_array_t                       *xfwd;
-    ngx_table_elt_t                  **h;
-#endif
-#endif
-
   static ngx_str_t learning_flag         = ngx_string(RT_LEARNING);
   static ngx_str_t enable_flag           = ngx_string(RT_ENABLE);
   static ngx_str_t post_action_flag      = ngx_string(RT_POST_ACTION);
@@ -1375,27 +1347,6 @@ ngx_http_naxsi_access_handler(ngx_http_request_t* r)
       rc = ngx_http_output_forbidden_page(ctx, r);
       // nothing:      return (NGX_OK);
       // redirect : return (NGX_HTTP_OK);
-
-#if (NGX_HTTP_IP_BLACKLIST)
-/* senginx ip blacklist */
-#if (NGX_HTTP_X_FORWARDED_FOR)
-        if (r->headers_in.x_forwarded_for.nelts > 0) {
-            xfwd = &r->headers_in.x_forwarded_for;
-            h = xfwd->elts;
-            src_addr_text = h[0]->value;
-        } else
-#endif
-        {
-            src_addr_text = r->connection->addr_text;
-        }
-
-    if (cf->blocked_count > 0 && !cf->learning) {
-        if (ngx_http_ip_blacklist_update(r, &src_addr_text, cf->blocked_count + 1, &ngx_http_naxsi_module) == 1) {
-            return NGX_ERROR;
-        }
-    }
-#endif
-
       return rc;
     } else if (ctx->log) {
       rc = ngx_http_output_forbidden_page(ctx, r);
