@@ -2,6 +2,10 @@
 Note: Changes with SEnginx Pro see at the file CHANGES.senginxPro 
 ====
 
+Changes with senginx 1.8.5                                      3 August 2022
+
+    *) Fixed: limit_req directive in senginx can accept up to 5 parameters.
+
 Changes with senginx 1.8.4                                      6 May 2022
 
     *) Fixed: In some cases existed ip_blacklist node might not be attached to the new request resulting incorrect ref-cleaning.   
