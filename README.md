@@ -16,7 +16,7 @@ SEnginx Pro
 =======
 SEnginx Pro (http://senginx.ru/en/senginxpro.html) is an evolution of SEnginx with some advanced security functions and options for andi-ddos protection. SEnginx Pro also gets nginx major updates in the first place.
 
-SEnginx Pro is based on nginx 1.22.0.
+SEnginx Pro is based on nginx 1.22.1.
 
 SEnginx Pro is not free. 
 
