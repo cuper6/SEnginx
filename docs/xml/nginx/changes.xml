@@ -5,35 +5,3477 @@
 <change_log title="nginx">
 
 
-<changes ver="1.10.2" date="18.10.2016">
+<changes ver="1.18.0" date="2020-04-21">
+
+<change>
+<para lang="ru">
+Стабильная ветка 1.18.x.
+</para>
+<para lang="en">
+1.18.x stable branch.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.10" date="2020-04-14">
+
+<change type="feature">
+<para lang="ru">
+директива auth_delay.
+</para>
+<para lang="en">
+the "auth_delay" directive.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.9" date="2020-03-03">
 
 <change type="change">
 <para lang="ru">
-при попытке запросить виртуальный сервер,
-отличающийся от согласованного в процессе SSL handshake,
-теперь возвращается ответ "421 Misdirected Request";
-это улучшает совместимость с некоторыми HTTP/2-клиентами
-в случае использования клиентских сертификатов.
+теперь nginx не разрешает
+несколько строк "Host" в заголовке запроса.
 </para>
 <para lang="en">
-the "421 Misdirected Request" response now used
-when rejecting requests to a virtual server
-different from one negotiated during an SSL handshake;
-this improves interoperability with some HTTP/2 clients
-when using client certificates.
+now nginx does not allow
+several "Host" request header lines.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx игнорировал дополнительные
+строки "Transfer-Encoding" в заголовке запроса.
+</para>
+<para lang="en">
+nginx ignored additional
+"Transfer-Encoding" request header lines.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+утечки сокетов при использовании HTTP/2.
+</para>
+<para lang="en">
+socket leak when using HTTP/2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если использовался OCSP stapling.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if OCSP stapling was used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_mp4_module.
+</para>
+<para lang="en">
+in the ngx_http_mp4_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при перенаправлении ошибок с кодом 494 с помощью директивы error_page
+nginx возвращал ответ с кодом 494 вместо 400.
+</para>
+<para lang="en">
+nginx used status code 494 instead of 400
+if errors with code 494 were redirected with the "error_page" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+утечки сокетов при использовании подзапросов в модуле njs и директивы aio.
+</para>
+<para lang="en">
+socket leak when using subrequests in the njs module and the "aio" directive.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.8" date="2020-01-21">
+
+<change type="feature">
+<para lang="ru">
+директива grpc_pass поддерживает переменные.
+</para>
+<para lang="en">
+variables support in the "grpc_pass" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при обработке pipelined-запросов по SSL-соединению мог произойти таймаут;
+ошибка появилась в 1.17.5.
+</para>
+<para lang="en">
+a timeout might occur while handling pipelined requests in an SSL connection;
+the bug had appeared in 1.17.5.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве debug_points при использовании HTTP/2.<br/>
+Спасибо Даниилу Бондареву.
+</para>
+<para lang="en">
+in the "debug_points" directive when using HTTP/2.<br/>
+Thanks to Daniil Bondarev.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.7" date="2019-12-24">
+
+<change type="bugfix">
+<para lang="ru">
+на старте или во время переконфигурации мог произойти segmentation fault,
+если в конфигурации использовалась
+директива rewrite с пустой строкой замены.
+</para>
+<para lang="en">
+a segmentation fault might occur on start or during reconfiguration
+if the "rewrite" directive with an empty replacement string
+was used in the configuration.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если директива break использовалась совместно с директивой alias
+или директивой proxy_pass с URI.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if the "break" directive was used with the "alias" directive
+or with the "proxy_pass" directive with a URI.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+строка Location заголовка ответа могла содержать мусор,
+если URI запроса был изменён на URI, содержащий нулевой символ.
+</para>
+<para lang="en">
+the "Location" response header line might contain garbage
+if the request URI was rewritten to the one containing a null character.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при возврате перенаправлений с помощью директивы error_page
+запросы с телом обрабатывались некорректно;
+ошибка появилась в 0.7.12.
+</para>
+<para lang="en">
+requests with bodies were handled incorrectly
+when returning redirections with the "error_page" directive;
+the bug had appeared in 0.7.12.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+утечки сокетов при использовании HTTP/2.
+</para>
+<para lang="en">
+socket leak when using HTTP/2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при обработке pipelined-запросов по SSL-соединению мог произойти таймаут;
+ошибка появилась в 1.17.5.
+</para>
+<para lang="en">
+a timeout might occur while handling pipelined requests in an SSL connection;
+the bug had appeared in 1.17.5.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_dav_module.
+</para>
+<para lang="en">
+in the ngx_http_dav_module.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.6" date="2019-11-19">
+
+<change type="feature">
+<para lang="ru">
+переменные $proxy_protocol_server_addr и $proxy_protocol_server_port.
+</para>
+<para lang="en">
+the $proxy_protocol_server_addr and $proxy_protocol_server_port variables.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива limit_conn_dry_run.
+</para>
+<para lang="en">
+the "limit_conn_dry_run" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+переменные $limit_req_status и $limit_conn_status.
+</para>
+<para lang="en">
+the $limit_req_status and $limit_conn_status variables.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.5" date="2019-10-22">
+
+<change type="feature">
+<para lang="ru">
+теперь nginx использует вызов ioctl(FIONREAD), если он доступен,
+чтобы избежать чтения из быстрого соединения в течение долгого времени.
+</para>
+<para lang="en">
+now nginx uses ioctl(FIONREAD), if available,
+to avoid reading from a fast connection for a long time.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+неполные закодированные символы в конце URI запроса игнорировались.
+</para>
+<para lang="en">
+incomplete escaped characters at the end of the request URI were ignored.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+"/." и "/.." в конце URI запроса не нормализовывались.
+</para>
+<para lang="en">
+"/." and "/.." at the end of the request URI were not normalized.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве merge_slashes.
+</para>
+<para lang="en">
+in the "merge_slashes" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве ignore_invalid_headers.<br/>
+Спасибо Alan Kemp.
+</para>
+<para lang="en">
+in the "ignore_invalid_headers" directive.<br/>
+Thanks to Alan Kemp.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался с MinGW-w64 gcc 8.1 и новее.
+</para>
+<para lang="en">
+nginx could not be built with MinGW-w64 gcc 8.1 or newer.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.4" date="2019-09-24">
+
+<change type="change">
+<para lang="ru">
+улучшено детектирование некорректного поведения клиентов в HTTP/2.
+</para>
+<para lang="en">
+better detection of incorrect client behavior in HTTP/2.
 </para>
 </change>
 
 <change type="change">
 <para lang="ru">
-HTTP/2-клиенты теперь могут сразу присылать тело запроса;
-директива http2_body_preread_size позволяет указать размер буфера, который
-будет использоваться до того, как nginx начнёт читать тело.
+в обработке непрочитанного тела запроса
+при возврате ошибок в HTTP/2.
 </para>
 <para lang="en">
-HTTP/2 clients can now start sending request body immediately;
-the "http2_body_preread_size" directive controls size of the buffer used
-before nginx will start reading client request body.
+in handling of not fully read client request body
+when returning errors in HTTP/2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива worker_shutdown_timeout могла не работать
+при использовании HTTP/2.
+</para>
+<para lang="en">
+the "worker_shutdown_timeout" directive might not work
+when using HTTP/2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании HTTP/2 и директивы proxy_request_buffering
+в рабочем процессе мог произойти segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+when using HTTP/2 and the "proxy_request_buffering" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+на Windows при использовании SSL
+уровень записи в лог ошибки ECONNABORTED был "crit" вместо "error".
+</para>
+<para lang="en">
+the ECONNABORTED error log level was "crit" instead of "error"
+on Windows when using SSL.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx игнорировал лишние данные при использовании chunked transfer encoding.
+</para>
+<para lang="en">
+nginx ignored extra data when using chunked transfer encoding.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+если использовалась директива return и
+при чтении тела запроса возникала ошибка,
+nginx всегда возвращал ошибку 500.
+</para>
+<para lang="en">
+nginx always returned the 500 error
+if the "return" directive was used
+and an error occurred during reading client request body.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке ошибок выделения памяти.
+</para>
+<para lang="en">
+in memory allocation error handling.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.3" date="2019-08-13">
+
+<change type="security">
+<para lang="ru">
+при использовании HTTP/2 клиент мог вызвать
+чрезмерное потребление памяти и ресурсов процессора
+(CVE-2019-9511, CVE-2019-9513, CVE-2019-9516).
+</para>
+<para lang="en">
+when using HTTP/2 a client might cause
+excessive memory consumption and CPU usage
+(CVE-2019-9511, CVE-2019-9513, CVE-2019-9516).
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании сжатия в логах могли появляться сообщения "zero size buf";
+ошибка появилась в 1.17.2.
+</para>
+<para lang="en">
+"zero size buf" alerts might appear in logs when using gzipping;
+the bug had appeared in 1.17.2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы resolver в SMTP прокси-сервере
+в рабочем процессе мог произойти segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if the "resolver" directive was used in SMTP proxy.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.2" date="2019-07-23">
+
+<change type="change">
+<para lang="ru">
+минимальная поддерживаемая версия zlib&mdash;1.2.0.4.<br/>
+Спасибо Илье Леошкевичу.
+</para>
+<para lang="en">
+minimum supported zlib version is 1.2.0.4.<br/>
+Thanks to Ilya Leoshkevich.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+метод $r->internal_redirect() встроенного перла
+теперь ожидает закодированный URI.
+</para>
+<para lang="en">
+the $r->internal_redirect() embedded perl method
+now expects escaped URIs.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь с помощью метода $r->internal_redirect() встроенного перла
+можно перейти в именованный location.
+</para>
+<para lang="en">
+it is now possible to switch to a named location
+using the $r->internal_redirect() embedded perl method.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке ошибок во встроенном перле.
+</para>
+<para lang="en">
+in error handling in embedded perl.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+на старте или во время переконфигурации мог произойти segmentation fault,
+если в конфигурации использовалось значение hash bucket size больше 64 килобайт.
+</para>
+<para lang="en">
+a segmentation fault might occur on start or during reconfiguration
+if hash bucket size larger than 64 kilobytes was used in the configuration.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании методов обработки соединений select, poll и /dev/poll
+nginx мог нагружать процессор во время небуферизованного проксирования
+и при проксировании WebSocket-соединений.
+</para>
+<para lang="en">
+nginx might hog CPU during unbuffered proxying
+and when proxying WebSocket connections
+if the select, poll, or /dev/poll methods were used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_xslt_filter_module.
+</para>
+<para lang="en">
+in the ngx_http_xslt_filter_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_ssi_filter_module.
+</para>
+<para lang="en">
+in the ngx_http_ssi_filter_module.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.1" date="2019-06-25">
+
+<change type="feature">
+<para lang="ru">
+директива limit_req_dry_run.
+</para>
+<para lang="en">
+the "limit_req_dry_run" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+при использовании директивы hash в блоке upstream
+пустой ключ хэширования теперь приводит к переключению
+на round-robin балансировку.<br/>
+Спасибо Niklas Keller.
+</para>
+<para lang="en">
+when using the "hash" directive inside the "upstream" block
+an empty hash key now triggers round-robin balancing.<br/>
+Thanks to Niklas Keller.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если использовалось кэширование и директива image_filter,
+а ошибки с кодом 415 перенаправлялись с помощью директивы error_page;
+ошибка появилась в 1.11.10.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if caching was used along with the "image_filter" directive,
+and errors with code 415 were redirected with the "error_page" directive;
+the bug had appeared in 1.11.10.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если использовался встроенный перл;
+ошибка появилась в 1.7.3.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if embedded perl was used;
+the bug had appeared in 1.7.3.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.17.0" date="2019-05-21">
+
+<change type="feature">
+<para lang="ru">
+директивы limit_rate и limit_rate_after поддерживают переменные.
+</para>
+<para lang="en">
+variables support in the "limit_rate" and "limit_rate_after" directives.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы proxy_upload_rate и proxy_download_rate в модуле stream
+поддерживают переменные.
+</para>
+<para lang="en">
+variables support
+in the "proxy_upload_rate" and "proxy_download_rate" directives
+in the stream module.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+минимальная поддерживаемая версия OpenSSL&mdash;0.9.8.
+</para>
+<para lang="en">
+minimum supported OpenSSL version is 0.9.8.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+теперь postpone-фильтр собирается всегда.
+</para>
+<para lang="en">
+now the postpone filter is always built.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива include не работала в блоках if и limit_except.
+</para>
+<para lang="en">
+the "include" directive did not work inside the "if" and "limit_except" blocks.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке byte ranges.
+</para>
+<para lang="en">
+in byte ranges processing.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.12" date="2019-04-16">
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если в директивах ssl_certificate или ssl_certificate_key
+использовались переменные
+и был включён OCSP stapling.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if variables were used
+in the "ssl_certificate" or "ssl_certificate_key" directives
+and OCSP stapling was enabled.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.11" date="2019-04-09">
+
+<change type="bugfix">
+<para lang="ru">
+в директиве ssl_stapling_file на Windows.
+</para>
+<para lang="en">
+in the "ssl_stapling_file" directive on Windows.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.10" date="2019-03-26">
+
+<change type="change">
+<para lang="ru">
+теперь при использовании имени хоста в директиве listen
+nginx создаёт listen-сокеты для всех адресов,
+соответствующих этому имени
+(ранее использовался только первый адрес).
+</para>
+<para lang="en">
+when using a hostname in the "listen" directive
+nginx now creates listening sockets
+for all addresses the hostname resolves to
+(previously, only the first address was used).
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+диапазоны портов в директиве listen.
+</para>
+<para lang="en">
+port ranges in the "listen" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+возможность загрузки SSL-сертификатов и секретных ключей из переменных.
+</para>
+<para lang="en">
+loading of SSL certificates and secret keys from variables.
+</para>
+</change>
+
+<change type="workaround">
+<para lang="ru">
+переменная $ssl_server_name могла быть пустой
+при использовании OpenSSL 1.1.1.
+</para>
+<para lang="en">
+the $ssl_server_name variable might be empty
+when using OpenSSL 1.1.1.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx/Windows не собирался с Visual Studio 2015 и новее;
+ошибка появилась в 1.15.9.
+</para>
+<para lang="en">
+nginx/Windows could not be built with Visual Studio 2015 or newer;
+the bug had appeared in 1.15.9.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.9" date="2019-02-26">
+
+<change type="feature">
+<para lang="ru">
+директивы ssl_certificate и ssl_certificate_key
+поддерживают переменные.
+</para>
+<para lang="en">
+variables support
+in the "ssl_certificate" and "ssl_certificate_key" directives.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+метод poll теперь доступен на Windows
+при использовании Windows Vista и новее.
+</para>
+<para lang="en">
+the "poll" method is now available on Windows
+when using Windows Vista or newer.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+если при использовании метода select на Windows
+происходила ошибка при установлении соединения с бэкендом,
+nginx ожидал истечения таймаута на установление соединения.
+</para>
+<para lang="en">
+if the "select" method was used on Windows
+and an error occurred while establishing a backend connection,
+nginx waited for the connection establishment timeout to expire.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директивы proxy_upload_rate и proxy_download_rate
+в модуле stream
+работали некорректно при проксировании UDP-пакетов.
+</para>
+<para lang="en">
+the "proxy_upload_rate" and "proxy_download_rate" directives
+in the stream module
+worked incorrectly when proxying UDP datagrams.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.8" date="2018-12-25">
+
+<change type="feature">
+<para lang="ru">
+переменная $upstream_bytes_sent.<br/>
+Спасибо Piotr Sikora.
+</para>
+<para lang="en">
+the $upstream_bytes_sent variable.<br/>
+Thanks to Piotr Sikora.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+новые директивы в скриптах подсветки синтаксиса для vim.<br/>
+Спасибо Геннадию Махомеду.
+</para>
+<para lang="en">
+new directives in vim syntax highlighting scripts.<br/>
+Thanks to Gena Makhomed.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве proxy_cache_background_update.
+</para>
+<para lang="en">
+in the "proxy_cache_background_update" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве geo при использовании unix domain listen-сокетов.
+</para>
+<para lang="en">
+in the "geo" directive when using unix domain listen sockets.
+</para>
+</change>
+
+<change type="workaround">
+<para lang="ru">
+при использовании директивы ssl_early_data с OpenSSL
+в логах могли появляться сообщения
+"ignoring stale global SSL error ... bad length".
+</para>
+<para lang="en">
+the "ignoring stale global SSL error ... bad length"
+alerts might appear in logs
+when using the "ssl_early_data" directive with OpenSSL.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в nginx/Windows.
+</para>
+<para lang="en">
+in nginx/Windows.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_autoindex_module на 32-битных платформах.
+</para>
+<para lang="en">
+in the ngx_http_autoindex_module on 32-bit platforms.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.7" date="2018-11-27">
+
+<change type="feature">
+<para lang="ru">
+директива proxy_requests в модуле stream.
+</para>
+<para lang="en">
+the "proxy_requests" directive in the stream module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр "delay" директивы "limit_req".<br/>
+Спасибо Владиславу Шабанову и Петру Щучкину.
+</para>
+<para lang="en">
+the "delay" parameter of the "limit_req" directive.<br/>
+Thanks to Vladislav Shabanov and Peter Shchuchkin.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+утечки памяти в случае ошибок при переконфигурации.
+</para>
+<para lang="en">
+memory leak on errors during reconfiguration.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в переменных $upstream_response_time, $upstream_connect_time и
+$upstream_header_time.
+</para>
+<para lang="en">
+in the $upstream_response_time, $upstream_connect_time, and
+$upstream_header_time variables.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если использовался модуль ngx_http_mp4_module на 32-битных платформах.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if the ngx_http_mp4_module was used on 32-bit platforms.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.6" date="2018-11-06">
+
+<change type="security">
+<para lang="ru">
+при использовании HTTP/2 клиент мог вызвать
+чрезмерное потреблению памяти (CVE-2018-16843)
+и ресурсов процессора (CVE-2018-16844).
+</para>
+<para lang="en">
+when using HTTP/2 a client might cause
+excessive memory consumption (CVE-2018-16843)
+and CPU usage (CVE-2018-16844).
+</para>
+</change>
+
+<change type="security">
+<para lang="ru">
+при обработке специально созданного mp4-файла модулем ngx_http_mp4_module
+содержимое памяти рабочего процесса могло быть отправлено клиенту
+(CVE-2018-16845).
+</para>
+<para lang="en">
+processing of a specially crafted mp4 file with the ngx_http_mp4_module
+might result in worker process memory disclosure
+(CVE-2018-16845).
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы proxy_socket_keepalive, fastcgi_socket_keepalive,
+grpc_socket_keepalive, memcached_socket_keepalive,
+scgi_socket_keepalive и uwsgi_socket_keepalive.
+</para>
+<para lang="en">
+the "proxy_socket_keepalive", "fastcgi_socket_keepalive",
+"grpc_socket_keepalive", "memcached_socket_keepalive",
+"scgi_socket_keepalive", and "uwsgi_socket_keepalive" directives.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+если nginx был собран с OpenSSL 1.1.0, а использовался с OpenSSL 1.1.1,
+протокол TLS 1.3 всегда был разрешён.
+</para>
+<para lang="en">
+if nginx was built with OpenSSL 1.1.0 and used with OpenSSL 1.1.1,
+the TLS 1.3 protocol was always enabled.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при работе с gRPC-бэкендами могло расходоваться большое количество памяти.
+</para>
+<para lang="en">
+working with gRPC backends might result in excessive memory consumption.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.5" date="2018-10-02">
+
+<change type="bugfix">
+<para lang="ru">
+при использовании OpenSSL 1.1.0h и новее
+в рабочем процессе мог произойти segmentation fault;
+ошибка появилась в 1.15.4.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+when using OpenSSL 1.1.0h or newer;
+the bug had appeared in 1.15.4.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+незначительных потенциальных ошибок.
+</para>
+<para lang="en">
+of minor potential bugs.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.4" date="2018-09-25">
+
+<change type="feature">
+<para lang="ru">
+теперь директиву ssl_early_data можно использовать с OpenSSL.
+</para>
+<para lang="en">
+now the "ssl_early_data" directive can be used with OpenSSL.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_uwsgi_module.<br/>
+Спасибо Chris Caputo.
+</para>
+<para lang="en">
+in the ngx_http_uwsgi_module.<br/>
+Thanks to Chris Caputo.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+соединения к некоторым gRPC-бэкендам могли не кэшироваться
+при использовании директивы keepalive.
+</para>
+<para lang="en">
+connections with some gRPC backends might not be cached
+when using the "keepalive" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы error_page для перенаправления ошибок,
+возникающих на ранних этапах обработки запроса,
+в частности ошибок с кодом 400,
+могла происходить утечка сокетов.
+</para>
+<para lang="en">
+a socket leak might occur
+when using the "error_page" directive
+to redirect early request processing errors,
+notably errors with code 400.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива return при возврате ошибок не изменяла код ответа,
+если запрос был перенаправлен с помощью директивы error_page.
+</para>
+<para lang="en">
+the "return" directive did not change the response code when returning errors
+if the request was redirected by the "error_page" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+стандартные сообщения об ошибках и ответы модуля ngx_http_autoindex_module
+содержали атрибут bgcolor, что могло приводить к их некорректному отображению
+при использовании пользовательских настроек цветов в браузерах.<br/>
+Спасибо Nova DasSarma.
+</para>
+<para lang="en">
+standard error pages and responses of the ngx_http_autoindex_module module
+used the "bgcolor" attribute, and might be displayed incorrectly when using
+custom color settings in browsers.<br/>
+Thanks to Nova DasSarma.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+уровень логгирования ошибок SSL "no suitable key share" и
+"no suitable signature algorithm"
+понижен с уровня crit до info.
+</para>
+<para lang="en">
+the logging level of the "no suitable key share" and
+"no suitable signature algorithm" SSL errors
+has been lowered from "crit" to "info".
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.3" date="2018-08-28">
+
+<change type="feature">
+<para lang="ru">
+теперь TLSv1.3 можно использовать с BoringSSL.
+</para>
+<para lang="en">
+now TLSv1.3 can be used with BoringSSL.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива ssl_early_data,
+сейчас доступна при использовании BoringSSL.
+</para>
+<para lang="en">
+the "ssl_early_data" directive,
+currently available with BoringSSL.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы keepalive_timeout и keepalive_requests
+в блоке upstream.
+</para>
+<para lang="en">
+the "keepalive_timeout" and "keepalive_requests" directives
+in the "upstream" block.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+модуль ngx_http_dav_module
+при копировании файла поверх существующего файла с помощью метода COPY
+не обнулял целевой файл.
+</para>
+<para lang="en">
+the ngx_http_dav_module
+did not truncate destination file when copying a file over an existing one
+with the COPY method.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+модуль ngx_http_dav_module
+при перемещении файла между файловыми системами с помощью метода MOVE
+устанавливал нулевые права доступа на результирующий файл
+и не сохранял время изменения файла.
+</para>
+<para lang="en">
+the ngx_http_dav_module
+used zero access rights on the destination file
+and did not preserve file modification time
+when moving a file between different file systems with the MOVE method.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+модуль ngx_http_dav_module
+при копировании файла с помощью метода COPY
+для результирующего файла использовал права доступа по умолчанию.
+</para>
+<para lang="en">
+the ngx_http_dav_module
+used default access rights
+when copying a file with the COPY method.
+</para>
+</change>
+
+<change type="workaround">
+<para lang="ru">
+некоторые клиенты могли не работать при использовании HTTP/2;
+ошибка появилась в 1.13.5.
+</para>
+<para lang="en">
+some clients might not work when using HTTP/2;
+the bug had appeared in 1.13.5.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался с LibreSSL 2.8.0.
+</para>
+<para lang="en">
+nginx could not be built with LibreSSL 2.8.0.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.2" date="2018-07-24">
+
+<change type="feature">
+<para lang="ru">
+переменная $ssl_preread_protocol
+в модуле ngx_stream_ssl_preread_module.
+</para>
+<para lang="en">
+the $ssl_preread_protocol variable
+in the ngx_stream_ssl_preread_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь при использовании директивы reset_timedout_connection
+nginx сбрасывает соединения, закрываемые с кодом 444.
+</para>
+<para lang="en">
+now when using the "reset_timedout_connection" directive
+nginx will reset connections being closed with the 444 code.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+уровень логгирования ошибок SSL "http request", "https proxy request",
+"unsupported protocol" и "version too low"
+понижен с уровня crit до info.
+</para>
+<para lang="en">
+a logging level of the "http request", "https proxy request",
+"unsupported protocol", and "version too low" SSL errors
+has been lowered from "crit" to "info".
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+запросы к DNS-серверу не отправлялись повторно,
+если при первой попытке отправки происходила ошибка.
+</para>
+<para lang="en">
+DNS requests were not resent
+if initial sending of a request failed.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+параметр reuseport директивы listen игнорировался,
+если количество рабочих процессов было задано после директивы listen.
+</para>
+<para lang="en">
+the "reuseport" parameter of the "listen" directive was ignored
+if the number of worker processes was specified after the "listen" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании OpenSSL 1.1.0 и новее
+директиву ssl_prefer_server_ciphers нельзя было выключить
+в виртуальном сервере, если она была включена в сервере по умолчанию.
+</para>
+<para lang="en">
+when using OpenSSL 1.1.0 or newer
+it was not possible to switch off "ssl_prefer_server_ciphers" in
+a virtual server if it was switched on in the default server.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+повторное использование SSL-сессий к бэкендам
+не работало с протоколом TLS 1.3.
+</para>
+<para lang="en">
+SSL session reuse with upstream servers
+did not work with the TLS 1.3 protocol.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.1" date="2018-07-03">
+
+<change type="feature">
+<para lang="ru">
+директива random в блоке upstream.
+</para>
+<para lang="en">
+the "random" directive inside the "upstream" block.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+улучшена производительность при использовании директив hash и ip_hash
+совместно с директивой zone.
+</para>
+<para lang="en">
+improved performance when using the "hash" and "ip_hash" directives
+with the "zone" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр reuseport директивы listen
+теперь использует SO_REUSEPORT_LB на FreeBSD 12.
+</para>
+<para lang="en">
+the "reuseport" parameter of the "listen" directive
+now uses SO_REUSEPORT_LB on FreeBSD 12.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+HTTP/2 server push не работал, если SSL терминировался прокси-сервером
+перед nginx'ом.
+</para>
+<para lang="en">
+HTTP/2 server push did not work if SSL was terminated by a proxy server
+in front of nginx.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива tcp_nopush всегда использовалась для соединений к бэкендам.
+</para>
+<para lang="en">
+the "tcp_nopush" directive was always used on backend connections.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при отправке сохранённого на диск тела запроса на gRPC-бэкенд
+могли возникать ошибки.
+</para>
+<para lang="en">
+sending a disk-buffered request body to a gRPC backend
+might fail.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.15.0" date="2018-06-05">
+
+<change type="change">
+<para lang="ru">
+директива "ssl" теперь считается устаревшей;
+вместо неё следует использовать параметр ssl директивы listen.
+</para>
+<para lang="en">
+the "ssl" directive is deprecated;
+the "ssl" parameter of the "listen" directive should be used instead.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+теперь при использовании директивы listen с параметром ssl
+nginx определяет отсутствие SSL-сертификатов при тестировании конфигурации.
+</para>
+<para lang="en">
+now nginx detects missing SSL certificates during configuration testing
+when using the "ssl" parameter of the "listen" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь модуль stream умеет обрабатывать
+несколько входящих UDP-пакетов от клиента в рамках одной сессии.
+</para>
+<para lang="en">
+now the stream module can handle
+multiple incoming UDP datagrams from a client within a single session.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве proxy_cache_valid
+можно было указать некорректный код ответа.
+</para>
+<para lang="en">
+it was possible to specify an incorrect response code
+in the "proxy_cache_valid" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался gcc 8.1.
+</para>
+<para lang="en">
+nginx could not be built by gcc 8.1.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+логгирование в syslog останавливалось при изменении локального IP-адреса.
+</para>
+<para lang="en">
+logging to syslog stopped on local IP address changes.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался компилятором clang, если был установлен CUDA SDK;
+ошибка появилась в 1.13.8.
+</para>
+<para lang="en">
+nginx could not be built by clang with CUDA SDK installed;
+the bug had appeared in 1.13.8.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании unix domain listen-сокетов на FreeBSD
+в процессе обновления исполняемого файла
+в логе могли появляться сообщения "getsockopt(TCP_FASTOPEN) ... failed".
+</para>
+<para lang="en">
+"getsockopt(TCP_FASTOPEN) ... failed" messages might appear in logs
+during binary upgrade
+when using unix domain listen sockets on FreeBSD.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался на Fedora 28 Linux.
+</para>
+<para lang="en">
+nginx could not be built on Fedora 28 Linux.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы limit_req
+заданная скорость обработки запросов могла не соблюдаться.
+</para>
+<para lang="en">
+request processing rate might exceed configured rate
+when using the "limit_req" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке адресов клиентов при использовании unix domain listen-сокетов
+для работы с датаграммами на Linux.
+</para>
+<para lang="en">
+in handling of client addresses when using unix domain listen sockets
+to work with datagrams on Linux.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке ошибок выделения памяти.
+</para>
+<para lang="en">
+in memory allocation error handling.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.12" date="2018-04-10">
+
+<change type="bugfix">
+<para lang="ru">
+при возврате большого ответа
+соединения с gRPC-бэкендами могли неожиданно закрываться.
+</para>
+<para lang="en">
+connections with gRPC backends might be closed unexpectedly
+when returning a large response.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.11" date="2018-04-03">
+
+<change type="feature">
+<para lang="ru">
+параметр proxy_protocol директивы listen
+теперь поддерживает протокол PROXY версии 2.
+</para>
+<para lang="en">
+the "proxy_protocol" parameter of the "listen" directive
+now supports the PROXY protocol version 2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался с OpenSSL 1.1.1 статически на Linux.
+</para>
+<para lang="en">
+nginx could not be built with OpenSSL 1.1.1 statically on Linux.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в параметрах http_404, http_500 и им подобных
+директивы proxy_next_upstream.
+</para>
+<para lang="en">
+in the "http_404", "http_500", etc. parameters
+of the "proxy_next_upstream" directive.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.10" date="2018-03-20">
+
+<change type="feature">
+<para lang="ru">
+теперь параметр set в SSI-директиве include
+позволяет сохранять в переменную любые ответы;
+максимальный размер ответа задаётся директивой subrequest_output_buffer_size.
+</para>
+<para lang="en">
+the "set" parameter of the "include" SSI directive now allows
+writing arbitrary responses to a variable;
+the "subrequest_output_buffer_size" directive defines maximum response size.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь nginx использует вызов clock_gettime(CLOCK_MONOTONIC), если он доступен,
+что позволяет избежать некорректного срабатывания таймаутов
+при изменениях системного времени.
+</para>
+<para lang="en">
+now nginx uses clock_gettime(CLOCK_MONOTONIC) if available,
+to avoid timeouts being incorrectly triggered
+on system time changes.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр "escape=none" директивы log_format.<br/>
+Спасибо Johannes Baiter и Calin Don.
+</para>
+<para lang="en">
+the "escape=none" parameter of the "log_format" directive.<br/>
+Thanks to Johannes Baiter and Calin Don.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+переменная $ssl_preread_alpn_protocols
+в модуле ngx_stream_ssl_preread_module.
+</para>
+<para lang="en">
+the $ssl_preread_alpn_protocols variable
+in the ngx_stream_ssl_preread_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_http_grpc_module.
+</para>
+<para lang="en">
+the ngx_http_grpc_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке ошибок выделения памяти в директиве geo.
+</para>
+<para lang="en">
+in memory allocation error handling in the "geo" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании переменных в директиве auth_basic_user_file
+в лог мог выводиться символ '\0'.<br/>
+Спасибо Вадиму Филимонову.
+</para>
+<para lang="en">
+when using variables in the "auth_basic_user_file" directive
+a null character might appear in logs.<br/>
+Thanks to Vadim Filimonov.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.9" date="2018-02-20">
+
+<change type="feature">
+<para lang="ru">
+поддержка HTTP/2 server push;
+директивы http2_push и http2_push_preload.
+</para>
+<para lang="en">
+HTTP/2 server push support;
+the "http2_push" and "http2_push_preload" directives.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании кэша
+в логах могли появляться сообщения "header already sent";
+ошибка появилась в 1.9.13.
+</para>
+<para lang="en">
+"header already sent" alerts might appear in logs
+when using cache;
+the bug had appeared in 1.9.13.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы ssl_verify_client
+в рабочем процессе мог произойти segmentation fault,
+если в виртуальном сервере не был указан SSL-сертификат.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if the "ssl_verify_client" directive was used
+and no SSL certificate was specified in a virtual server.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_v2_module.
+</para>
+<para lang="en">
+in the ngx_http_v2_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_dav_module.
+</para>
+<para lang="en">
+in the ngx_http_dav_module.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.8" date="2017-12-26">
+
+<change type="feature">
+<para lang="ru">
+теперь при использовании параметра transparent директив proxy_bind,
+fastcgi_bind, memcached_bind, scgi_bind и uwsgi_bind
+nginx автоматически сохраняет capability CAP_NET_RAW в рабочих процессах.
+</para>
+<para lang="en">
+now nginx automatically preserves the CAP_NET_RAW capability in worker processes
+when using the "transparent" parameter of the "proxy_bind",
+"fastcgi_bind", "memcached_bind", "scgi_bind", and "uwsgi_bind" directives.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+улучшения в определении размера строки кэша процессора.<br/>
+Спасибо Debayan Ghosh.
+</para>
+<para lang="en">
+improved CPU cache line size detection.<br/>
+Thanks to Debayan Ghosh.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+новые директивы в скриптах подсветки синтаксиса для vim.<br/>
+Спасибо Геннадию Махомеду.
+</para>
+<para lang="en">
+new directives in vim syntax highlighting scripts.<br/>
+Thanks to Gena Makhomed.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+процедура обновления исполняемого файла не работала,
+если после завершения родительского процесса
+новым родительским процессом nginx'а становился процесс с PID, отличным от 1.
+</para>
+<para lang="en">
+binary upgrade refused to work
+if nginx was re-parented to a process with PID different from 1
+after its parent process has finished.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+модуль ngx_http_autoindex_module неправильно обрабатывал запросы с телом.
+</para>
+<para lang="en">
+the ngx_http_autoindex_module incorrectly handled requests with bodies.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве proxy_limit_rate при использовании с директивой keepalive.
+</para>
+<para lang="en">
+in the "proxy_limit_rate" directive when used with the "keepalive" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании "proxy_buffering off" часть ответа могла буферизироваться,
+если клиентское соединение использовало SSL.<br/>
+Спасибо Patryk Lesiewicz.
+</para>
+<para lang="en">
+some parts of a response might be buffered when using "proxy_buffering off"
+if the client connection used SSL.<br/>
+Thanks to Patryk Lesiewicz.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве proxy_cache_background_update.
+</para>
+<para lang="en">
+in the "proxy_cache_background_update" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+переменную вида "${name}" с именем в фигурных скобках
+нельзя было использовать в начале параметра
+не заключив весь параметр в кавычки.
+</para>
+<para lang="en">
+it was not possible to start a parameter
+with a variable in the "${name}" form with the name in curly brackets
+without enclosing the parameter into single or double quotes.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.7" date="2017-11-21">
+
+<change type="bugfix">
+<para lang="ru">
+в переменной $upstream_status.
+</para>
+<para lang="en">
+in the $upstream_status variable.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если бэкенд возвращал ответ "101 Switching Protocols" на подзапрос.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if a backend returned a "101 Switching Protocols" response to a subrequest.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+если при переконфигурации изменялся размер зоны разделяемой памяти
+и переконфигурация завершалась неудачно,
+то в главном процессе происходил segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault occurred in a master process
+if a shared memory zone size was changed during a reconfiguration
+and the reconfiguration failed.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_fastcgi_module.
+</para>
+<para lang="en">
+in the ngx_http_fastcgi_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx возвращал ошибку 500,
+если в директиве xslt_stylesheet
+были заданы параметры без использования переменных.
+</para>
+<para lang="en">
+nginx returned the 500 error
+if parameters without variables were specified
+in the "xslt_stylesheet" directive.
+</para>
+</change>
+
+<change type="workaround">
+<para lang="ru">
+при использовании варианта библиотеки zlib от Intel
+в лог писались сообщения "gzip filter failed to use preallocated memory".
+</para>
+<para lang="en">
+"gzip filter failed to use preallocated memory" alerts appeared in logs
+when using a zlib library variant from Intel.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива worker_shutdown_timeout не работала
+при использовании почтового прокси-сервера
+и при проксировании WebSocket-соединений.
+</para>
+<para lang="en">
+the "worker_shutdown_timeout" directive did not work
+when using mail proxy and when proxying WebSocket connections.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.6" date="2017-10-10">
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы ssl_preread
+в модуле stream не работало переключение на следующий бэкенд.
+</para>
+<para lang="en">
+switching to the next upstream server in the stream module did not work
+when using the "ssl_preread" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_v2_module.<br/>
+Спасибо Piotr Sikora.
+</para>
+<para lang="en">
+in the ngx_http_v2_module.<br/>
+Thanks to Piotr Sikora.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не поддерживал даты после 2038 года
+на 32-битных платформах с 64-битным time_t.
+</para>
+<para lang="en">
+nginx did not support dates after the year 2038
+on 32-bit platforms with 64-bit time_t.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке дат до 1970 года и после 10000 года.
+</para>
+<para lang="en">
+in handling of dates prior to the year 1970 and after the year 10000.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле stream таймауты ожидания UDP-пакетов от бэкендов
+не логгировались или логгировались на уровне info вместо error.
+</para>
+<para lang="en">
+in the stream module timeouts waiting for UDP datagrams from upstream servers
+were not logged or logged at the "info" level instead of "error".
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании HTTP/2 nginx мог вернуть ошибку 400,
+не указав в логе причину.
+</para>
+<para lang="en">
+when using HTTP/2 nginx might return the 400 response
+without logging the reason.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке повреждённых файлов кэша.
+</para>
+<para lang="en">
+in processing of corrupted cache files.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при кэшировании ошибок, перехваченных error_page,
+не учитывались заголовки управления кэшированием.
+</para>
+<para lang="en">
+cache control headers were ignored
+when caching errors intercepted by error_page.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании HTTP/2 тело запроса могло быть повреждено.
+</para>
+<para lang="en">
+when using HTTP/2 client request body might be corrupted.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке адресов клиентов при использовании unix domain сокетов.
+</para>
+<para lang="en">
+in handling of client addresses when using unix domain sockets.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы "hash ... consistent" в блоке upstream
+nginx нагружал процессор, если использовались большие веса
+и все или почти все бэкенды были недоступны.
+</para>
+<para lang="en">
+nginx hogged CPU
+when using the "hash ... consistent" directive in the upstream block
+if large weights were used and all or most of the servers were unavailable.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.5" date="2017-09-05">
+
+<change type="feature">
+<para lang="ru">
+переменная $ssl_client_escaped_cert.
+</para>
+<para lang="en">
+the $ssl_client_escaped_cert variable.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива ssl_session_ticket_key и параметр include директивы geo
+не работали на Windows.
+</para>
+<para lang="en">
+the "ssl_session_ticket_key" directive and
+the "include" parameter of the "geo" directive did not work on Windows.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+на 32-битных платформах
+при запросе более 4 гигабайт с помощью нескольких диапазонов
+возвращалась некорректная длина ответа.
+</para>
+<para lang="en">
+incorrect response length was returned
+on 32-bit platforms when requesting more than 4 gigabytes
+with multiple ranges.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива "expires modified" и
+обработка строки If-Range заголовка запроса
+не учитывали время последнего изменения ответа,
+если использовалось проксирование без кэширования.
+</para>
+<para lang="en">
+the "expires modified" directive and
+processing of the "If-Range" request header line
+did not use the response last modification time
+if proxying without caching was used.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.4" date="2017-08-08">
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_http_mirror_module.
+</para>
+<para lang="en">
+the ngx_http_mirror_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+клиентские соединения могли сбрасываться при тестировании конфигурации,
+если использовался параметр reuseport директивы listen на Linux.
+</para>
+<para lang="en">
+client connections might be dropped during configuration testing
+when using the "reuseport" parameter of the "listen" directive on Linux.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+тело запроса могло быть недоступно в подзапросах,
+если оно было сохранено в файл и использовалось проксирование.
+</para>
+<para lang="en">
+request body might not be available in subrequests
+if it was saved to a file and proxying was used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+очистка кэша по max_size не работала на Windows.
+</para>
+<para lang="en">
+cleaning cache based on the "max_size" parameter did not work on Windows.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+любое выделение разделяемой памяти на Windows требовало 4096 байт памяти.
+</para>
+<para lang="en">
+any shared memory allocation required 4096 bytes on Windows.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы zone в блоке upstream на Windows
+рабочий процесс мог завершаться аварийно.
+</para>
+<para lang="en">
+nginx worker might be terminated abnormally
+when using the "zone" directive inside the "upstream" block on Windows.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.3" date="2017-07-11">
+
+<change type="security">
+<para lang="ru">
+специально созданный запрос мог вызвать целочисленное переполнение
+в range-фильтре и последующую некорректную обработку запрошенных диапазонов,
+что потенциально могло привести к утечке конфиденциальной информации
+(CVE-2017-7529).
+</para>
+<para lang="en">
+a specially crafted request might result in an integer overflow
+and incorrect processing of ranges in the range filter,
+potentially resulting in sensitive information leak
+(CVE-2017-7529).
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.2" date="2017-06-27">
+
+<change type="change">
+<para lang="ru">
+теперь при запросе диапазона, начинающегося с 0, из пустого файла
+nginx возвращает ответ 200 вместо 416.
+</para>
+<para lang="en">
+nginx now returns 200 instead of 416
+when a range starting with 0 is requested from an empty file.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива add_trailer.<br/>
+Спасибо Piotr Sikora.
+</para>
+<para lang="en">
+the "add_trailer" directive.<br/>
+Thanks to Piotr Sikora.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался под Cygwin и NetBSD;
+ошибка появилась в 1.13.0.
+</para>
+<para lang="en">
+nginx could not be built on Cygwin and NetBSD;
+the bug had appeared in 1.13.0.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался под MSYS2 / MinGW 64-bit.<br/>
+Спасибо Orgad Shaneh.
+</para>
+<para lang="en">
+nginx could not be built under MSYS2 / MinGW 64-bit.<br/>
+Thanks to Orgad Shaneh.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании SSI с большим количеством подзапросов
+и proxy_pass с переменными
+в рабочем процессе мог произойти segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+when using SSI with many includes
+and proxy_pass with variables.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_v2_module.<br/>
+Спасибо Piotr Sikora.
+</para>
+<para lang="en">
+in the ngx_http_v2_module.<br/>
+Thanks to Piotr Sikora.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.1" date="2017-05-30">
+
+<change type="feature">
+<para lang="ru">
+теперь в качестве параметра директивы set_real_ip_from
+можно указывать имя хоста.
+</para>
+<para lang="en">
+now a hostname can be used
+as the "set_real_ip_from" directive parameter.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+улучшения в скриптах подсветки синтаксиса для vim.
+</para>
+<para lang="en">
+vim syntax highlighting scripts improvements.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива worker_cpu_affinity теперь работает на DragonFly BSD.<br/>
+Спасибо Sepherosa Ziehau.
+</para>
+<para lang="en">
+the "worker_cpu_affinity" directive now works on DragonFly BSD.<br/>
+Thanks to Sepherosa Ziehau.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+SSL renegotiation в соединениях к бэкендам
+не работал при использовании OpenSSL до 1.1.0.
+</para>
+<para lang="en">
+SSL renegotiation on backend connections
+did not work when using OpenSSL before 1.1.0.
+</para>
+</change>
+
+<change type="workaround">
+<para lang="ru">
+nginx не собирался с Oracle Developer Studio 12.5.
+</para>
+<para lang="en">
+nginx could not be built with Oracle Developer Studio 12.5.
+</para>
+</change>
+
+<change type="workaround">
+<para lang="ru">
+теперь cache manager пропускает заблокированные записи
+при очистке кэша по max_size.
+</para>
+<para lang="en">
+now cache manager ignores long locked cache entries
+when cleaning cache based on the "max_size" parameter.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+клиентские SSL-соединения сразу закрывались, если использовался
+отложенный accept и параметр proxy_protocol директивы listen.
+</para>
+<para lang="en">
+client SSL connections were immediately closed if deferred accept
+and the "proxy_protocol" parameter of the "listen" directive were used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве proxy_cache_background_update.
+</para>
+<para lang="en">
+in the "proxy_cache_background_update" directive.
+</para>
+</change>
+
+<change type="workaround">
+<para lang="ru">
+теперь директива tcp_nodelay
+устанавливает опцию TCP_NODELAY перед SSL handshake.
+</para>
+<para lang="en">
+now the "tcp_nodelay" directive
+sets the TCP_NODELAY option before an SSL handshake.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.13.0" date="2017-04-25">
+
+<change type="change">
+<para lang="ru">
+теперь SSL renegotiation допускается в соединениях к бэкендам.
+</para>
+<para lang="en">
+SSL renegotiation is now allowed on backend connections.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметры rcvbuf и sndbuf директив listen
+в почтовом прокси-сервере и модуле stream.
+</para>
+<para lang="en">
+the "rcvbuf" and "sndbuf" parameters of the "listen" directives
+of the mail proxy and stream modules.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы return и error_page теперь могут использоваться для возврата
+перенаправлений с кодом 308.<br/>
+Спасибо Simon Leblanc.
+</para>
+<para lang="en">
+the "return" and "error_page" directives can now be used to return 308
+redirections.<br/>
+Thanks to Simon Leblanc.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр TLSv1.3 в директиве ssl_protocols.
+</para>
+<para lang="en">
+the "TLSv1.3" parameter of the "ssl_protocols" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+при логгировании сигналов теперь указывается PID отправившего сигнал процесса.
+</para>
+<para lang="en">
+when logging signals nginx now logs PID of the process which sent the signal.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке ошибок выделения памяти.
+</para>
+<para lang="en">
+in memory allocation error handling.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+если сервер в модуле stream слушал на wildcard-адресе,
+исходящий адрес ответного UDP-пакета
+мог отличаться от адреса назначения исходного пакета.
+</para>
+<para lang="en">
+if a server in the stream module listened on a wildcard address,
+the source address of a response UDP datagram could differ
+from the original datagram destination address.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.13" date="2017-04-04">
+
+<change type="feature">
+<para lang="ru">
+параметр http_429 в директивах proxy_next_upstream, fastcgi_next_upstream,
+scgi_next_upstream и uwsgi_next_upstream.<br/>
+Спасибо Piotr Sikora.
+</para>
+<para lang="en">
+the "http_429" parameter of the "proxy_next_upstream", "fastcgi_next_upstream",
+"scgi_next_upstream", and "uwsgi_next_upstream" directives.<br/>
+Thanks to Piotr Sikora.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке ошибок выделения памяти.
+</para>
+<para lang="en">
+in memory allocation error handling.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директив sendfile и timer_resolution на Linux
+запросы могли зависать.
+</para>
+<para lang="en">
+requests might hang
+when using the "sendfile" and "timer_resolution" directives on Linux.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании с подзапросами директив sendfile и aio_write
+запросы могли зависать.
+</para>
+<para lang="en">
+requests might hang
+when using the "sendfile" and "aio_write" directives with subrequests.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_v2_module.<br/>
+Спасибо Piotr Sikora.
+</para>
+<para lang="en">
+in the ngx_http_v2_module.<br/>
+Thanks to Piotr Sikora.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании HTTP/2 в рабочем процессе мог произойти segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process when using HTTP/2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+запросы могли зависать
+при использовании с подзапросами директив limit_rate, sendfile_max_chunk,
+limit_req или метода $r->sleep() встроенного перла.
+</para>
+<para lang="en">
+requests might hang
+when using the "limit_rate", "sendfile_max_chunk", "limit_req" directives,
+or the $r->sleep() embedded perl method with subrequests.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_slice_module.
+</para>
+<para lang="en">
+in the ngx_http_slice_module.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.12" date="2017-03-24">
+
+<change type="bugfix">
+<para lang="ru">
+nginx мог нагружать процессор;
+ошибка появилась в 1.11.11.
+</para>
+<para lang="en">
+nginx might hog CPU;
+the bug had appeared in 1.11.11.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.11" date="2017-03-21">
+
+<change type="feature">
+<para lang="ru">
+директива worker_shutdown_timeout.
+</para>
+<para lang="en">
+the "worker_shutdown_timeout" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+улучшения в скриптах подсветки синтаксиса для vim.<br/>
+Спасибо Wei-Ko Kao.
+</para>
+<para lang="en">
+vim syntax highlighting scripts improvements.<br/>
+Thanks to Wei-Ko Kao.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при попытке установить переменную $limit_rate в пустую строку
+в рабочем процессе мог произойти segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if the $limit_rate variable was set to an empty string.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директивы proxy_cache_background_update, fastcgi_cache_background_update,
+scgi_cache_background_update и uwsgi_cache_background_update
+могли работать некорректно, если использовалась директива if.
+</para>
+<para lang="en">
+the "proxy_cache_background_update", "fastcgi_cache_background_update",
+"scgi_cache_background_update", and "uwsgi_cache_background_update" directives
+might work incorrectly if the "if" directive was used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если количество large_client_header_buffers в виртуальном сервере
+отличалось от такового в сервере по умолчанию.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if number of large_client_header_buffers in a virtual server
+was different from the one in the default server.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в почтовом прокси-сервере.
+</para>
+<para lang="en">
+in the mail proxy server.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.10" date="2017-02-14">
+
+<change type="change">
+<para lang="ru">
+формат заголовка кэша был изменен,
+ранее закэшированные ответы будут загружены заново.
+</para>
+<para lang="en">
+cache header format has been changed,
+previously cached responses will be invalidated.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+поддержка расширений stale-while-revalidate и stale-if-error
+в строке "Cache-Control" в заголовке ответа бэкенда.
+</para>
+<para lang="en">
+support of "stale-while-revalidate" and "stale-if-error" extensions
+in the "Cache-Control" backend response header line.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы proxy_cache_background_update, fastcgi_cache_background_update,
+scgi_cache_background_update и uwsgi_cache_background_update.
+</para>
+<para lang="en">
+the "proxy_cache_background_update", "fastcgi_cache_background_update",
+"scgi_cache_background_update", and "uwsgi_cache_background_update" directives.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь nginx может кэшировать ответы
+со строкой Vary заголовка длиной до 128 символов
+(вместо 42 символов в предыдущих версиях).
+</para>
+<para lang="en">
+nginx is now able to cache responses
+with the "Vary" header line up to 128 characters long
+(instead of 42 characters in previous versions).
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр build директивы server_tokens.<br/>
+Спасибо Tom Thorogood.
+</para>
+<para lang="en">
+the "build" parameter of the "server_tokens" directive.<br/>
+Thanks to Tom Thorogood.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при обработке запросов со строкой "Expect: 100-continue" в заголовке запроса
+в логах могли появляться сообщения "[crit] SSL_write() failed".
+</para>
+<para lang="en">
+"[crit] SSL_write() failed" messages might appear in logs
+when handling requests with the "Expect: 100-continue" request header line.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+модуль ngx_http_slice_module не работал в именованных location'ах.
+</para>
+<para lang="en">
+the ngx_http_slice_module did not work in named locations.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании AIO после перенаправления запроса с помощью X-Accel-Redirect
+в рабочем процессе мог произойти segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+when using AIO after an "X-Accel-Redirect" redirection.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+уменьшено потребление памяти для долгоживущих запросов, использующих сжатие.
+</para>
+<para lang="en">
+reduced memory consumption for long-lived requests using gzipping.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.9" date="2017-01-24">
+
+<change type="bugfix">
+<para lang="ru">
+при использовании модуля stream nginx мог нагружать процессор;
+ошибка появилась в 1.11.5.
+</para>
+<para lang="en">
+nginx might hog CPU when using the stream module;
+the bug had appeared in 1.11.5.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+метод аутентификации EXTERNAL в почтовом прокси-сервере
+можно было использовать, даже если он не был разрешён в конфигурации.
+</para>
+<para lang="en">
+EXTERNAL authentication mechanism in mail proxy
+was accepted even if it was not enabled in the configuration.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы ssl_verify_client модуля stream
+в рабочем процессе мог произойти segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if the "ssl_verify_client" directive of the stream module was used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива ssl_verify_client модуля stream могла не работать.
+</para>
+<para lang="en">
+the "ssl_verify_client" directive of the stream module might not work.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при исчерпании рабочим процессом свободных соединений
+keepalive-соединения могли закрываться излишне агрессивно.<br/>
+Спасибо Joel Cunningham.
+</para>
+<para lang="en">
+closing keepalive connections due to no free worker connections
+might be too aggressive.<br/>
+Thanks to Joel Cunningham.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы sendfile на FreeBSD и macOS
+мог возвращаться некорректный ответ;
+ошибка появилась в 1.7.8.
+</para>
+<para lang="en">
+an incorrect response might be returned
+when using the "sendfile" directive on FreeBSD and macOS;
+the bug had appeared in 1.7.8.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы aio_write
+ответ мог сохраняться в кэш не полностью.
+</para>
+<para lang="en">
+a truncated response might be stored in cache
+when using the "aio_write" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы aio_write
+могла происходить утечка сокетов.
+</para>
+<para lang="en">
+a socket leak might occur
+when using the "aio_write" directive.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.8" date="2016-12-27">
+
+<change type="feature">
+<para lang="ru">
+директива absolute_redirect.
+</para>
+<para lang="en">
+the "absolute_redirect" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр escape директивы log_format.
+</para>
+<para lang="en">
+the "escape" parameter of the "log_format" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+проверка клиентских SSL-сертификатов в модуле stream.
+</para>
+<para lang="en">
+client SSL certificates verification in the stream module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива ssl_session_ticket_key поддерживает
+шифрование TLS session tickets с помощью AES256
+при использовании с 80-байтными ключами.
+</para>
+<para lang="en">
+the "ssl_session_ticket_key" directive supports
+AES256 encryption of TLS session tickets
+when used with 80-byte keys.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+поддержка vim-commentary в скриптах для vim.<br/>
+Спасибо Armin Grodon.
+</para>
+<para lang="en">
+vim-commentary support in vim scripts.<br/>
+Thanks to Armin Grodon.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+рекурсия при получении значений переменных не ограничивалась.
+</para>
+<para lang="en">
+recursion when evaluating variables was not limited.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_stream_ssl_preread_module.
+</para>
+<para lang="en">
+in the ngx_stream_ssl_preread_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+если сервер, описанный в блоке upstream в модуле stream,
+был признан неработающим, то после истечения fail_timeout он
+признавался работающим только после завершения тестового соединения;
+теперь достаточно, чтобы соединение было успешно установлено.
+</para>
+<para lang="en">
+if a server in an upstream in the stream module failed,
+it was considered alive only when a test connection sent
+to it after fail_timeout was closed;
+now a successfully established connection is enough.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx/Windows не собирался с 64-битным Visual Studio.
+</para>
+<para lang="en">
+nginx/Windows could not be built with 64-bit Visual Studio.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx/Windows не собирался с OpenSSL 1.1.0.
+</para>
+<para lang="en">
+nginx/Windows could not be built with OpenSSL 1.1.0.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.7" date="2016-12-13">
+
+<change type="change">
+<para lang="ru">
+переменная $ssl_client_verify теперь
+в случае ошибки проверки клиентского сертификата
+содержит строку с описанием ошибки,
+например, "FAILED:certificate has expired".
+</para>
+<para lang="en">
+now in case of a client certificate verification error
+the $ssl_client_verify variable contains a string with the failure reason,
+for example, "FAILED:certificate has expired".
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+переменные $ssl_ciphers, $ssl_curves,
+$ssl_client_v_start, $ssl_client_v_end и $ssl_client_v_remain.
+</para>
+<para lang="en">
+the $ssl_ciphers, $ssl_curves,
+$ssl_client_v_start, $ssl_client_v_end, and $ssl_client_v_remain variables.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр volatile директивы map.
+</para>
+<para lang="en">
+the "volatile" parameter of the "map" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при сборке динамических модулей
+не учитывались заданные для модуля зависимости.
+</para>
+<para lang="en">
+dependencies specified for a module
+were ignored while building dynamic modules.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании HTTP/2 и директив limit_req или auth_request
+тело запроса могло быть повреждено;
+ошибка появилась в 1.11.0.
+</para>
+<para lang="en">
+when using HTTP/2 and the "limit_req" or "auth_request" directives
+client request body might be corrupted;
+the bug had appeared in 1.11.0.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании HTTP/2 в рабочем процессе мог произойти segmentation fault;
+ошибка появилась в 1.11.3.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process when using HTTP/2;
+the bug had appeared in 1.11.3.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_mp4_module.<br/>
+Спасибо Congcong Hu.
+</para>
+<para lang="en">
+in the ngx_http_mp4_module.<br/>
+Thanks to Congcong Hu.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_perl_module.
+</para>
+<para lang="en">
+in the ngx_http_perl_module.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.6" date="2016-11-15">
+
+<change type="change">
+<para lang="ru">
+формат переменных $ssl_client_s_dn и $ssl_client_i_dn
+изменён на соответствующий RFC 2253 (RFC 4514);
+значения в старом формате доступны через переменные
+$ssl_client_s_dn_legacy и $ssl_client_i_dn_legacy.
+</para>
+<para lang="en">
+format of the $ssl_client_s_dn and $ssl_client_i_dn variables
+has been changed to follow RFC 2253 (RFC 4514);
+values in the old format are available in
+the $ssl_client_s_dn_legacy and $ssl_client_i_dn_legacy variables.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+при сохранении временных файлов в каталоге кэша
+они теперь располагаются не в отдельном подкаталоге для временных файлов,
+а в том же подкаталоге, что и соответствующие файлы в кэше.
+</para>
+<para lang="en">
+when storing temporary files in a cache directory
+they will be stored in the same subdirectories as corresponding cache files
+instead of a separate subdirectory for temporary files.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+поддержка метода аутентификации EXTERNAL
+в почтовом прокси-сервере.<br/>
+Спасибо Robert Norris.
+</para>
+<para lang="en">
+EXTERNAL authentication mechanism support
+in mail proxy.<br/>
+Thanks to Robert Norris.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+поддержка WebP в модуле ngx_http_image_filter_module.
+</para>
+<para lang="en">
+WebP support in the ngx_http_image_filter_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива proxy_method поддерживает переменные.<br/>
+Спасибо Дмитрию Лазуркину.
+</para>
+<para lang="en">
+variables support in the "proxy_method" directive.<br/>
+Thanks to Dmitry Lazurkin.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива http2_max_requests в модуле ngx_http_v2_module.
+</para>
+<para lang="en">
+the "http2_max_requests" directive in the ngx_http_v2_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы proxy_cache_max_range_offset, fastcgi_cache_max_range_offset,
+scgi_cache_max_range_offset и uwsgi_cache_max_range_offset.
+</para>
+<para lang="en">
+the "proxy_cache_max_range_offset", "fastcgi_cache_max_range_offset",
+"scgi_cache_max_range_offset", and "uwsgi_cache_max_range_offset" directives.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+плавное завершение старых рабочих процессов могло занимать бесконечное время
+при использовании HTTP/2.
+</para>
+<para lang="en">
+graceful shutdown of old worker processes might require infinite time
+when using HTTP/2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_mp4_module.
+</para>
+<para lang="en">
+in the ngx_http_mp4_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при проксировании WebSocket-соединений и включённом кэшировании
+в логах могли появляться сообщения "ignore long locked inactive cache entry".
+</para>
+<para lang="en">
+"ignore long locked inactive cache entry" alerts might appear in logs
+when proxying WebSocket connections with caching enabled.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+если во время SSL handshake с бэкендом происходил таймаут,
+nginx ничего не писал в лог
+и возвращал ответ с кодом 502 вместо 504.
+</para>
+<para lang="en">
+nginx did not write anything to log
+and returned a response with code 502 instead of 504
+when a timeout occurred during an SSL handshake to a backend.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.5" date="2016-10-11">
+
+<change type="change">
+<para lang="ru">
+параметр configure --with-ipv6 упразднён,
+поддержка IPv6 теперь собирается автоматически.
+</para>
+<para lang="en">
+the --with-ipv6 configure option was removed,
+now IPv6 support is configured automatically.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+теперь, если в блоке upstream не оказалось доступных серверов,
+nginx не сбрасывает статистику ошибок всех серверов, как делал ранее,
+а ожидает истечения fail_timeout.
+</para>
+<para lang="en">
+now if there are no available servers in an upstream,
+nginx will not reset number of failures of all servers as it previously did,
+but will wait for fail_timeout to expire.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_stream_ssl_preread_module.
+</para>
+<para lang="en">
+the ngx_stream_ssl_preread_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива server в блоке upstream поддерживает параметр max_conns.
+</para>
+<para lang="en">
+the "server" directive in the "upstream" context supports
+the "max_conns" parameter.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр configure --with-compat.
+</para>
+<para lang="en">
+the --with-compat configure option.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметры manager_files, manager_threshold и manager_sleep
+директив proxy_cache_path, fastcgi_cache_path, scgi_cache_path и
+uwsgi_cache_path.
+</para>
+<para lang="en">
+"manager_files", "manager_threshold", and "manager_sleep" parameters
+of the "proxy_cache_path", "fastcgi_cache_path", "scgi_cache_path", and
+"uwsgi_cache_path" directives.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при сборке perl-модуля не использовались флаги,
+заданные с помощью параметра configure --with-ld-opt.
+</para>
+<para lang="en">
+flags passed by the --with-ld-opt configure option
+were not used while building perl module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве add_after_body при использовании совместно с директивой sub_filter.
+</para>
+<para lang="en">
+in the "add_after_body" directive when used with the "sub_filter" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в переменной $realip_remote_addr.
+</para>
+<para lang="en">
+in the $realip_remote_addr variable.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директивы dav_access, proxy_store_access, fastcgi_store_access,
+scgi_store_access и uwsgi_store_access
+игнорировали права, заданные для пользователя.
+</para>
+<para lang="en">
+the "dav_access", "proxy_store_access", "fastcgi_store_access",
+"scgi_store_access", and "uwsgi_store_access" directives
+ignored permissions specified for user.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+unix domain listen-сокеты могли не наследоваться
+при обновлении исполняемого файла на Linux.
+</para>
+<para lang="en">
+unix domain listen sockets might not be inherited
+during binary upgrade on Linux.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx возвращал ошибку 400 на запросы
+с символом "-" в HTTP-методе.
+</para>
+<para lang="en">
+nginx returned the 400 response on requests
+with the "-" character in the HTTP method.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.4" date="2016-09-13">
+
+<change type="feature">
+<para lang="ru">
+переменная $upstream_bytes_received.
+</para>
+<para lang="en">
+the $upstream_bytes_received variable.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+переменные $bytes_received, $session_time, $protocol, $status,
+$upstream_addr, $upstream_bytes_sent, $upstream_bytes_received,
+$upstream_connect_time, $upstream_first_byte_time
+и $upstream_session_time в модуле stream.
+</para>
+<para lang="en">
+the $bytes_received, $session_time, $protocol, $status,
+$upstream_addr, $upstream_bytes_sent, $upstream_bytes_received,
+$upstream_connect_time, $upstream_first_byte_time,
+and $upstream_session_time variables in the stream module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_stream_log_module.
+</para>
+<para lang="en">
+the ngx_stream_log_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр proxy_protocol в директиве listen,
+переменные $proxy_protocol_addr и $proxy_protocol_port
+в модуле stream.
+</para>
+<para lang="en">
+the "proxy_protocol" parameter of the "listen" directive,
+the $proxy_protocol_addr and $proxy_protocol_port variables
+in the stream module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_stream_realip_module.
+</para>
+<para lang="en">
+the ngx_stream_realip_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался с модулем stream и модулем ngx_http_ssl_module,
+но без модуля ngx_stream_ssl_module;
+ошибка появилась в 1.11.3.
+</para>
+<para lang="en">
+nginx could not be built with the stream module and the ngx_http_ssl_module,
+but without ngx_stream_ssl_module;
+the bug had appeared in 1.11.3.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+опция сокета IP_BIND_ADDRESS_NO_PORT не использовалась;
+ошибка появилась в 1.11.2.
+</para>
+<para lang="en">
+the IP_BIND_ADDRESS_NO_PORT socket option was not used;
+the bug had appeared in 1.11.2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в параметре ranges директивы geo.
+</para>
+<para lang="en">
+in the "ranges" parameter of the "geo" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директив "aio threads" и sendfile
+мог возвращаться некорректный ответ; ошибка появилась в 1.9.13.
+</para>
+<para lang="en">
+an incorrect response might be returned
+when using the "aio threads" and "sendfile" directives;
+the bug had appeared in 1.9.13.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.3" date="2016-07-26">
+
+<change type="change">
+<para lang="ru">
+теперь accept_mutex по умолчанию выключен.
+</para>
+<para lang="en">
+now the "accept_mutex" directive is turned off by default.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь nginx использует EPOLLEXCLUSIVE на Linux.
+</para>
+<para lang="en">
+now nginx uses EPOLLEXCLUSIVE on Linux.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_stream_geo_module.
+</para>
+<para lang="en">
+the ngx_stream_geo_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_stream_geoip_module.
+</para>
+<para lang="en">
+the ngx_stream_geoip_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_stream_split_clients_module.
+</para>
+<para lang="en">
+the ngx_stream_split_clients_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы proxy_pass и proxy_ssl_name в модуле stream
+поддерживают переменные.
+</para>
+<para lang="en">
+variables support
+in the "proxy_pass" and "proxy_ssl_name" directives in the stream module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+утечки сокетов при использовании HTTP/2.
+</para>
+<para lang="en">
+socket leak when using HTTP/2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в configure.<br/>
+Спасибо Piotr Sikora.
+</para>
+<para lang="en">
+in configure tests.<br/>
+Thanks to Piotr Sikora.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.11.2" date="2016-07-05">
+
+<change type="change">
+<para lang="ru">
+теперь nginx всегда использует внутренние реализации MD5 и SHA1;
+параметры configure --with-md5 и --with-sha1 упразднены.
+</para>
+<para lang="en">
+now nginx always uses internal MD5 and SHA1 implementations;
+the --with-md5 and --with-sha1 configure options were canceled.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+поддержка переменных в модуле stream.
+</para>
+<para lang="en">
+variables support in the stream module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_stream_map_module.
+</para>
+<para lang="en">
+the ngx_stream_map_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_stream_return_module.
+</para>
+<para lang="en">
+the ngx_stream_return_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+в директивах proxy_bind, fastcgi_bind, memcached_bind, scgi_bind и uwsgi_bind
+теперь можно указывать порт.
+</para>
+<para lang="en">
+a port can be specified in the "proxy_bind", "fastcgi_bind",
+"memcached_bind", "scgi_bind", and "uwsgi_bind" directives.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь nginx использует опцию сокета IP_BIND_ADDRESS_NO_PORT, если она доступна.
+</para>
+<para lang="en">
+now nginx uses the IP_BIND_ADDRESS_NO_PORT socket option when available.
 </para>
 </change>
 
@@ -87,40 +3529,10 @@ the issue had appeared in 1.9.4.
 </para>
 </change>
 
-<change type="bugfix">
-<para lang="ru">
-утечки сокетов при использовании HTTP/2.
-</para>
-<para lang="en">
-socket leak when using HTTP/2.
-</para>
-</change>
-
-<change type="bugfix">
-<para lang="ru">
-при использовании директив "aio threads" и sendfile
-мог возвращаться некорректный ответ; ошибка появилась в 1.9.13.
-</para>
-<para lang="en">
-an incorrect response might be returned
-when using the "aio threads" and "sendfile" directives;
-the bug had appeared in 1.9.13.
-</para>
-</change>
-
-<change type="workaround">
-<para lang="ru">
-совместимость с OpenSSL 1.1.0.
-</para>
-<para lang="en">
-OpenSSL 1.1.0 compatibility.
-</para>
-</change>
-
 </changes>
 
 
-<changes ver="1.10.1" date="31.05.2016">
+<changes ver="1.11.1" date="2016-05-31">
 
 <change type="security">
 <para lang="ru">
@@ -140,21 +3552,163 @@ the bug had appeared in 1.3.9.
 </changes>
 
 
-<changes ver="1.10.0" date="26.04.2016">
+<changes ver="1.11.0" date="2016-05-24">
 
-<change>
+<change type="feature">
 <para lang="ru">
-Стабильная ветка 1.10.x.
+параметр transparent директив proxy_bind, fastcgi_bind,
+memcached_bind, scgi_bind и uwsgi_bind.
 </para>
 <para lang="en">
-1.10.x stable branch.
+the "transparent" parameter of the "proxy_bind", "fastcgi_bind",
+"memcached_bind", "scgi_bind", and "uwsgi_bind" directives.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+переменная $request_id.
+</para>
+<para lang="en">
+the $request_id variable.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива map поддерживает комбинации нескольких переменных
+в качестве результирующих значений.
+</para>
+<para lang="en">
+the "map" directive supports combinations of multiple variables
+as resulting values.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь при использовании метода epoll
+nginx проверяет, поддерживает ли ядро события EPOLLRDHUP,
+и соответственно оптимизирует обработку соединений.
+</para>
+<para lang="en">
+now nginx checks if EPOLLRDHUP events are supported by kernel,
+and optimizes connection handling accordingly
+if the "epoll" method is used.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы ssl_certificate и ssl_certificate_key
+теперь можно указывать несколько раз
+для загрузки сертификатов разных типов (например, RSA и ECDSA).
+</para>
+<para lang="en">
+the "ssl_certificate" and "ssl_certificate_key" directives
+can be specified multiple times
+to load certificates of different types (for example, RSA and ECDSA).
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+при использовании OpenSSL 1.0.2 и новее
+с помощью директивы ssl_ecdh_curve теперь можно задать список кривых;
+по умолчанию используется встроенный в OpenSSL список кривых.
+</para>
+<para lang="en">
+the "ssl_ecdh_curve" directive now allows specifying a list of curves
+when using OpenSSL 1.0.2 or newer;
+by default a list built into OpenSSL is used.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+для использования DHE-шифров теперь надо явно задавать файл параметров
+с помощью директивы ssl_dhparam.
+</para>
+<para lang="en">
+to use DHE ciphers it is now required to specify parameters
+using the "ssl_dhparam" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+переменная $proxy_protocol_port.
+</para>
+<para lang="en">
+the $proxy_protocol_port variable.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+переменная $realip_remote_port в модуле ngx_http_realip_module.
+</para>
+<para lang="en">
+the $realip_remote_port variable in the ngx_http_realip_module.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_http_realip_module теперь позволяет устанавливать
+не только адрес, но и порт клиента.
+</para>
+<para lang="en">
+the ngx_http_realip_module is now able to set the client port
+in addition to the address.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+при попытке запросить виртуальный сервер,
+отличающийся от согласованного в процессе SSL handshake,
+теперь возвращается ответ "421 Misdirected Request";
+это улучшает совместимость с некоторыми HTTP/2-клиентами
+в случае использования клиентских сертификатов.
+</para>
+<para lang="en">
+the "421 Misdirected Request" response now used
+when rejecting requests to a virtual server
+different from one negotiated during an SSL handshake;
+this improves interoperability with some HTTP/2 clients
+when using client certificates.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+HTTP/2-клиенты теперь могут сразу присылать тело запроса;
+директива http2_body_preread_size позволяет указать размер буфера, который
+будет использоваться до того, как nginx начнёт читать тело.
+</para>
+<para lang="en">
+HTTP/2 clients can now start sending request body immediately;
+the "http2_body_preread_size" directive controls size of the buffer used
+before nginx will start reading client request body.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы proxy_cache_bypass
+не обновлялись закэшированные ошибочные ответы.
+</para>
+<para lang="en">
+cached error responses were not updated
+when using the "proxy_cache_bypass" directive.
 </para>
 </change>
 
 </changes>
 
 
-<changes ver="1.9.15" date="19.04.2016">
+<changes ver="1.9.15" date="2016-04-19">
 
 <change type="bugfix">
 <para lang="ru">
@@ -209,7 +3763,7 @@ Thanks to Mindaugas Rasiukevicius.
 </changes>
 
 
-<changes ver="1.9.14" date="05.04.2016">
+<changes ver="1.9.14" date="2016-04-05">
 
 <change type="feature">
 <para lang="ru">
@@ -267,7 +3821,7 @@ of minor bugs in logging.
 </changes>
 
 
-<changes ver="1.9.13" date="29.03.2016">
+<changes ver="1.9.13" date="2016-03-29">
 
 <change type="change">
 <para lang="ru">
@@ -330,7 +3884,6 @@ and tries to avoid cache keys zone overflows.
 в логах могли появляться сообщения "task already active" и "second aio post".
 </para>
 <para lang="en">
-
 "task already active" and "second aio post" alerts might appear in logs
 when using the "sendfile" and "aio" directives with subrequests.
 </para>
@@ -433,7 +3986,7 @@ regardless of the proxy_next_upstream directive.
 </changes>
 
 
-<changes ver="1.9.12" date="24.02.2016">
+<changes ver="1.9.12" date="2016-02-24">
 
 <change type="feature">
 <para lang="ru">
@@ -535,7 +4088,7 @@ in the ngx_http_v2_module.
 </changes>
 
 
-<changes ver="1.9.11" date="09.02.2016">
+<changes ver="1.9.11" date="2016-02-09">
 
 <change type="feature">
 <para lang="ru">
@@ -578,7 +4131,7 @@ in the ngx_http_v2_module.
 </changes>
 
 
-<changes ver="1.9.10" date="26.01.2016">
+<changes ver="1.9.10" date="2016-01-26">
 
 <change type="security">
 <para lang="ru">
@@ -681,7 +4234,7 @@ after an "X-Accel-Redirect" redirection.
 </changes>
 
 
-<changes ver="1.9.9" date="09.12.2015">
+<changes ver="1.9.9" date="2015-12-09">
 
 <change type="bugfix">
 <para lang="ru">
@@ -697,7 +4250,7 @@ the bug had appeared in 1.9.8.
 </changes>
 
 
-<changes ver="1.9.8" date="08.12.2015">
+<changes ver="1.9.8" date="2015-12-08">
 
 <change type="feature">
 <para lang="ru">
@@ -751,7 +4304,7 @@ nginx could not be built on OS X in some cases.
 </changes>
 
 
-<changes ver="1.9.7" date="17.11.2015">
+<changes ver="1.9.7" date="2015-11-17">
 
 <change type="feature">
 <para lang="ru">
@@ -827,7 +4380,7 @@ in the ngx_http_v2_module.
 </changes>
 
 
-<changes ver="1.9.6" date="27.10.2015">
+<changes ver="1.9.6" date="2015-10-27">
 
 <change type="bugfix">
 <para lang="ru">
@@ -911,7 +4464,7 @@ Thanks to Markus Linnala, Kurtis Nusbaum and Piotr Sikora.
 </changes>
 
 
-<changes ver="1.9.5" date="22.09.2015">
+<changes ver="1.9.5" date="2015-09-22">
 
 <change type="feature">
 <para lang="ru">
@@ -1008,7 +4561,7 @@ the bug had appeared in 1.9.4.
 </changes>
 
 
-<changes ver="1.9.4" date="18.08.2015">
+<changes ver="1.9.4" date="2015-08-18">
 
 <change type="change">
 <para lang="ru">
@@ -1119,7 +4672,7 @@ nginx could not be built with Visual Studio 2015.
 </changes>
 
 
-<changes ver="1.9.3" date="14.07.2015">
+<changes ver="1.9.3" date="2015-07-14">
 
 <change type="change">
 <para lang="ru">
@@ -1210,7 +4763,7 @@ Thanks to Matthew Baldwin.
 </changes>
 
 
-<changes ver="1.9.2" date="16.06.2015">
+<changes ver="1.9.2" date="2015-06-16">
 
 <change type="feature">
 <para lang="ru">
@@ -1293,7 +4846,7 @@ OCSP stapling might return an expired OCSP response in some cases.
 </changes>
 
 
-<changes ver="1.9.1" date="26.05.2015">
+<changes ver="1.9.1" date="2015-05-26">
 
 <change type="change">
 <para lang="ru">
@@ -1367,7 +4920,7 @@ Thanks to Sergey Polovko.
 </changes>
 
 
-<changes ver="1.9.0" date="28.04.2015">
+<changes ver="1.9.0" date="2015-04-28">
 
 <change type="change">
 <para lang="ru">
@@ -1445,7 +4998,7 @@ if not specified in the first "listen" directive for a listen socket.
 </changes>
 
 
-<changes ver="1.7.12" date="07.04.2015">
+<changes ver="1.7.12" date="2015-04-07">
 
 <change type="feature">
 <para lang="ru">
@@ -1508,7 +5061,7 @@ in the ngx_http_spdy_module.
 </changes>
 
 
-<changes ver="1.7.11" date="24.03.2015">
+<changes ver="1.7.11" date="2015-03-24">
 
 <change type="change">
 <para lang="ru">
@@ -1676,7 +5229,7 @@ to automatically construct certificate chains.
 </changes>
 
 
-<changes ver="1.7.10" date="10.02.2015">
+<changes ver="1.7.10" date="2015-02-10">
 
 <change type="feature">
 <para lang="ru">
@@ -1768,7 +5321,7 @@ Thanks to Goetz T. Fischer.
 </changes>
 
 
-<changes ver="1.7.9" date="23.12.2014">
+<changes ver="1.7.9" date="2014-12-23">
 
 <change type="feature">
 <para lang="ru">
@@ -1872,7 +5425,7 @@ Thanks to Lukas Tribus.
 </changes>
 
 
-<changes ver="1.7.8" date="02.12.2014">
+<changes ver="1.7.8" date="2014-12-02">
 
 <change type="change">
 <para lang="ru">
@@ -2038,7 +5591,7 @@ Thanks to Yichun Zhang.
 </changes>
 
 
-<changes ver="1.7.7" date="28.10.2014">
+<changes ver="1.7.7" date="2014-10-28">
 
 <change type="change">
 <para lang="ru">
@@ -2148,7 +5701,7 @@ Thanks to Kouhei Sutou.
 </changes>
 
 
-<changes ver="1.7.6" date="30.09.2014">
+<changes ver="1.7.6" date="2014-09-30">
 
 <change type="change">
 <para lang="ru">
@@ -2193,7 +5746,7 @@ in logging to syslog.
 </changes>
 
 
-<changes ver="1.7.5" date="16.09.2014">
+<changes ver="1.7.5" date="2014-09-16">
 
 <change type="security">
 <para lang="ru">
@@ -2338,7 +5891,7 @@ Thanks to Markus Linnala and Feng Gu.
 </changes>
 
 
-<changes ver="1.7.4" date="05.08.2014">
+<changes ver="1.7.4" date="2014-08-05">
 
 <change type="security">
 <para lang="ru">
@@ -2467,7 +6020,7 @@ Thanks to Tatsuhiko Kubo and Piotr Sikora.
 </changes>
 
 
-<changes ver="1.7.3" date="08.07.2014">
+<changes ver="1.7.3" date="2014-07-08">
 
 <change type="feature">
 <para lang="ru">
@@ -2547,7 +6100,7 @@ if caching was used.
 </changes>
 
 
-<changes ver="1.7.2" date="17.06.2014">
+<changes ver="1.7.2" date="2014-06-17">
 
 <change type="feature">
 <para lang="ru">
@@ -2616,7 +6169,7 @@ in the ngx_http_spdy_module.
 </changes>
 
 
-<changes ver="1.7.1" date="27.05.2014">
+<changes ver="1.7.1" date="2014-05-27">
 
 <change type="feature">
 <para lang="ru">
@@ -2734,7 +6287,7 @@ nginx could not be built with the --with-file-aio option on Linux/aarch64.
 </changes>
 
 
-<changes ver="1.7.0" date="24.04.2014">
+<changes ver="1.7.0" date="2014-04-24">
 
 <change type="feature">
 <para lang="ru">
@@ -2775,7 +6328,7 @@ the "if" parameter of the "access_log" directive.
 </changes>
 
 
-<changes ver="1.5.13" date="08.04.2014">
+<changes ver="1.5.13" date="2014-04-08">
 
 <change type="change">
 <para lang="ru">
@@ -2868,7 +6421,7 @@ in the ngx_http_spdy_module.
 </changes>
 
 
-<changes ver="1.5.12" date="18.03.2014">
+<changes ver="1.5.12" date="2014-03-18">
 
 <change type="security">
 <para lang="ru">
@@ -2914,7 +6467,7 @@ Thanks to Lucas Molas.
 </changes>
 
 
-<changes ver="1.5.11" date="04.03.2014">
+<changes ver="1.5.11" date="2014-03-04">
 
 <change type="security">
 <para lang="ru">
@@ -3024,7 +6577,7 @@ nginx/Windows could not be built with Visual Studio 2013.
 </changes>
 
 
-<changes ver="1.5.10" date="04.02.2014">
+<changes ver="1.5.10" date="2014-02-04">
 
 <change type="feature">
 <para lang="ru">
@@ -3103,7 +6656,7 @@ Thanks to Piotr Sikora.
 </changes>
 
 
-<changes ver="1.5.9" date="22.01.2014">
+<changes ver="1.5.9" date="2014-01-22">
 
 <change type="change">
 <para lang="ru">
@@ -3245,7 +6798,7 @@ incorrectly handled IPv6 client addresses.
 </changes>
 
 
-<changes ver="1.5.8" date="17.12.2013">
+<changes ver="1.5.8" date="2013-12-17">
 
 <change type="feature">
 <para lang="ru">
@@ -3330,7 +6883,7 @@ in the ngx_http_spdy_module.
 </changes>
 
 
-<changes ver="1.5.7" date="19.11.2013">
+<changes ver="1.5.7" date="2013-11-19">
 
 <change type="security">
 <para lang="ru">
@@ -3466,7 +7019,7 @@ memory leak in nginx/Windows.
 </changes>
 
 
-<changes ver="1.5.6" date="01.10.2013">
+<changes ver="1.5.6" date="2013-10-01">
 
 <change type="feature">
 <para lang="ru">
@@ -3564,7 +7117,7 @@ in the ngx_http_spdy_module.
 </changes>
 
 
-<changes ver="1.5.5" date="17.09.2013">
+<changes ver="1.5.5" date="2013-09-17">
 
 <change type="change">
 <para lang="ru">
@@ -3643,7 +7196,7 @@ Thanks to Piotr Sikora.
 </changes>
 
 
-<changes ver="1.5.4" date="27.08.2013">
+<changes ver="1.5.4" date="2013-08-27">
 
 <change type="change">
 <para lang="ru">
@@ -3745,7 +7298,7 @@ in the ngx_http_spdy_module.
 </changes>
 
 
-<changes ver="1.5.3" date="30.07.2013">
+<changes ver="1.5.3" date="2013-07-30">
 
 <change>
 <para lang="ru">
@@ -3820,7 +7373,7 @@ in the ngx_http_sub_filter_module.
 </changes>
 
 
-<changes ver="1.5.2" date="02.07.2013">
+<changes ver="1.5.2" date="2013-07-02">
 
 <change type="feature">
 <para lang="ru">
@@ -3869,7 +7422,7 @@ Thanks to Serguei Ivantsov.
 </changes>
 
 
-<changes ver="1.5.1" date="04.06.2013">
+<changes ver="1.5.1" date="2013-06-04">
 
 <change type="feature">
 <para lang="ru">
@@ -3992,7 +7545,7 @@ if several worker processes were used.
 </changes>
 
 
-<changes ver="1.5.0" date="07.05.2013">
+<changes ver="1.5.0" date="2013-05-07">
 
 <change type="security">
 <para lang="ru">
@@ -4014,7 +7567,7 @@ Thanks to Greg MacManus, iSIGHT Partners Labs.
 </changes>
 
 
-<changes ver="1.4.0" date="24.04.2013">
+<changes ver="1.4.0" date="2013-04-24">
 
 <change type="bugfix">
 <para lang="ru">
@@ -4043,7 +7596,7 @@ the bug had appeared in 1.3.9.
 </changes>
 
 
-<changes ver="1.3.16" date="16.04.2013">
+<changes ver="1.3.16" date="2013-04-16">
 
 <change type="bugfix">
 <para lang="ru">
@@ -4094,7 +7647,7 @@ in the eventport and /dev/poll methods.
 </changes>
 
 
-<changes ver="1.3.15" date="26.03.2013">
+<changes ver="1.3.15" date="2013-03-26">
 
 <change type="change">
 <para lang="ru">
@@ -4211,7 +7764,7 @@ in backend usage accounting.
 </changes>
 
 
-<changes ver="1.3.14" date="05.03.2013">
+<changes ver="1.3.14" date="2013-03-05">
 
 <change type="feature">
 <para lang="ru">
@@ -4284,7 +7837,7 @@ Thanks to Gernot Vormayr.
 </changes>
 
 
-<changes ver="1.3.13" date="19.02.2013">
+<changes ver="1.3.13" date="2013-02-19">
 
 <change type="change">
 <para lang="ru">
@@ -4322,7 +7875,7 @@ Thanks to Louis Opter.
 </changes>
 
 
-<changes ver="1.3.12" date="05.02.2013">
+<changes ver="1.3.12" date="2013-02-05">
 
 <change type="feature">
 <para lang="ru">
@@ -4422,7 +7975,7 @@ in the "fastcgi_keep_conn" directive.
 </changes>
 
 
-<changes ver="1.3.11" date="10.01.2013">
+<changes ver="1.3.11" date="2013-01-10">
 
 <change type="bugfix">
 <para lang="ru">
@@ -4475,7 +8028,7 @@ for IPv6 addresses.
 </changes>
 
 
-<changes ver="1.3.10" date="25.12.2012">
+<changes ver="1.3.10" date="2012-12-25">
 
 <change type="change">
 <para lang="ru">
@@ -4653,7 +8206,7 @@ if the "gzip" directive was used.
 </changes>
 
 
-<changes ver="1.3.9" date="27.11.2012">
+<changes ver="1.3.9" date="2012-11-27">
 
 <change type="feature">
 <para lang="ru">
@@ -4698,7 +8251,7 @@ in the ngx_http_dav_module.
 </changes>
 
 
-<changes ver="1.3.8" date="30.10.2012">
+<changes ver="1.3.8" date="2012-10-30">
 
 <change type="feature">
 <para lang="ru">
@@ -4763,7 +8316,7 @@ in the "ssl_stapling" directive.
 </changes>
 
 
-<changes ver="1.3.7" date="02.10.2012">
+<changes ver="1.3.7" date="2012-10-02">
 
 <change type="feature">
 <para lang="ru">
@@ -4810,7 +8363,7 @@ OpenSSL 0.9.7 compatibility.
 </changes>
 
 
-<changes ver="1.3.6" date="12.09.2012">
+<changes ver="1.3.6" date="2012-09-12">
 
 <change type="feature">
 <para lang="ru">
@@ -4866,7 +8419,7 @@ if the --with-ipv6 option was used.
 </changes>
 
 
-<changes ver="1.3.5" date="21.08.2012">
+<changes ver="1.3.5" date="2012-08-21">
 
 <change type="change">
 <para lang="ru">
@@ -4948,7 +8501,7 @@ Thanks to HAYASHI Kentaro.
 </changes>
 
 
-<changes ver="1.3.4" date="31.07.2012">
+<changes ver="1.3.4" date="2012-07-31">
 
 <change type="change">
 <para lang="ru">
@@ -5011,7 +8564,7 @@ might be inherited incorrectly.
 </changes>
 
 
-<changes ver="1.3.3" date="10.07.2012">
+<changes ver="1.3.3" date="2012-07-10">
 
 <change type="feature">
 <para lang="ru">
@@ -5049,7 +8602,7 @@ before an internal redirect to a named location.
 </changes>
 
 
-<changes ver="1.3.2" date="26.06.2012">
+<changes ver="1.3.2" date="2012-06-26">
 
 <change type="change">
 <para lang="ru">
@@ -5154,7 +8707,7 @@ while reconfiguration.
 </changes>
 
 
-<changes ver="1.3.1" date="05.06.2012">
+<changes ver="1.3.1" date="2012-06-05">
 
 <change type="security">
 <para lang="ru">
@@ -5284,7 +8837,7 @@ in the "proxy_cookie_domain" and "proxy_cookie_path" directives.
 </changes>
 
 
-<changes ver="1.3.0" date="15.05.2012">
+<changes ver="1.3.0" date="2012-05-15">
 
 <change type="feature">
 <para lang="ru">
@@ -5423,7 +8976,7 @@ in the ngx_http_fastcgi_module.
 </changes>
 
 
-<changes ver="1.2.0" date="23.04.2012">
+<changes ver="1.2.0" date="2012-04-23">
 
 <change type="bugfix">
 <para lang="ru">
@@ -5463,7 +9016,7 @@ Thanks to Maxim Bublis.
 </changes>
 
 
-<changes ver="1.1.19" date="12.04.2012">
+<changes ver="1.1.19" date="2012-04-12">
 
 <change type="security">
 <para lang="ru">
@@ -5545,7 +9098,7 @@ in the ngx_http_mp4_module.
 </changes>
 
 
-<changes ver="1.1.18" date="28.03.2012">
+<changes ver="1.1.18" date="2012-03-28">
 
 <change type="change">
 <para lang="ru">
@@ -5628,7 +9181,7 @@ nginx could not be built on Debian GNU/Hurd.
 </changes>
 
 
-<changes ver="1.1.17" date="15.03.2012">
+<changes ver="1.1.17" date="2012-03-15">
 
 <change type="security">
 <para lang="ru">
@@ -5666,7 +9219,7 @@ in the ngx_http_uwsgi_module.
 </changes>
 
 
-<changes ver="1.1.16" date="29.02.2012">
+<changes ver="1.1.16" date="2012-02-29">
 
 <change type="change">
 <para lang="ru">
@@ -5779,7 +9332,7 @@ the bug had appeared in 1.1.15.
 </changes>
 
 
-<changes ver="1.1.15" date="15.02.2012">
+<changes ver="1.1.15" date="2012-02-15">
 
 <change type="feature">
 <para lang="ru">
@@ -5882,7 +9435,7 @@ the bug had appeared in 0.7.25.
 </changes>
 
 
-<changes ver="1.1.14" date="30.01.2012">
+<changes ver="1.1.14" date="2012-01-30">
 
 <change type="feature">
 <para lang="ru">
@@ -5943,7 +9496,7 @@ memory leak during reconfiguration if the "pcre_jit" directive was used.
 </changes>
 
 
-<changes ver="1.1.13" date="16.01.2012">
+<changes ver="1.1.13" date="2012-01-16">
 
 <change type="feature">
 <para lang="ru">
@@ -6019,7 +9572,7 @@ in the ngx_http_mp4_module.
 </changes>
 
 
-<changes ver="1.1.12" date="26.12.2011">
+<changes ver="1.1.12" date="2011-12-26">
 
 <change type="change">
 <para lang="ru">
@@ -6159,7 +9712,7 @@ the bug had appeared in 1.1.9.
 </changes>
 
 
-<changes ver="1.1.11" date="12.12.2011">
+<changes ver="1.1.11" date="2011-12-12">
 
 <change type="feature">
 <para lang="ru">
@@ -6257,7 +9810,7 @@ responses from cache might hang.
 </changes>
 
 
-<changes ver="1.1.10" date="30.11.2011">
+<changes ver="1.1.10" date="2011-11-30">
 
 <change type="bugfix">
 <para lang="ru">
@@ -6273,7 +9826,7 @@ the bug had appeared in 1.1.9.
 </changes>
 
 
-<changes ver="1.1.9" date="28.11.2011">
+<changes ver="1.1.9" date="2011-11-28">
 
 <change type="change">
 <para lang="ru">
@@ -6439,7 +9992,7 @@ nginx could not be built on AIX.
 </changes>
 
 
-<changes ver="1.1.8" date="14.11.2011">
+<changes ver="1.1.8" date="2011-11-14">
 
 <change type="change">
 <para lang="ru">
@@ -6534,7 +10087,7 @@ Thanks to Piotr Sikora.
 </changes>
 
 
-<changes ver="1.1.7" date="31.10.2011">
+<changes ver="1.1.7" date="2011-10-31">
 
 <change type="feature">
 <para lang="ru">
@@ -6594,7 +10147,7 @@ in the "expires @time" directive.
 </changes>
 
 
-<changes ver="1.1.6" date="17.10.2011">
+<changes ver="1.1.6" date="2011-10-17">
 
 <change>
 <para lang="ru">
@@ -6714,7 +10267,7 @@ the module ngx_http_mp4_module did not support seeking on 32-bit platforms.
 </changes>
 
 
-<changes ver="1.1.5" date="05.10.2011">
+<changes ver="1.1.5" date="2011-10-05">
 
 <change type="feature">
 <para lang="ru">
@@ -6795,7 +10348,7 @@ the bug had appeared in 1.1.1.
 </changes>
 
 
-<changes ver="1.1.4" date="20.09.2011">
+<changes ver="1.1.4" date="2011-09-20">
 
 <change type="feature">
 <para lang="ru">
@@ -6878,7 +10431,7 @@ the module ngx_http_mp4_module did not support 64-bit MP4 "co64" atom.
 </changes>
 
 
-<changes ver="1.1.3" date="14.09.2011">
+<changes ver="1.1.3" date="2011-09-14">
 
 <change type="feature">
 <para lang="ru">
@@ -6921,7 +10474,7 @@ nginx could not be built on MacOSX 10.7.
 </changes>
 
 
-<changes ver="1.1.2" date="05.09.2011">
+<changes ver="1.1.2" date="2011-09-05">
 
 <change type="change">
 <para lang="ru">
@@ -6966,7 +10519,7 @@ in the "proxy/fastcgi/scgi/uwsgi_ignore_client_abort" directives.
 </changes>
 
 
-<changes ver="1.1.1" date="22.08.2011">
+<changes ver="1.1.1" date="2011-08-22">
 
 <change type="change">
 <para lang="ru">
@@ -7110,7 +10663,7 @@ the bug had appeared in 0.8.40.
 </changes>
 
 
-<changes ver="1.1.0" date="01.08.2011">
+<changes ver="1.1.0" date="2011-08-01">
 
 <change type="feature">
 <para lang="ru">
@@ -7243,7 +10796,7 @@ SSL modules could not be built by gcc 4.6 without --with-debug option.
 </changes>
 
 
-<changes ver="1.0.5" date="19.07.2011">
+<changes ver="1.0.5" date="2011-07-19">
 
 <change type="change">
 <para lang="ru">
@@ -7319,7 +10872,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="1.0.4" date="01.06.2011">
+<changes ver="1.0.4" date="2011-06-01">
 
 <change type="change">
 <para lang="ru">
@@ -7366,7 +10919,7 @@ the bug had appeared in 1.0.3.
 </changes>
 
 
-<changes ver="1.0.3" date="25.05.2011">
+<changes ver="1.0.3" date="2011-05-25">
 
 <change type="feature">
 <para lang="ru">
@@ -7435,7 +10988,7 @@ the bug had appeared in 0.8.46.
 </changes>
 
 
-<changes ver="1.0.2" date="10.05.2011">
+<changes ver="1.0.2" date="2011-05-10">
 
 <change type="feature">
 <para lang="ru">
@@ -7471,7 +11024,7 @@ the bug had appeared in 1.0.1.
 </changes>
 
 
-<changes ver="1.0.1" date="03.05.2011">
+<changes ver="1.0.1" date="2011-05-03">
 
 <change type="change">
 <para lang="ru">
@@ -7579,7 +11132,7 @@ Thanks to Igor A. Valcov.
 </changes>
 
 
-<changes ver="1.0.0" date="12.04.2011">
+<changes ver="1.0.0" date="2011-04-12">
 
 <change type="bugfix">
 <para lang="ru">
@@ -7616,7 +11169,7 @@ a "satisfy any" directive disabled custom 401 error page.
 </changes>
 
 
-<changes ver="0.9.7" date="04.04.2011">
+<changes ver="0.9.7" date="2011-04-04">
 
 <change type="feature">
 <para lang="ru">
@@ -7656,7 +11209,7 @@ directives is given by expression and refers to a defined upstream.
 </changes>
 
 
-<changes ver="0.9.6" date="21.03.2011">
+<changes ver="0.9.6" date="2011-03-21">
 
 <change type="feature">
 <para lang="ru">
@@ -7683,7 +11236,7 @@ Thanks to Michael Lustfield.
 </changes>
 
 
-<changes ver="0.9.5" date="21.02.2011">
+<changes ver="0.9.5" date="2011-02-21">
 
 <change type="change">
 <para lang="ru">
@@ -7737,7 +11290,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.9.4" date="21.01.2011">
+<changes ver="0.9.4" date="2011-01-21">
 
 <change type="feature">
 <para lang="ru">
@@ -7760,7 +11313,7 @@ the "server_name" directive supports the $hostname variable.
 </changes>
 
 
-<changes ver="0.9.3" date="13.12.2010">
+<changes ver="0.9.3" date="2010-12-13">
 
 <change type="bugfix">
 <para lang="ru">
@@ -7787,7 +11340,7 @@ the bug had appeared in 0.9.0.
 </changes>
 
 
-<changes ver="0.9.2" date="06.12.2010">
+<changes ver="0.9.2" date="2010-12-06">
 
 <change type="feature">
 <para lang="ru">
@@ -7834,7 +11387,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.9.1" date="30.11.2010">
+<changes ver="0.9.1" date="2010-11-30">
 
 <change type="bugfix">
 <para lang="ru">
@@ -7850,7 +11403,7 @@ the bug had appeared in 0.9.0.
 </changes>
 
 
-<changes ver="0.9.0" date="29.11.2010">
+<changes ver="0.9.0" date="2010-11-29">
 
 <change type="feature">
 <para lang="ru">
@@ -7949,7 +11502,7 @@ the bug had appeared in 0.8.42.
 </changes>
 
 
-<changes ver="0.8.53" date="18.10.2010">
+<changes ver="0.8.53" date="2010-10-18">
 
 <change type="feature">
 <para lang="ru">
@@ -7998,7 +11551,7 @@ the bug had appeared in 0.8.21.
 </changes>
 
 
-<changes ver="0.8.52" date="28.09.2010">
+<changes ver="0.8.52" date="2010-09-28">
 
 <change type="bugfix">
 <para lang="ru">
@@ -8015,7 +11568,7 @@ the bug had appeared in 0.8.51.
 </changes>
 
 
-<changes ver="0.8.51" date="27.09.2010">
+<changes ver="0.8.51" date="2010-09-27">
 
 <change type="change">
 <para lang="ru">
@@ -8047,7 +11600,7 @@ now a listen socket "ssl" parameter may be set several times.
 </changes>
 
 
-<changes ver="0.8.50" date="02.09.2010">
+<changes ver="0.8.50" date="2010-09-02">
 
 <change type="feature">
 <para lang="ru">
@@ -8109,7 +11662,7 @@ to a process run in other session.
 </changes>
 
 
-<changes ver="0.8.49" date="09.08.2010">
+<changes ver="0.8.49" date="2010-08-09">
 
 <change type="feature">
 <para lang="ru">
@@ -8147,7 +11700,7 @@ the bug had appeared in 0.8.48.
 </changes>
 
 
-<changes ver="0.8.48" date="03.08.2010">
+<changes ver="0.8.48" date="2010-08-03">
 
 <change type="change">
 <para lang="ru">
@@ -8244,7 +11797,7 @@ if an image was larger than "image_filter_buffer" size.
 </changes>
 
 
-<changes ver="0.8.47" date="28.07.2010">
+<changes ver="0.8.47" date="2010-07-28">
 
 <change type="bugfix">
 <para lang="ru">
@@ -8279,7 +11832,7 @@ the bug had appeared in 0.8.46.
 </changes>
 
 
-<changes ver="0.8.46" date="19.07.2010">
+<changes ver="0.8.46" date="2010-07-19">
 
 <change type="change">
 <para lang="ru">
@@ -8319,7 +11872,7 @@ time or on memory low condition.
 </changes>
 
 
-<changes ver="0.8.45" date="13.07.2010">
+<changes ver="0.8.45" date="2010-07-13">
 
 <change type="feature">
 <para lang="ru">
@@ -8358,7 +11911,7 @@ the "listen" directive did not support the "setfib=0" parameter.
 </changes>
 
 
-<changes ver="0.8.44" date="05.07.2010">
+<changes ver="0.8.44" date="2010-07-05">
 
 <change type="change">
 <para lang="ru">
@@ -8423,7 +11976,7 @@ Thanks to Miroslaw Jaworski.
 </changes>
 
 
-<changes ver="0.8.43" date="30.06.2010">
+<changes ver="0.8.43" date="2010-06-30">
 
 <change type="feature">
 <para lang="ru">
@@ -8470,7 +12023,7 @@ the $uid_set variable may be used at any request processing stage.
 </changes>
 
 
-<changes ver="0.8.42" date="21.06.2010">
+<changes ver="0.8.42" date="2010-06-21">
 
 <change type="change">
 <para lang="ru">
@@ -8508,7 +12061,7 @@ a text answer may be added to a "return" directive.
 </changes>
 
 
-<changes ver="0.8.41" date="15.06.2010">
+<changes ver="0.8.41" date="2010-06-15">
 
 <change type="security">
 <para lang="ru">
@@ -8557,7 +12110,7 @@ in "Destination" request header line.
 </changes>
 
 
-<changes ver="0.8.40" date="07.06.2010">
+<changes ver="0.8.40" date="2010-06-07">
 
 <change type="security">
 <para lang="ru">
@@ -8617,7 +12170,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.8.39" date="31.05.2010">
+<changes ver="0.8.39" date="2010-05-31">
 
 <change type="bugfix">
 <para lang="ru">
@@ -8652,7 +12205,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.8.38" date="24.05.2010">
+<changes ver="0.8.38" date="2010-05-24">
 
 <change type="feature">
 <para lang="ru">
@@ -8699,7 +12252,7 @@ the $uid_got variable might not be used in the SSI and perl modules.
 </changes>
 
 
-<changes ver="0.8.37" date="17.05.2010">
+<changes ver="0.8.37" date="2010-05-17">
 
 <change type="feature">
 <para lang="ru">
@@ -8773,7 +12326,7 @@ Thanks to Alan Batie.
 </changes>
 
 
-<changes ver="0.8.36" date="22.04.2010">
+<changes ver="0.8.36" date="2010-04-22">
 
 <change type="bugfix">
 <para lang="ru">
@@ -8846,7 +12399,7 @@ the bug had appeared in 0.8.35.
 </changes>
 
 
-<changes ver="0.8.35" date="01.04.2010">
+<changes ver="0.8.35" date="2010-04-01">
 
 <change type="change">
 <para lang="ru">
@@ -8946,7 +12499,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.8.34" date="03.03.2010">
+<changes ver="0.8.34" date="2010-03-03">
 
 <change type="bugfix">
 <para lang="ru">
@@ -9057,7 +12610,7 @@ the bug had appeared in 0.8.11.
 </changes>
 
 
-<changes ver="0.8.33" date="01.02.2010">
+<changes ver="0.8.33" date="2010-02-01">
 
 <change type="security">
 <para lang="ru">
@@ -9136,7 +12689,7 @@ the bug had appeared in 0.8.11.
 </changes>
 
 
-<changes ver="0.8.32" date="11.01.2010">
+<changes ver="0.8.32" date="2010-01-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -9201,7 +12754,7 @@ Thanks to Alex Kapranoff.
 </changes>
 
 
-<changes ver="0.8.31" date="23.12.2009">
+<changes ver="0.8.31" date="2009-12-23">
 
 <change type="feature">
 <para lang="ru">
@@ -9297,7 +12850,7 @@ if the file should replace an already existent file.
 </changes>
 
 
-<changes ver="0.8.30" date="15.12.2009">
+<changes ver="0.8.30" date="2009-12-15">
 
 <change type="change">
 <para lang="ru">
@@ -9359,7 +12912,7 @@ Thanks to W-Mark Kubacki.
 </changes>
 
 
-<changes ver="0.8.29" date="30.11.2009">
+<changes ver="0.8.29" date="2009-11-30">
 
 <change type="change">
 <para lang="ru">
@@ -9438,7 +12991,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.8.28" date="23.11.2009">
+<changes ver="0.8.28" date="2009-11-23">
 
 <change type="bugfix">
 <para lang="ru">
@@ -9454,7 +13007,7 @@ the bug had appeared in 0.8.25.
 </changes>
 
 
-<changes ver="0.8.27" date="17.11.2009">
+<changes ver="0.8.27" date="2009-11-17">
 
 <change type="bugfix">
 <para lang="ru">
@@ -9470,7 +13023,7 @@ the bug had appeared in 0.8.25.
 </changes>
 
 
-<changes ver="0.8.26" date="16.11.2009">
+<changes ver="0.8.26" date="2009-11-16">
 
 <change type="bugfix">
 <para lang="ru">
@@ -9497,7 +13050,7 @@ the bug had appeared in 0.8.25.
 </changes>
 
 
-<changes ver="0.8.25" date="16.11.2009">
+<changes ver="0.8.25" date="2009-11-16">
 
 <change type="change">
 <para lang="ru">
@@ -9574,7 +13127,7 @@ the bug had appeared in 0.8.16.
 </changes>
 
 
-<changes ver="0.8.24" date="11.11.2009">
+<changes ver="0.8.24" date="2009-11-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -9621,7 +13174,7 @@ in resolving empty name.
 </changes>
 
 
-<changes ver="0.8.23" date="11.11.2009">
+<changes ver="0.8.23" date="2009-11-11">
 
 <change type="security">
 <para lang="ru">
@@ -9677,7 +13230,7 @@ Thanks to Artem Bokhan.
 </changes>
 
 
-<changes ver="0.8.22" date="03.11.2009">
+<changes ver="0.8.22" date="2009-11-03">
 
 <change type="feature">
 <para lang="ru">
@@ -9786,7 +13339,7 @@ the bug had appeared in 0.8.21.
 </changes>
 
 
-<changes ver="0.8.21" date="26.10.2009">
+<changes ver="0.8.21" date="2009-10-26">
 
 <change type="feature">
 <para lang="ru">
@@ -9849,7 +13402,7 @@ the bug had appeared in 0.8.11.
 </changes>
 
 
-<changes ver="0.8.20" date="14.10.2009">
+<changes ver="0.8.20" date="2009-10-14">
 
 <change type="change">
 <para lang="ru">
@@ -9933,7 +13486,7 @@ nginx counted incorrectly disk cache size.
 </changes>
 
 
-<changes ver="0.8.19" date="06.10.2009">
+<changes ver="0.8.19" date="2009-10-06">
 
 <change type="change">
 <para lang="ru">
@@ -9968,7 +13521,7 @@ the bug had appeared in 0.8.18.
 </changes>
 
 
-<changes ver="0.8.18" date="06.10.2009">
+<changes ver="0.8.18" date="2009-10-06">
 
 <change type="feature">
 <para lang="ru">
@@ -10056,7 +13609,7 @@ the bug had appeared in 0.8.11.
 </changes>
 
 
-<changes ver="0.8.17" date="28.09.2009">
+<changes ver="0.8.17" date="2009-09-28">
 
 <change type="security">
 <para lang="ru">
@@ -10099,7 +13652,7 @@ the bug had appeared in 0.8.11.
 </changes>
 
 
-<changes ver="0.8.16" date="22.09.2009">
+<changes ver="0.8.16" date="2009-09-22">
 
 <change type="feature">
 <para lang="ru">
@@ -10197,7 +13750,7 @@ Thanks to Igor Artemiev.
 </changes>
 
 
-<changes ver="0.8.15" date="14.09.2009">
+<changes ver="0.8.15" date="2009-09-14">
 
 <change type="security">
 <para lang="ru">
@@ -10266,7 +13819,7 @@ the bug had appeared in 0.8.11.
 </changes>
 
 
-<changes ver="0.8.14" date="07.09.2009">
+<changes ver="0.8.14" date="2009-09-07">
 
 <change type="bugfix">
 <para lang="ru">
@@ -10315,7 +13868,7 @@ the bug had appeared in 0.6.10.
 </changes>
 
 
-<changes ver="0.8.13" date="31.08.2009">
+<changes ver="0.8.13" date="2009-08-31">
 
 <change type="bugfix">
 <para lang="ru">
@@ -10342,7 +13895,7 @@ the bug had appeared in 0.8.12.
 </changes>
 
 
-<changes ver="0.8.12" date="31.08.2009">
+<changes ver="0.8.12" date="2009-08-31">
 
 <change type="feature">
 <para lang="ru">
@@ -10377,7 +13930,7 @@ the bug had appeared in 0.8.11.
 
 </changes>
 
-<changes ver="0.8.11" date="28.08.2009">
+<changes ver="0.8.11" date="2009-08-28">
 
 <change type="change">
 <para lang="ru">
@@ -10411,7 +13964,7 @@ the "directio_alignment" directive.
 </changes>
 
 
-<changes ver="0.8.10" date="24.08.2009">
+<changes ver="0.8.10" date="2009-08-24">
 
 <change type="bugfix">
 <para lang="ru">
@@ -10436,7 +13989,7 @@ the bug had appeared in 0.8.9.
 </changes>
 
 
-<changes ver="0.8.9" date="17.08.2009">
+<changes ver="0.8.9" date="2009-08-17">
 
 <change type="feature">
 <para lang="ru">
@@ -10463,7 +14016,7 @@ different file systems.
 </changes>
 
 
-<changes ver="0.8.8" date="10.08.2009">
+<changes ver="0.8.8" date="2009-08-10">
 
 <change type="bugfix">
 <para lang="ru">
@@ -10492,7 +14045,7 @@ the bug had appeared in 0.8.7.
 </changes>
 
 
-<changes ver="0.8.7" date="27.07.2009">
+<changes ver="0.8.7" date="2009-07-27">
 
 <change type="change">
 <para lang="ru">
@@ -10612,7 +14165,7 @@ the bug had appeared in 0.8.5.
 </changes>
 
 
-<changes ver="0.8.6" date="20.07.2009">
+<changes ver="0.8.6" date="2009-07-20">
 
 <change type="feature">
 <para lang="ru">
@@ -10675,7 +14228,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.8.5" date="13.07.2009">
+<changes ver="0.8.5" date="2009-07-13">
 
 <change type="bugfix">
 <para lang="ru">
@@ -10720,7 +14273,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.8.4" date="22.06.2009">
+<changes ver="0.8.4" date="2009-06-22">
 
 <change type="bugfix">
 <para lang="ru">
@@ -10736,7 +14289,7 @@ the bug had appeared in 0.8.3.
 </changes>
 
 
-<changes ver="0.8.3" date="19.06.2009">
+<changes ver="0.8.3" date="2009-06-19">
 
 <change type="feature">
 <para lang="ru">
@@ -10785,7 +14338,7 @@ Thanks to Eugene Mychlo.
 </changes>
 
 
-<changes ver="0.8.2" date="15.06.2009">
+<changes ver="0.8.2" date="2009-06-15">
 
 <change type="bugfix">
 <para lang="ru">
@@ -10810,7 +14363,7 @@ the bug had appeared in 0.7.4.
 </changes>
 
 
-<changes ver="0.8.1" date="08.06.2009">
+<changes ver="0.8.1" date="2009-06-08">
 
 <change type="feature">
 <para lang="ru">
@@ -10873,7 +14426,7 @@ the bug had appeared in 0.7.56.
 </changes>
 
 
-<changes ver="0.8.0" date="02.06.2009">
+<changes ver="0.8.0" date="2009-06-02">
 
 <change type="feature">
 <para lang="ru">
@@ -10936,7 +14489,7 @@ Thanks to Maxim Dounin and Kirill A. Korinskiy.
 </changes>
 
 
-<changes ver="0.7.59" date="25.05.2009">
+<changes ver="0.7.59" date="2009-05-25">
 
 <change type="feature">
 <para lang="ru">
@@ -11011,7 +14564,7 @@ responses.
 </changes>
 
 
-<changes ver="0.7.58" date="18.05.2009">
+<changes ver="0.7.58" date="2009-05-18">
 
 <change type="feature">
 <para lang="ru">
@@ -11076,7 +14629,7 @@ Thanks to Denis F. Latypoff.
 </changes>
 
 
-<changes ver="0.7.57" date="12.05.2009">
+<changes ver="0.7.57" date="2009-05-12">
 
 <change type="bugfix">
 <para lang="ru">
@@ -11094,7 +14647,7 @@ the bug had appeared in 0.7.56.
 </changes>
 
 
-<changes ver="0.7.56" date="11.05.2009">
+<changes ver="0.7.56" date="2009-05-11">
 
 <change type="feature">
 <para lang="ru">
@@ -11117,7 +14670,7 @@ in ngx_http_image_filter_module.
 </changes>
 
 
-<changes ver="0.7.55" date="06.05.2009">
+<changes ver="0.7.55" date="2009-05-06">
 
 <change type="bugfix">
 <para lang="ru">
@@ -11186,7 +14739,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.7.54" date="01.05.2009">
+<changes ver="0.7.54" date="2009-05-01">
 
 <change type="feature">
 <para lang="ru">
@@ -11262,7 +14815,7 @@ the bug had appeared in 0.7.53.
 </changes>
 
 
-<changes ver="0.7.53" date="27.04.2009">
+<changes ver="0.7.53" date="2009-04-27">
 
 <change type="change">
 <para lang="ru">
@@ -11395,7 +14948,7 @@ Thanks to Andrew Vorobyoff.
 </changes>
 
 
-<changes ver="0.7.52" date="20.04.2009">
+<changes ver="0.7.52" date="2009-04-20">
 
 <change type="feature">
 <para lang="ru">
@@ -11475,7 +15028,7 @@ the bug had appeared in 0.7.42.
 </changes>
 
 
-<changes ver="0.7.51" date="12.04.2009">
+<changes ver="0.7.51" date="2009-04-12">
 
 <change type="feature">
 <para lang="ru">
@@ -11522,7 +15075,7 @@ the bug had appeared in 0.7.39.
 </changes>
 
 
-<changes ver="0.7.50" date="06.04.2009">
+<changes ver="0.7.50" date="2009-04-06">
 
 <change type="bugfix">
 <para lang="ru">
@@ -11538,7 +15091,7 @@ the bug had appeared in 0.7.49.
 </changes>
 
 
-<changes ver="0.7.49" date="06.04.2009">
+<changes ver="0.7.49" date="2009-04-06">
 
 <change type="bugfix">
 <para lang="ru">
@@ -11556,7 +15109,7 @@ the bug had appeared in 0.7.48.
 </changes>
 
 
-<changes ver="0.7.48" date="06.04.2009">
+<changes ver="0.7.48" date="2009-04-06">
 
 <change type="feature">
 <para lang="ru">
@@ -11632,7 +15185,7 @@ the bug had <nobr>appeared in 0.7.46.</nobr>
 </changes>
 
 
-<changes ver="0.7.47" date="01.04.2009">
+<changes ver="0.7.47" date="2009-04-01">
 
 <change type="bugfix">
 <para lang="ru">
@@ -11701,7 +15254,7 @@ the bug had appeared in 0.7.44.
 </changes>
 
 
-<changes ver="0.7.46" date="30.03.2009">
+<changes ver="0.7.46" date="2009-03-30">
 
 <change type="bugfix">
 <para lang="ru">
@@ -11715,7 +15268,7 @@ the previous release tarball was incorrect.
 </changes>
 
 
-<changes ver="0.7.45" date="30.03.2009">
+<changes ver="0.7.45" date="2009-03-30">
 
 <change type="change">
 <para lang="ru">
@@ -11809,7 +15362,7 @@ the bug had appeared in 0.7.42.
 </changes>
 
 
-<changes ver="0.7.44" date="23.03.2009">
+<changes ver="0.7.44" date="2009-03-23">
 
 <change type="feature">
 <para lang="ru">
@@ -11872,7 +15425,7 @@ then captures in regular expressions in a "server_name" directive did not work.
 </changes>
 
 
-<changes ver="0.7.43" date="18.03.2009">
+<changes ver="0.7.43" date="2009-03-18">
 
 <change type="bugfix">
 <para lang="ru">
@@ -11901,7 +15454,7 @@ the bug had appeared in 0.7.36.
 </changes>
 
 
-<changes ver="0.7.42" date="16.03.2009">
+<changes ver="0.7.42" date="2009-03-16">
 
 <change type="change">
 <para lang="ru">
@@ -11985,7 +15538,7 @@ the bug had appeared in 0.7.41.
 </changes>
 
 
-<changes ver="0.7.41" date="11.03.2009">
+<changes ver="0.7.41" date="2009-03-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12006,7 +15559,7 @@ Thanks to Vladimir Sopot.
 </changes>
 
 
-<changes ver="0.7.40" date="09.03.2009">
+<changes ver="0.7.40" date="2009-03-09">
 
 <change type="feature">
 <para lang="ru">
@@ -12056,7 +15609,7 @@ Thanks to Dmitry Kuzmenko.
 </changes>
 
 
-<changes ver="0.7.39" date="02.03.2009">
+<changes ver="0.7.39" date="2009-03-02">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12085,7 +15638,7 @@ if short static variants are used in a "try_files" directive.
 </changes>
 
 
-<changes ver="0.7.38" date="23.02.2009">
+<changes ver="0.7.38" date="2009-02-23">
 
 <change type="feature">
 <para lang="ru">
@@ -12125,7 +15678,7 @@ the bug had appeared in 0.7.36.
 </changes>
 
 
-<changes ver="0.7.37" date="21.02.2009">
+<changes ver="0.7.37" date="2009-02-21">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12141,7 +15694,7 @@ the bug had appeared in 0.7.36.
 </changes>
 
 
-<changes ver="0.7.36" date="21.02.2009">
+<changes ver="0.7.36" date="2009-02-21">
 
 <change type="feature">
 <para lang="ru">
@@ -12168,7 +15721,7 @@ preset by a "modern_browser" directives.
 </changes>
 
 
-<changes ver="0.7.35" date="16.02.2009">
+<changes ver="0.7.35" date="2009-02-16">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12212,7 +15765,7 @@ if ".domain.tld" and ".subdomain.domain.tld" wildcards were used;
 </changes>
 
 
-<changes ver="0.7.34" date="10.02.2009">
+<changes ver="0.7.34" date="2009-02-10">
 
 <change type="feature">
 <para lang="ru">
@@ -12275,7 +15828,7 @@ nginx could not be built on AIX.
 </changes>
 
 
-<changes ver="0.7.33" date="02.02.2009">
+<changes ver="0.7.33" date="2009-02-02">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12314,7 +15867,7 @@ if "resolver" directive was used in SMTP proxy.
 </changes>
 
 
-<changes ver="0.7.32" date="26.01.2009">
+<changes ver="0.7.32" date="2009-01-26">
 
 <change type="feature">
 <para lang="ru">
@@ -12359,7 +15912,7 @@ Thanks to Andrey Kvasov.
 </changes>
 
 
-<changes ver="0.7.31" date="19.01.2009">
+<changes ver="0.7.31" date="2009-01-19">
 
 <change type="change">
 <para lang="ru">
@@ -12431,7 +15984,7 @@ Thanks to Maxim Dounin.
 
 
 
-<changes ver="0.7.30" date="24.12.2008">
+<changes ver="0.7.30" date="2008-12-24">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12451,7 +16004,7 @@ the bug had appeared in 0.7.29.
 </changes>
 
 
-<changes ver="0.7.29" date="24.12.2008">
+<changes ver="0.7.29" date="2008-12-24">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12498,7 +16051,7 @@ in memory allocation in the ngx_http_gzip_filter_module on Cygwin.
 </changes>
 
 
-<changes ver="0.7.28" date="22.12.2008">
+<changes ver="0.7.28" date="2008-12-22">
 
 <change type="change">
 <para lang="ru">
@@ -12523,7 +16076,7 @@ to 32 4k or 16 8k from 4 4k/8k.
 </changes>
 
 
-<changes ver="0.7.27" date="15.12.2008">
+<changes ver="0.7.27" date="2008-12-15">
 
 <change type="feature">
 <para lang="ru">
@@ -12619,7 +16172,7 @@ Thanks to Sergey Bochenkov.
 </changes>
 
 
-<changes ver="0.7.26" date="08.12.2008">
+<changes ver="0.7.26" date="2008-12-08">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12635,7 +16188,7 @@ the bug had appeared in 0.7.25.
 </changes>
 
 
-<changes ver="0.7.25" date="08.12.2008">
+<changes ver="0.7.25" date="2008-12-08">
 
 <change type="change">
 <para lang="ru">
@@ -12676,7 +16229,7 @@ in the "delete" parameter of the "geo" directive.
 </changes>
 
 
-<changes ver="0.7.24" date="01.12.2008">
+<changes ver="0.7.24" date="2008-12-01">
 
 <change type="feature">
 <para lang="ru">
@@ -12710,7 +16263,7 @@ the "$cookie_..." variables did not work in the SSI and the perl module.
 </changes>
 
 
-<changes ver="0.7.23" date="27.11.2008">
+<changes ver="0.7.23" date="2008-11-27">
 
 <change type="feature">
 <para lang="ru">
@@ -12742,7 +16295,7 @@ decrease of memory required for geo base load.
 </changes>
 
 
-<changes ver="0.7.22" date="20.11.2008">
+<changes ver="0.7.22" date="2008-11-20">
 
 <change type="feature">
 <para lang="ru">
@@ -12787,7 +16340,7 @@ Thanks to Zyb.
 </changes>
 
 
-<changes ver="0.7.21" date="11.11.2008">
+<changes ver="0.7.21" date="2008-11-11">
 
 <change>
 <para lang="ru">
@@ -12834,7 +16387,7 @@ the bug had appeared in 0.7.6.
 </changes>
 
 
-<changes ver="0.7.20" date="10.11.2008">
+<changes ver="0.7.20" date="2008-11-10">
 
 <change>
 <para lang="ru">
@@ -12910,7 +16463,7 @@ $server_addr variable might have no value.
 </changes>
 
 
-<changes ver="0.7.19" date="13.10.2008">
+<changes ver="0.7.19" date="2008-10-13">
 
 <change type="bugfix">
 <para lang="ru">
@@ -12924,7 +16477,7 @@ version number update.
 </changes>
 
 
-<changes ver="0.7.18" date="13.10.2008">
+<changes ver="0.7.18" date="2008-10-13">
 
 <change type="change">
 <para lang="ru">
@@ -13015,7 +16568,7 @@ now accept threshold depends on worker_connections.
 </changes>
 
 
-<changes ver="0.7.17" date="15.09.2008">
+<changes ver="0.7.17" date="2008-09-15">
 
 <change type="feature">
 <para lang="ru">
@@ -13071,7 +16624,7 @@ received from backend.
 </changes>
 
 
-<changes ver="0.7.16" date="08.09.2008">
+<changes ver="0.7.16" date="2008-09-08">
 
 <change type="bugfix">
 <para lang="ru">
@@ -13087,7 +16640,7 @@ the bug had appeared in 0.7.15.
 </changes>
 
 
-<changes ver="0.7.15" date="08.09.2008">
+<changes ver="0.7.15" date="2008-09-08">
 
 <change type="feature">
 <para lang="ru">
@@ -13130,7 +16683,7 @@ now nginx allows underscores in a client request header line names.
 </changes>
 
 
-<changes ver="0.7.14" date="01.09.2008">
+<changes ver="0.7.14" date="2008-09-01">
 
 <change type="change">
 <para lang="ru">
@@ -13198,7 +16751,7 @@ configuration file validity test improvements.
 </changes>
 
 
-<changes ver="0.7.13" date="26.08.2008">
+<changes ver="0.7.13" date="2008-08-26">
 
 <change type="bugfix">
 <para lang="ru">
@@ -13214,7 +16767,7 @@ the bug had appeared in 0.7.12.
 </changes>
 
 
-<changes ver="0.7.12" date="26.08.2008">
+<changes ver="0.7.12" date="2008-08-26">
 
 <change type="feature">
 <para lang="ru">
@@ -13284,7 +16837,7 @@ the bug had appeared in 0.7.0.
 </changes>
 
 
-<changes ver="0.7.11" date="18.08.2008">
+<changes ver="0.7.11" date="2008-08-18">
 
 <change type="change">
 <para lang="ru">
@@ -13351,7 +16904,7 @@ the bugs had appeared in 0.7.1.
 </changes>
 
 
-<changes ver="0.7.10" date="13.08.2008">
+<changes ver="0.7.10" date="2008-08-13">
 
 <change type="bugfix">
 <para lang="ru">
@@ -13389,7 +16942,7 @@ but for each request passed via the connection.
 </changes>
 
 
-<changes ver="0.7.9" date="12.08.2008">
+<changes ver="0.7.9" date="2008-08-12">
 
 <change type="change">
 <para lang="ru">
@@ -13491,7 +17044,7 @@ the bug had appeared in 0.3.18.
 </changes>
 
 
-<changes ver="0.7.8" date="04.08.2008">
+<changes ver="0.7.8" date="2008-08-04">
 
 <change type="feature">
 <para lang="ru">
@@ -13538,7 +17091,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.7.7" date="30.07.2008">
+<changes ver="0.7.7" date="2008-07-30">
 
 <change type="change">
 <para lang="ru">
@@ -13637,7 +17190,7 @@ UTF-8 encoding usage in the ngx_http_autoindex_module.
 </changes>
 
 
-<changes ver="0.7.6" date="07.07.2008">
+<changes ver="0.7.6" date="2008-07-07">
 
 <change type="bugfix">
 <para lang="ru">
@@ -13663,7 +17216,7 @@ the ngx_http_flv_module did not support several values in a query string.
 </changes>
 
 
-<changes ver="0.7.5" date="01.07.2008">
+<changes ver="0.7.5" date="2008-07-01">
 
 <change>
 <para lang="ru">
@@ -13703,7 +17256,7 @@ were transferred incorrectly.
 </changes>
 
 
-<changes ver="0.7.4" date="30.06.2008">
+<changes ver="0.7.4" date="2008-06-30">
 
 <change type="feature">
 <para lang="ru">
@@ -13753,7 +17306,7 @@ large SSI inclusions might be truncated.
 </changes>
 
 
-<changes ver="0.7.3" date="23.06.2008">
+<changes ver="0.7.3" date="2008-06-23">
 
 <change type="change">
 <para lang="ru">
@@ -13802,7 +17355,7 @@ the bug had appeared in 0.6.9.
 </changes>
 
 
-<changes ver="0.7.2" date="16.06.2008">
+<changes ver="0.7.2" date="2008-06-16">
 
 <change type="feature">
 <para lang="ru">
@@ -13872,7 +17425,7 @@ nginx dropped a query string from the original request.
 </changes>
 
 
-<changes ver="0.7.1" date="26.05.2008">
+<changes ver="0.7.1" date="2008-05-26">
 
 <change type="change">
 <para lang="ru">
@@ -13940,7 +17493,7 @@ Thanks to Roxis.
 </changes>
 
 
-<changes ver="0.7.0" date="19.05.2008">
+<changes ver="0.7.0" date="2008-05-19">
 
 <change type="change">
 <para lang="ru">
@@ -14018,7 +17571,7 @@ if keepalive was enabled.
 </changes>
 
 
-<changes ver="0.6.31" date="12.05.2008">
+<changes ver="0.6.31" date="2008-05-12">
 
 <change type="bugfix">
 <para lang="ru">
@@ -14049,7 +17602,7 @@ and the "open_file_cache_errors" directive was off.
 </changes>
 
 
-<changes ver="0.6.30" date="29.04.2008">
+<changes ver="0.6.30" date="2008-04-29">
 
 <change type="change">
 <para lang="ru">
@@ -14125,7 +17678,7 @@ the bug had appeared in 0.6.15.
 </changes>
 
 
-<changes ver="0.6.29" date="18.03.2008">
+<changes ver="0.6.29" date="2008-03-18">
 
 <change type="feature">
 <para lang="ru">
@@ -14150,7 +17703,7 @@ the bug had appeared in 0.6.27.
 </changes>
 
 
-<changes ver="0.6.28" date="13.03.2008">
+<changes ver="0.6.28" date="2008-03-13">
 
 <change type="bugfix">
 <para lang="ru">
@@ -14166,7 +17719,7 @@ the bug had appeared in 0.6.27.
 </changes>
 
 
-<changes ver="0.6.27" date="12.03.2008">
+<changes ver="0.6.27" date="2008-03-12">
 
 <change type="change">
 <para lang="ru">
@@ -14336,7 +17889,7 @@ in copying URI part contained escaped symbols into arguments.
 </changes>
 
 
-<changes ver="0.6.26" date="11.02.2008">
+<changes ver="0.6.26" date="2008-02-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -14419,7 +17972,7 @@ the bug had appeared in 0.6.23.
 </changes>
 
 
-<changes ver="0.6.25" date="08.01.2008">
+<changes ver="0.6.25" date="2008-01-08">
 
 <change type="change">
 <para lang="ru">
@@ -14517,7 +18070,7 @@ the bug had appeared in 0.6.23.
 
 </changes>
 
-<changes ver="0.6.24" date="27.12.2007">
+<changes ver="0.6.24" date="2007-12-27">
 
 <change type="bugfix">
 <para lang="ru">
@@ -14533,7 +18086,7 @@ the bug had appeared in 0.6.23.
 </changes>
 
 
-<changes ver="0.6.23" date="27.12.2007">
+<changes ver="0.6.23" date="2007-12-27">
 
 <change type="change">
 <para lang="ru">
@@ -14672,7 +18225,7 @@ the bug had appeared in 0.5.13.
 </changes>
 
 
-<changes ver="0.6.22" date="19.12.2007">
+<changes ver="0.6.22" date="2007-12-19">
 
 <change type="change">
 <para lang="ru">
@@ -14779,7 +18332,7 @@ Thanks to Manlio Perillo.
 </changes>
 
 
-<changes ver="0.6.21" date="03.12.2007">
+<changes ver="0.6.21" date="2007-12-03">
 
 <change type="change">
 <para lang="ru">
@@ -14847,7 +18400,7 @@ then nginx returned usual response.
 </changes>
 
 
-<changes ver="0.6.20" date="28.11.2007">
+<changes ver="0.6.20" date="2007-11-28">
 
 <change type="bugfix">
 <para lang="ru">
@@ -14865,7 +18418,7 @@ the bug had appeared in 0.6.19.
 </changes>
 
 
-<changes ver="0.6.19" date="27.11.2007">
+<changes ver="0.6.19" date="2007-11-27">
 
 <change type="bugfix">
 <para lang="ru">
@@ -14878,7 +18431,7 @@ the 0.6.18 version could not be built.
 
 </changes>
 
-<changes ver="0.6.18" date="27.11.2007">
+<changes ver="0.6.18" date="2007-11-27">
 
 <change type="change">
 <para lang="ru">
@@ -14943,7 +18496,7 @@ even if limit value was very high.
 </changes>
 
 
-<changes ver="0.6.17" date="15.11.2007">
+<changes ver="0.6.17" date="2007-11-15">
 
 <change type="feature">
 <para lang="ru">
@@ -15010,7 +18563,7 @@ in HTTP/0.9 version.
 </changes>
 
 
-<changes ver="0.6.16" date="29.10.2007">
+<changes ver="0.6.16" date="2007-10-29">
 
 <change type="change">
 <para lang="ru">
@@ -15048,7 +18601,7 @@ compatibility with mget.
 </changes>
 
 
-<changes ver="0.6.15" date="22.10.2007">
+<changes ver="0.6.15" date="2007-10-22">
 
 <change type="feature">
 <para lang="ru">
@@ -15150,7 +18703,7 @@ the bug had appeared in 0.6.7.
 </changes>
 
 
-<changes ver="0.6.14" date="15.10.2007">
+<changes ver="0.6.14" date="2007-10-15">
 
 <change type="change">
 <para lang="ru">
@@ -15271,7 +18824,7 @@ in sub_filter parsing.
 </changes>
 
 
-<changes ver="0.6.13" date="24.09.2007">
+<changes ver="0.6.13" date="2007-09-24">
 
 <change type="bugfix">
 <para lang="ru">
@@ -15288,7 +18841,7 @@ Thanks to Arkadiusz Patyk.
 </changes>
 
 
-<changes ver="0.6.12" date="21.09.2007">
+<changes ver="0.6.12" date="2007-09-21">
 
 <change type="change">
 <para lang="ru">
@@ -15358,7 +18911,7 @@ Thanks to Manlio Perillo.
 </changes>
 
 
-<changes ver="0.6.11" date="11.09.2007">
+<changes ver="0.6.11" date="2007-09-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -15406,7 +18959,7 @@ the bug had appeared in 0.6.6.
 </changes>
 
 
-<changes ver="0.6.10" date="03.09.2007">
+<changes ver="0.6.10" date="2007-09-03">
 
 <change type="feature">
 <para lang="ru">
@@ -15454,7 +19007,7 @@ if /dev/poll method was used.
 </changes>
 
 
-<changes ver="0.6.9" date="28.08.2007">
+<changes ver="0.6.9" date="2007-08-28">
 
 <change type="bugfix">
 <para lang="ru">
@@ -15502,7 +19055,7 @@ the bug had appeared in 0.6.8.
 </changes>
 
 
-<changes ver="0.6.8" date="20.08.2007">
+<changes ver="0.6.8" date="2007-08-20">
 
 <change type="change">
 <para lang="ru">
@@ -15562,7 +19115,7 @@ nginx did not work on FreeBSD/sparc64.
 </changes>
 
 
-<changes ver="0.6.7" date="15.08.2007">
+<changes ver="0.6.7" date="2007-08-15">
 
 <change type="change">
 <para lang="ru">
@@ -15702,7 +19255,7 @@ to FastCGI-server via the unix domain socket.
 </changes>
 
 
-<changes ver="0.6.6" date="30.07.2007">
+<changes ver="0.6.6" date="2007-07-30">
 
 <change type="feature">
 <para lang="ru">
@@ -15785,7 +19338,7 @@ the bug had appeared in 0.6.4.
 </changes>
 
 
-<changes ver="0.6.5" date="23.07.2007">
+<changes ver="0.6.5" date="2007-07-23">
 
 <change type="feature">
 <para lang="ru">
@@ -15854,7 +19407,7 @@ Thanks to Coverity's Scan.
 </changes>
 
 
-<changes ver="0.6.4" date="17.07.2007">
+<changes ver="0.6.4" date="2007-07-17">
 
 <change type="security">
 <para lang="ru">
@@ -15910,7 +19463,7 @@ Thanks to Jiang Hong.
 </changes>
 
 
-<changes ver="0.6.3" date="12.07.2007">
+<changes ver="0.6.3" date="2007-07-12">
 
 <change type="feature">
 <para lang="ru">
@@ -15982,7 +19535,7 @@ the bug had appeared in 0.5.13.
 </changes>
 
 
-<changes ver="0.6.2" date="09.07.2007">
+<changes ver="0.6.2" date="2007-07-09">
 
 <change type="bugfix">
 <para lang="ru">
@@ -15998,7 +19551,7 @@ then nginx passed garbage in the header to a client.
 </changes>
 
 
-<changes ver="0.6.1" date="17.06.2007">
+<changes ver="0.6.1" date="2007-06-17">
 
 <change type="bugfix">
 <para lang="ru">
@@ -16044,7 +19597,7 @@ process identification number.
 </changes>
 
 
-<changes ver="0.6.0" date="14.06.2007">
+<changes ver="0.6.0" date="2007-06-14">
 
 <change type="feature">
 <para lang="ru">
@@ -16060,7 +19613,7 @@ the "www.example.*" wildcards.
 </changes>
 
 
-<changes ver="0.5.25" date="11.06.2007">
+<changes ver="0.5.25" date="2007-06-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -16076,7 +19629,7 @@ the bug had appeared in 0.5.24.
 </changes>
 
 
-<changes ver="0.5.24" date="06.06.2007">
+<changes ver="0.5.24" date="2007-06-06">
 
 <change type="security">
 <para lang="ru">
@@ -16103,7 +19656,7 @@ the bug had appeared in 0.5.23.
 </changes>
 
 
-<changes ver="0.5.23" date="04.06.2007">
+<changes ver="0.5.23" date="2007-06-04">
 
 <change type="feature">
 <para lang="ru">
@@ -16161,7 +19714,7 @@ in the HTTPS protocol in the "proxy_pass" directive.
 </changes>
 
 
-<changes ver="0.5.22" date="29.05.2007">
+<changes ver="0.5.22" date="2007-05-29">
 
 <change type="bugfix">
 <para lang="ru">
@@ -16177,7 +19730,7 @@ the bug had appeared in 0.5.21.
 </changes>
 
 
-<changes ver="0.5.21" date="28.05.2007">
+<changes ver="0.5.21" date="2007-05-28">
 
 <change type="bugfix">
 <para lang="ru">
@@ -16228,7 +19781,7 @@ in the HTTPS protocol in the "proxy_pass" directive.
 </changes>
 
 
-<changes ver="0.5.20" date="07.05.2007">
+<changes ver="0.5.20" date="2007-05-07">
 
 <change type="feature">
 <para lang="ru">
@@ -16297,7 +19850,7 @@ Thanks to Andrei Nigmatulin.
 </changes>
 
 
-<changes ver="0.5.19" date="24.04.2007">
+<changes ver="0.5.19" date="2007-04-24">
 
 <change type="change">
 <para lang="ru">
@@ -16363,7 +19916,7 @@ the files more than 2G could not be transferred using sendfile on 64-bit Linux.
 </changes>
 
 
-<changes ver="0.5.18" date="19.04.2007">
+<changes ver="0.5.18" date="2007-04-19">
 
 <change type="feature">
 <para lang="ru">
@@ -16427,7 +19980,7 @@ the bug had appeared in 0.3.38.
 </changes>
 
 
-<changes ver="0.5.17" date="02.04.2007">
+<changes ver="0.5.17" date="2007-04-02">
 
 <change type="change">
 <para lang="ru">
@@ -16481,7 +20034,7 @@ returned old cached value.
 </changes>
 
 
-<changes ver="0.5.16" date="26.03.2007">
+<changes ver="0.5.16" date="2007-03-26">
 
 <change type="bugfix">
 <para lang="ru">
@@ -16535,7 +20088,7 @@ the bug had appeared in 0.5.15.
 </changes>
 
 
-<changes ver="0.5.15" date="19.03.2007">
+<changes ver="0.5.15" date="2007-03-19">
 
 <change type="feature">
 <para lang="ru">
@@ -16628,7 +20181,7 @@ now nginx does not log some alerts if eventport or /dev/poll methods are used.
 </changes>
 
 
-<changes ver="0.5.14" date="23.02.2007">
+<changes ver="0.5.14" date="2007-02-23">
 
 <change type="bugfix">
 <para lang="ru">
@@ -16643,7 +20196,7 @@ nginx ignored superfluous closing "}" in the end of configuration file.
 </changes>
 
 
-<changes ver="0.5.13" date="19.02.2007">
+<changes ver="0.5.13" date="2007-02-19">
 
 <change type="feature">
 <para lang="ru">
@@ -16714,7 +20267,7 @@ the bug had appeared in 0.5.8.
 </changes>
 
 
-<changes ver="0.5.12" date="12.02.2007">
+<changes ver="0.5.12" date="2007-02-12">
 
 <change type="bugfix">
 <para lang="ru">
@@ -16764,7 +20317,7 @@ ngx_http_perl_module could not be built on Solaris.
 </changes>
 
 
-<changes ver="0.5.11" date="05.02.2007">
+<changes ver="0.5.11" date="2007-02-05">
 
 <change type="feature">
 <para lang="ru">
@@ -16825,7 +20378,7 @@ if nginx was built with -O2 optimization.
 </changes>
 
 
-<changes ver="0.5.10" date="26.01.2007">
+<changes ver="0.5.10" date="2007-01-26">
 
 <change type="bugfix">
 <para lang="ru">
@@ -16856,7 +20409,7 @@ the bug had appeared in 0.5.1.
 </changes>
 
 
-<changes ver="0.5.9" date="25.01.2007">
+<changes ver="0.5.9" date="2007-01-25">
 
 <change type="change">
 <para lang="ru">
@@ -16928,7 +20481,7 @@ the "access_log off" directive did not always turn off the logging.
 </changes>
 
 
-<changes ver="0.5.8" date="19.01.2007">
+<changes ver="0.5.8" date="2007-01-19">
 
 <change type="bugfix">
 <para lang="ru">
@@ -17005,7 +20558,7 @@ Bugfixes in the "limit_zone" directive.
 </changes>
 
 
-<changes ver="0.5.7" date="15.01.2007">
+<changes ver="0.5.7" date="2007-01-15">
 
 <change type="feature">
 <para lang="ru">
@@ -17072,7 +20625,7 @@ the PCRE-6.5+ library and the icc compiler compatibility.
 </changes>
 
 
-<changes ver="0.5.6" date="09.01.2007">
+<changes ver="0.5.6" date="2007-01-09">
 
 <change type="change">
 <para lang="ru">
@@ -17134,7 +20687,7 @@ the byte-ranges were transferred incorrectly if the $r->sendfile() was used.
 </changes>
 
 
-<changes ver="0.5.5" date="24.12.2006">
+<changes ver="0.5.5" date="2006-12-24">
 
 <change type="change">
 <para lang="ru">
@@ -17195,7 +20748,7 @@ the ppc platform specific bugs.
 </changes>
 
 
-<changes ver="0.5.4" date="15.12.2006">
+<changes ver="0.5.4" date="2006-12-15">
 
 <change type="feature">
 <para lang="ru">
@@ -17242,7 +20795,7 @@ the bug had appeared in 0.4.14.
 </changes>
 
 
-<changes ver="0.5.3" date="13.12.2006">
+<changes ver="0.5.3" date="2006-12-13">
 
 <change type="feature">
 <para lang="ru">
@@ -17277,7 +20830,7 @@ the $r->has_request_body method did not work.
 </changes>
 
 
-<changes ver="0.5.2" date="11.12.2006">
+<changes ver="0.5.2" date="2006-12-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -17295,7 +20848,7 @@ the bug had appeared in 0.5.1.
 </changes>
 
 
-<changes ver="0.5.1" date="11.12.2006">
+<changes ver="0.5.1" date="2006-12-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -17387,7 +20940,7 @@ response time was more than 1 millisecond.
 </changes>
 
 
-<changes ver="0.5.0" date="04.12.2006">
+<changes ver="0.5.0" date="2006-12-04">
 
 <change type="change">
 <para lang="ru">
@@ -17459,7 +21012,7 @@ the bug had appeared in 0.4.14.
 </changes>
 
 
-<changes ver="0.4.14" date="27.11.2006">
+<changes ver="0.4.14" date="2006-11-27">
 
 <change type="feature">
 <para lang="ru">
@@ -17555,7 +21108,7 @@ authentication server failed.
 </changes>
 
 
-<changes ver="0.4.13" date="15.11.2006">
+<changes ver="0.4.13" date="2006-11-15">
 
 <change type="feature">
 <para lang="ru">
@@ -17642,7 +21195,7 @@ the bug had appeared in 0.3.50.
 </changes>
 
 
-<changes ver="0.4.12" date="31.10.2006">
+<changes ver="0.4.12" date="2006-10-31">
 
 <change type="feature">
 <para lang="ru">
@@ -17676,11 +21229,11 @@ nginx did not omit the "#fragment" part in URI.
 </changes>
 
 
-<changes ver="0.4.11" date="25.10.2006">
+<changes ver="0.4.11" date="2006-10-25">
 
 <change type="feature">
 <para lang="ru">
-POP3 прокси поддерживает AUTH LOIGN PLAIN и CRAM-MD5.
+POP3 прокси поддерживает AUTH LOGIN PLAIN и CRAM-MD5.
 </para>
 <para lang="en">
 the POP3 proxy supports the AUTH LOGIN PLAIN and CRAM-MD5.
@@ -17712,7 +21265,7 @@ the bug had appeared in 0.4.10.
 </changes>
 
 
-<changes ver="0.4.10" date="23.10.2006">
+<changes ver="0.4.10" date="2006-10-23">
 
 <change type="feature">
 <para lang="ru">
@@ -17770,7 +21323,7 @@ the bug had appeared in 0.4.9.
 </changes>
 
 
-<changes ver="0.4.9" date="13.10.2006">
+<changes ver="0.4.9" date="2006-10-13">
 
 <change type="feature">
 <para lang="ru">
@@ -17793,7 +21346,7 @@ the ngx_http_perl_module now tests the nginx.pm module version.
 </changes>
 
 
-<changes ver="0.4.8" date="11.10.2006">
+<changes ver="0.4.8" date="2006-10-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -17820,7 +21373,7 @@ Thanks to Alexey Kovyrin.
 </changes>
 
 
-<changes ver="0.4.7" date="10.10.2006">
+<changes ver="0.4.7" date="2006-10-10">
 
 <change type="feature">
 <para lang="ru">
@@ -17883,7 +21436,7 @@ nginx did not run on 64-bit platforms except amd64, sparc64, and ppc64.
 </changes>
 
 
-<changes ver="0.4.6" date="06.10.2006">
+<changes ver="0.4.6" date="2006-10-06">
 
 <change type="bugfix">
 <para lang="ru">
@@ -17923,7 +21476,7 @@ the bug had appeared in 0.4.4.
 </changes>
 
 
-<changes ver="0.4.5" date="02.10.2006">
+<changes ver="0.4.5" date="2006-10-02">
 
 <change type="bugfix">
 <para lang="ru">
@@ -17939,7 +21492,7 @@ the bug had appeared in 0.4.4.
 </changes>
 
 
-<changes ver="0.4.4" date="02.10.2006">
+<changes ver="0.4.4" date="2006-10-02">
 
 <change type="feature">
 <para lang="ru">
@@ -18005,7 +21558,7 @@ in the "proxy_redirect" directive.
 </changes>
 
 
-<changes ver="0.4.3" date="26.09.2006">
+<changes ver="0.4.3" date="2006-09-26">
 
 <change type="change">
 <para lang="ru">
@@ -18080,7 +21633,7 @@ of the Sun Studio PAUSE hardware capability bug.
 </changes>
 
 
-<changes ver="0.4.2" date="14.09.2006">
+<changes ver="0.4.2" date="2006-09-14">
 
 <change type="bugfix">
 <para lang="ru">
@@ -18096,7 +21649,7 @@ the bug had appeared in 0.4.1.
 </changes>
 
 
-<changes ver="0.4.1" date="14.09.2006">
+<changes ver="0.4.1" date="2006-09-14">
 
 <change type="bugfix">
 <para lang="ru">
@@ -18132,7 +21685,7 @@ Thanks to Yusuf Goolamabbas.
 </changes>
 
 
-<changes ver="0.4.0" date="30.08.2006">
+<changes ver="0.4.0" date="2006-08-30">
 
 <change>
 <para lang="ru">
@@ -18201,7 +21754,7 @@ the bug had appeared in 0.1.29.
 </changes>
 
 
-<changes ver="0.3.61" date="28.08.2006">
+<changes ver="0.3.61" date="2006-08-28">
 
 <change type="change">
 <para lang="ru">
@@ -18244,7 +21797,7 @@ had the captured escaped symbols from original URI.
 </changes>
 
 
-<changes ver="0.3.60" date="18.08.2006">
+<changes ver="0.3.60" date="2006-08-18">
 
 <change type="bugfix">
 <para lang="ru">
@@ -18261,7 +21814,7 @@ the bug had appeared in 0.3.59.
 </changes>
 
 
-<changes ver="0.3.59" date="16.08.2006">
+<changes ver="0.3.59" date="2006-08-16">
 
 <change type="feature">
 <para lang="ru">
@@ -18297,7 +21850,7 @@ the bug had appeared in 0.3.58.
 </changes>
 
 
-<changes ver="0.3.58" date="14.08.2006">
+<changes ver="0.3.58" date="2006-08-14">
 
 <change type="feature">
 <para lang="ru">
@@ -18360,7 +21913,7 @@ nginx could not run on 64-bit FreeBSD 7.0-CURRENT.
 </changes>
 
 
-<changes ver="0.3.57" date="09.08.2006">
+<changes ver="0.3.57" date="2006-08-09">
 
 <change type="feature">
 <para lang="ru">
@@ -18406,7 +21959,7 @@ directive.
 </changes>
 
 
-<changes ver="0.3.56" date="04.08.2006">
+<changes ver="0.3.56" date="2006-08-04">
 
 <change type="feature">
 <para lang="ru">
@@ -18441,7 +21994,7 @@ some sent to client header lines were logged in the access log.
 </changes>
 
 
-<changes ver="0.3.55" date="28.07.2006">
+<changes ver="0.3.55" date="2006-07-28">
 
 <change type="feature">
 <para lang="ru">
@@ -18531,7 +22084,7 @@ the bug had appeared in 0.3.50.
 </changes>
 
 
-<changes ver="0.3.54" date="11.07.2006">
+<changes ver="0.3.54" date="2006-07-11">
 
 <change type="feature">
 <para lang="ru">
@@ -18598,7 +22151,7 @@ the bug had appeared in 0.3.53.
 </changes>
 
 
-<changes ver="0.3.53" date="07.07.2006">
+<changes ver="0.3.53" date="2006-07-07">
 
 <change type="change">
 <para lang="ru">
@@ -18671,7 +22224,7 @@ anyway.
 </changes>
 
 
-<changes ver="0.3.52" date="03.07.2006">
+<changes ver="0.3.52" date="2006-07-03">
 
 <change type="change">
 <para lang="ru">
@@ -18722,7 +22275,7 @@ was not removed.
 </changes>
 
 
-<changes ver="0.3.51" date="30.06.2006">
+<changes ver="0.3.51" date="2006-06-30">
 
 <change type="bugfix">
 <para lang="ru">
@@ -18738,7 +22291,7 @@ the bug had appeared in 0.3.50.
 </changes>
 
 
-<changes ver="0.3.50" date="28.06.2006">
+<changes ver="0.3.50" date="2006-06-28">
 
 <change type="change">
 <para lang="ru">
@@ -18812,7 +22365,7 @@ in nonbuffered proxying mode the client connection was not closed.
 </changes>
 
 
-<changes ver="0.3.49" date="31.05.2006">
+<changes ver="0.3.49" date="2006-05-31">
 
 <change type="bugfix">
 <para lang="ru">
@@ -18838,7 +22391,7 @@ was included instead of second and following subrequests.
 </changes>
 
 
-<changes ver="0.3.48" date="29.05.2006">
+<changes ver="0.3.48" date="2006-05-29">
 
 <change type="change">
 <para lang="ru">
@@ -18894,7 +22447,7 @@ the bug had appeared in 0.3.46.
 </changes>
 
 
-<changes ver="0.3.47" date="23.05.2006">
+<changes ver="0.3.47" date="2006-05-23">
 
 <change type="feature">
 <para lang="ru">
@@ -18918,7 +22471,7 @@ is always removed.
 </changes>
 
 
-<changes ver="0.3.46" date="11.05.2006">
+<changes ver="0.3.46" date="2006-05-11">
 
 <change type="feature">
 <para lang="ru">
@@ -18964,7 +22517,7 @@ the reconfiguration bug and memory leaks in the ngx_http_perl_module.
 </changes>
 
 
-<changes ver="0.3.45" date="06.05.2006">
+<changes ver="0.3.45" date="2006-05-06">
 
 <change type="feature">
 <para lang="ru">
@@ -19019,7 +22572,7 @@ backend only instead of being distributed among the rest.
 </changes>
 
 
-<changes ver="0.3.44" date="04.05.2006">
+<changes ver="0.3.44" date="2006-05-04">
 
 <change type="feature">
 <para lang="ru">
@@ -19052,7 +22605,7 @@ in the SSI.
 </changes>
 
 
-<changes ver="0.3.43" date="26.04.2006">
+<changes ver="0.3.43" date="2006-04-26">
 
 <change type="bugfix">
 <para lang="ru">
@@ -19066,7 +22619,7 @@ in the SSI.
 </changes>
 
 
-<changes ver="0.3.42" date="26.04.2006">
+<changes ver="0.3.42" date="2006-04-26">
 
 <change type="feature">
 <para lang="ru">
@@ -19114,7 +22667,7 @@ response header line.
 </changes>
 
 
-<changes ver="0.3.41" date="21.04.2006">
+<changes ver="0.3.41" date="2006-04-21">
 
 <change type="feature">
 <para lang="ru">
@@ -19160,7 +22713,7 @@ the segmentation fault was occurred.
 </changes>
 
 
-<changes ver="0.3.40" date="19.04.2006">
+<changes ver="0.3.40" date="2006-04-19">
 
 <change type="feature">
 <para lang="ru">
@@ -19192,7 +22745,7 @@ the "$limit_rate" variable.
 </changes>
 
 
-<changes ver="0.3.39" date="17.04.2006">
+<changes ver="0.3.39" date="2006-04-17">
 
 <change type="feature">
 <para lang="ru">
@@ -19252,7 +22805,7 @@ the bug had appeared in 0.3.38.
 </changes>
 
 
-<changes ver="0.3.38" date="14.04.2006">
+<changes ver="0.3.38" date="2006-04-14">
 
 <change type="feature">
 <para lang="ru">
@@ -19333,7 +22886,7 @@ Thanks to Maxim Dounin.
 </changes>
 
 
-<changes ver="0.3.37" date="07.04.2006">
+<changes ver="0.3.37" date="2006-04-07">
 
 <change type="feature">
 <para lang="ru">
@@ -19374,7 +22927,7 @@ in the ngx_http_addition_filter_module.
 </changes>
 
 
-<changes ver="0.3.36" date="05.04.2006">
+<changes ver="0.3.36" date="2006-04-05">
 
 <change type="feature">
 <para lang="ru">
@@ -19470,7 +23023,7 @@ to a server prefix.
 </changes>
 
 
-<changes ver="0.3.35" date="22.03.2006">
+<changes ver="0.3.35" date="2006-03-22">
 
 <change type="bugfix">
 <para lang="ru">
@@ -19497,7 +23050,7 @@ in the "proxy_pass" directive without the URI part in a subrequest.
 </changes>
 
 
-<changes ver="0.3.34" date="21.03.2006">
+<changes ver="0.3.34" date="2006-03-21">
 
 <change type="feature">
 <para lang="ru">
@@ -19511,7 +23064,7 @@ the "add_header" directive supports the variables.
 </changes>
 
 
-<changes ver="0.3.33" date="15.03.2006">
+<changes ver="0.3.33" date="2006-03-15">
 
 <change type="feature">
 <para lang="ru">
@@ -19546,7 +23099,7 @@ in the "post_action" directive.
 </changes>
 
 
-<changes ver="0.3.32" date="11.03.2006">
+<changes ver="0.3.32" date="2006-03-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -19562,7 +23115,7 @@ the bug had appeared in 0.3.31.
 </changes>
 
 
-<changes ver="0.3.31" date="10.03.2006">
+<changes ver="0.3.31" date="2006-03-10">
 
 <change type="change">
 <para lang="ru">
@@ -19641,7 +23194,7 @@ perl 5.8.8 compatibility.
 </changes>
 
 
-<changes ver="0.3.30" date="22.02.2006">
+<changes ver="0.3.30" date="2006-02-22">
 
 <change type="change">
 <para lang="ru">
@@ -19676,7 +23229,7 @@ the bug had appeared in 0.3.27.
 </changes>
 
 
-<changes ver="0.3.29" date="20.02.2006">
+<changes ver="0.3.29" date="2006-02-20">
 
 <change type="feature">
 <para lang="ru">
@@ -19725,7 +23278,7 @@ only after a successful completion of a request.
 </changes>
 
 
-<changes ver="0.3.28" date="16.02.2006">
+<changes ver="0.3.28" date="2006-02-16">
 
 <change type="feature">
 <para lang="ru">
@@ -19792,7 +23345,7 @@ was transferred to a client.
 </changes>
 
 
-<changes ver="0.3.27" date="08.02.2006">
+<changes ver="0.3.27" date="2006-02-08">
 
 <change type="change">
 <para lang="ru">
@@ -19866,7 +23419,7 @@ the requests with the body was not transferred.
 </changes>
 
 
-<changes ver="0.3.26" date="03.02.2006">
+<changes ver="0.3.26" date="2006-02-03">
 
 <change type="change">
 <para lang="ru">
@@ -19891,7 +23444,7 @@ URI was transferred to a backend while proxying the SSI subrequest.
 </changes>
 
 
-<changes ver="0.3.25" date="01.02.2006">
+<changes ver="0.3.25" date="2006-02-01">
 
 <change type="bugfix">
 <para lang="ru">
@@ -19909,7 +23462,7 @@ the bug had appeared in 0.3.24.
 </changes>
 
 
-<changes ver="0.3.24" date="01.02.2006">
+<changes ver="0.3.24" date="2006-02-01">
 
 <change type="workaround">
 <para lang="ru">
@@ -19964,7 +23517,7 @@ the bug had appeared in 0.3.18.
 </changes>
 
 
-<changes ver="0.3.23" date="24.01.2006">
+<changes ver="0.3.23" date="2006-01-24">
 
 <change type="feature">
 <para lang="ru">
@@ -19996,7 +23549,7 @@ the ngx_http_perl_module was incorrectly built on Linux and Solaris.
 </changes>
 
 
-<changes ver="0.3.22" date="17.01.2006">
+<changes ver="0.3.22" date="2006-01-17">
 
 <change type="feature">
 <para lang="ru">
@@ -20032,7 +23585,7 @@ the bug had appeared in 0.3.18.
 </changes>
 
 
-<changes ver="0.3.21" date="16.01.2006">
+<changes ver="0.3.21" date="2006-01-16">
 
 <change type="feature">
 <para lang="ru">
@@ -20055,7 +23608,7 @@ the "valid_referers" directive allows the referrers without URI part.
 </changes>
 
 
-<changes ver="0.3.20" date="11.01.2006">
+<changes ver="0.3.20" date="2006-01-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -20077,7 +23630,7 @@ the ngx_http_memcached_module did not support the keys in the "/usr?args" form.
 
 </changes>
 
-<changes ver="0.3.19" date="28.12.2005">
+<changes ver="0.3.19" date="2005-12-28">
 
 <change type="feature">
 <para lang="ru">
@@ -20109,7 +23662,7 @@ in SSI handling.
 </changes>
 
 
-<changes ver="0.3.18" date="26.12.2005">
+<changes ver="0.3.18" date="2005-12-26">
 
 <change type="feature">
 <para lang="ru">
@@ -20204,7 +23757,7 @@ the bug had appeared in 0.3.16.
 </changes>
 
 
-<changes ver="0.3.17" date="18.12.2005">
+<changes ver="0.3.17" date="2005-12-18">
 
 <change type="change">
 <para lang="ru">
@@ -20258,7 +23811,7 @@ was used by default.
 </changes>
 
 
-<changes ver="0.3.16" date="16.12.2005">
+<changes ver="0.3.16" date="2005-12-16">
 
 <change type="feature">
 <para lang="ru">
@@ -20345,7 +23898,7 @@ the bug had appeared in 0.3.13.
 </changes>
 
 
-<changes ver="0.3.15" date="07.12.2005">
+<changes ver="0.3.15" date="2005-12-07">
 
 <change type="feature">
 <para lang="ru">
@@ -20379,7 +23932,7 @@ quit and active "debug_points" directive.
 </changes>
 
 
-<changes ver="0.3.14" date="05.12.2005">
+<changes ver="0.3.14" date="2005-12-05">
 
 <change type="bugfix">
 <para lang="ru">
@@ -20395,7 +23948,7 @@ the bug had appeared in 0.3.13.
 </changes>
 
 
-<changes ver="0.3.13" date="05.12.2005">
+<changes ver="0.3.13" date="2005-12-05">
 
 <change type="feature">
 <para lang="ru">
@@ -20449,7 +24002,7 @@ the bug had appeared in 0.3.11.
 </changes>
 
 
-<changes ver="0.3.12" date="26.11.2005">
+<changes ver="0.3.12" date="2005-11-26">
 
 <change type="security">
 <para lang="ru">
@@ -20572,7 +24125,7 @@ bracket in the "if" directive.
 </changes>
 
 
-<changes ver="0.3.11" date="15.11.2005">
+<changes ver="0.3.11" date="2005-11-15">
 
 <change type="bugfix">
 <para lang="ru">
@@ -20588,7 +24141,7 @@ the bug had appeared in 0.3.10.
 </changes>
 
 
-<changes ver="0.3.10" date="15.11.2005">
+<changes ver="0.3.10" date="2005-11-15">
 
 <change type="change">
 <para lang="ru">
@@ -20707,7 +24260,7 @@ response was encoded incorrectly.
 </changes>
 
 
-<changes ver="0.3.9" date="10.11.2005">
+<changes ver="0.3.9" date="2005-11-10">
 
 <change type="bugfix">
 <para lang="ru">
@@ -20724,7 +24277,7 @@ the bug had appeared in 0.3.8.
 </changes>
 
 
-<changes ver="0.3.8" date="09.11.2005">
+<changes ver="0.3.8" date="2005-11-09">
 
 <change type="security">
 <para lang="ru">
@@ -20898,7 +24451,7 @@ then the response did not transferred complete or did not transferred at all.
 </changes>
 
 
-<changes ver="0.3.7" date="27.10.2005">
+<changes ver="0.3.7" date="2005-10-27">
 
 <change type="feature">
 <para lang="ru">
@@ -20924,7 +24477,7 @@ the bug had appeared in 0.3.2.
 </changes>
 
 
-<changes ver="0.3.6" date="24.10.2005">
+<changes ver="0.3.6" date="2005-10-24">
 
 <change type="change">
 <para lang="ru">
@@ -20970,7 +24523,7 @@ always used.
 </changes>
 
 
-<changes ver="0.3.5" date="21.10.2005">
+<changes ver="0.3.5" date="2005-10-21">
 
 <change type="bugfix">
 <para lang="ru">
@@ -21010,7 +24563,7 @@ directive were used.
 </changes>
 
 
-<changes ver="0.3.4" date="19.10.2005">
+<changes ver="0.3.4" date="2005-10-19">
 
 <change type="bugfix">
 <para lang="ru">
@@ -21026,7 +24579,7 @@ the bug had appeared in 0.3.3.
 </changes>
 
 
-<changes ver="0.3.3" date="19.10.2005">
+<changes ver="0.3.3" date="2005-10-19">
 
 <change type="change">
 <para lang="ru">
@@ -21161,7 +24714,7 @@ the "ssl_protocols" directive allowed to specify the single protocol only.
 </changes>
 
 
-<changes ver="0.3.2" date="12.10.2005">
+<changes ver="0.3.2" date="2005-10-12">
 
 <change type="feature">
 <para lang="ru">
@@ -21187,7 +24740,7 @@ directives.
 </changes>
 
 
-<changes ver="0.3.1" date="10.10.2005">
+<changes ver="0.3.1" date="2005-10-10">
 
 <change type="bugfix">
 <para lang="ru">
@@ -21214,7 +24767,7 @@ correct handling of the "\\", "\"", "\'", and "\$" pairs in SSI.
 </changes>
 
 
-<changes ver="0.3.0" date="07.10.2005">
+<changes ver="0.3.0" date="2005-10-07">
 
 <change type="change">
 <para lang="ru">
@@ -21230,7 +24783,7 @@ The limit was introduced because of millisecond timers overflow.
 </changes>
 
 
-<changes ver="0.2.6" date="05.10.2005">
+<changes ver="0.2.6" date="2005-10-05">
 
 <change type="change">
 <para lang="ru">
@@ -21305,7 +24858,7 @@ the bug had appeared in 0.2.2.
 </changes>
 
 
-<changes ver="0.2.5" date="04.10.2005">
+<changes ver="0.2.5" date="2005-10-04">
 
 <change type="change">
 <para lang="ru">
@@ -21350,7 +24903,7 @@ expressions of the "if" command.
 </changes>
 
 
-<changes ver="0.2.4" date="03.10.2005">
+<changes ver="0.2.4" date="2005-10-03">
 
 <change type="feature">
 <para lang="ru">
@@ -21390,7 +24943,7 @@ the bug had appeared in 0.2.0.
 </changes>
 
 
-<changes ver="0.2.3" date="30.09.2005">
+<changes ver="0.2.3" date="2005-09-30">
 
 <change type="bugfix">
 <para lang="ru">
@@ -21406,7 +24959,7 @@ the bug had appeared in 0.2.2.
 </changes>
 
 
-<changes ver="0.2.2" date="30.09.2005">
+<changes ver="0.2.2" date="2005-09-30">
 
 <change type="feature">
 <para lang="ru">
@@ -21480,7 +25033,7 @@ the export versions of MSIE 5.x could not connect via HTTPS.
 </changes>
 
 
-<changes ver="0.2.1" date="23.09.2005">
+<changes ver="0.2.1" date="2005-09-23">
 
 <change type="bugfix">
 <para lang="ru">
@@ -21498,7 +25051,7 @@ the bug had appeared in 0.2.0.
 </changes>
 
 
-<changes ver="0.2.0" date="23.09.2005">
+<changes ver="0.2.0" date="2005-09-23">
 
 <change>
 <para lang="ru">
@@ -21632,7 +25185,7 @@ Thanks to Alexandr Kukushkin.
 </changes>
 
 
-<changes ver="0.1.45" date="08.09.2005">
+<changes ver="0.1.45" date="2005-09-08">
 
 <change type="change">
 <para lang="ru">
@@ -21667,7 +25220,7 @@ Various bug fixes in the IMAP/POP3 proxy.
 </changes>
 
 
-<changes ver="0.1.44" date="06.09.2005">
+<changes ver="0.1.44" date="2005-09-06">
 
 <change type="feature">
 <para lang="ru">
@@ -21710,7 +25263,7 @@ authorization use.
 </changes>
 
 
-<changes ver="0.1.43" date="30.08.2005">
+<changes ver="0.1.43" date="2005-08-30">
 
 <change type="feature">
 <para lang="ru">
@@ -21775,7 +25328,7 @@ in the proxied mode the bug had appeared in 0.1.29.
 </changes>
 
 
-<changes ver="0.1.42" date="23.08.2005">
+<changes ver="0.1.42" date="2005-08-23">
 
 <change type="bugfix">
 <para lang="ru">
@@ -21804,7 +25357,7 @@ the bug had appeared in 0.1.38.
 </changes>
 
 
-<changes ver="0.1.41" date="25.07.2005">
+<changes ver="0.1.41" date="2005-07-25">
 
 <change type="bugfix">
 <para lang="ru">
@@ -21820,7 +25373,7 @@ then it can not be used in SSI.
 </changes>
 
 
-<changes ver="0.1.40" date="22.07.2005">
+<changes ver="0.1.40" date="2005-07-22">
 
 <change type="bugfix">
 <para lang="ru">
@@ -21879,7 +25432,7 @@ became shorter in the "ps" command.
 </changes>
 
 
-<changes ver="0.1.39" date="14.07.2005">
+<changes ver="0.1.39" date="2005-07-14">
 
 <change>
 <para lang="ru">
@@ -21998,7 +25551,7 @@ Bugfixes in IMAP/POP3 proxy in interaction with a backend at the login state.
 </changes>
 
 
-<changes ver="0.1.38" date="08.07.2005">
+<changes ver="0.1.38" date="2005-07-08">
 
 <change type="feature">
 <para lang="ru">
@@ -22121,7 +25674,7 @@ the IMAP/POP3 proxy.
 </changes>
 
 
-<changes ver="0.1.37" date="23.06.2005">
+<changes ver="0.1.37" date="2005-06-23">
 
 <change type="change">
 <para lang="ru">
@@ -22159,7 +25712,7 @@ then nginx started to request all backends again.
 </changes>
 
 
-<changes ver="0.1.36" date="15.06.2005">
+<changes ver="0.1.36" date="2005-06-15">
 
 <change type="change">
 <para lang="ru">
@@ -22232,7 +25785,7 @@ the reconfiguration by the -HUP signal was made twice.
 </changes>
 
 
-<changes ver="0.1.35" date="07.06.2005">
+<changes ver="0.1.35" date="2005-06-07">
 
 <change type="feature">
 <para lang="ru">
@@ -22304,7 +25857,7 @@ the bug had appeared in 0.1.28.
 </changes>
 
 
-<changes ver="0.1.34" date="26.05.2005">
+<changes ver="0.1.34" date="2005-05-26">
 
 <change type="bugfix">
 <para lang="ru">
@@ -22347,7 +25900,7 @@ request header line passing.
 </changes>
 
 
-<changes ver="0.1.33" date="23.05.2005">
+<changes ver="0.1.33" date="2005-05-23">
 
 <change type="bugfix">
 <para lang="ru">
@@ -22394,7 +25947,7 @@ the 500 error code was returned.
 </changes>
 
 
-<changes ver="0.1.32" date="19.05.2005">
+<changes ver="0.1.32" date="2005-05-19">
 
 <change type="bugfix">
 <para lang="ru">
@@ -22440,7 +25993,7 @@ mode.
 </changes>
 
 
-<changes ver="0.1.31" date="16.05.2005">
+<changes ver="0.1.31" date="2005-05-16">
 
 <change type="bugfix">
 <para lang="ru">
@@ -22483,7 +26036,7 @@ the bug had appeared in 0.1.30.
 </changes>
 
 
-<changes ver="0.1.30" date="14.05.2005">
+<changes ver="0.1.30" date="2005-05-14">
 
 <change type="bugfix">
 <para lang="ru">
@@ -22546,7 +26099,7 @@ the "ignore_invalid_headers" directive.
 </changes>
 
 
-<changes ver="0.1.29" date="12.05.2005">
+<changes ver="0.1.29" date="2005-05-12">
 
 <change type="feature">
 <para lang="ru">
@@ -22859,7 +26412,7 @@ nginx could not be built on MacOS X.
 </changes>
 
 
-<changes ver="0.1.28" date="08.04.2005">
+<changes ver="0.1.28" date="2005-04-08">
 
 <change type="bugfix">
 <para lang="ru">
@@ -22882,7 +26435,7 @@ nginx could not be built by gcc 4.0 on Linux.
 </changes>
 
 
-<changes ver="0.1.27" date="28.03.2005">
+<changes ver="0.1.27" date="2005-03-28">
 
 <change type="feature">
 <para lang="ru">
@@ -22941,7 +26494,7 @@ nginx could not be built on FreeBSD and Linux, if the
 </changes>
 
 
-<changes ver="0.1.26" date="22.03.2005">
+<changes ver="0.1.26" date="2005-03-22">
 
 <change type="change">
 <para lang="ru">
@@ -22977,7 +26530,7 @@ auth_basic_user_file directives.
 </changes>
 
 
-<changes ver="0.1.25" date="19.03.2005">
+<changes ver="0.1.25" date="2005-03-19">
 
 <change type="bugfix">
 <para lang="ru">
@@ -23094,7 +26647,7 @@ the --with-openssl-opt=OPTIONS autoconfiguration directive.
 </changes>
 
 
-<changes ver="0.1.24" date="04.03.2005">
+<changes ver="0.1.24" date="2005-03-04">
 
 <change type="feature">
 <para lang="ru">
@@ -23140,7 +26693,7 @@ the lack of the "Referer" header line was always accounted as valid referrer.
 </changes>
 
 
-<changes ver="0.1.23" date="01.03.2005">
+<changes ver="0.1.23" date="2005-03-01">
 
 <change type="feature">
 <para lang="ru">
@@ -23216,7 +26769,7 @@ of the response header if the no response was transferred to a client.
 </changes>
 
 
-<changes ver="0.1.22" date="22.02.2005">
+<changes ver="0.1.22" date="2005-02-22">
 
 <change type="bugfix">
 <para lang="ru">
@@ -23244,7 +26797,7 @@ the bug had appeared in 0.1.21.
 </changes>
 
 
-<changes ver="0.1.21" date="22.02.2005">
+<changes ver="0.1.21" date="2005-02-22">
 
 <change type="bugfix">
 <para lang="ru">
@@ -23281,7 +26834,7 @@ nginx could not be built on NetBSD 2.0.
 </changes>
 
 
-<changes ver="0.1.20" date="17.02.2005">
+<changes ver="0.1.20" date="2005-02-17">
 
 <change type="feature">
 <para lang="ru">
@@ -23305,7 +26858,7 @@ the FastCGI stderr stream was handled incorrectly.
 </changes>
 
 
-<changes ver="0.1.19" date="16.02.2005">
+<changes ver="0.1.19" date="2005-02-16">
 
 <change type="bugfix">
 <para lang="ru">
@@ -23340,7 +26893,7 @@ via SSL connections.
 </changes>
 
 
-<changes ver="0.1.18" date="09.02.2005">
+<changes ver="0.1.18" date="2005-02-09">
 
 <change type="workaround">
 <para lang="ru">
@@ -23435,7 +26988,7 @@ the rewrite/location cycle and sets the current configuration to the request.
 </changes>
 
 
-<changes ver="0.1.17" date="03.02.2005">
+<changes ver="0.1.17" date="2005-02-03">
 
 <change type="change">
 <para lang="ru">
@@ -23532,7 +27085,7 @@ the system error message was not logged on Linux.
 </changes>
 
 
-<changes ver="0.1.16" date="25.01.2005">
+<changes ver="0.1.16" date="2005-01-25">
 
 <change type="bugfix">
 <para lang="ru">
@@ -23609,7 +27162,7 @@ the bug had appeared in 0.1.14.
 </changes>
 
 
-<changes ver="0.1.15" date="19.01.2005">
+<changes ver="0.1.15" date="2005-01-19">
 
 <change type="bugfix">
 <para lang="ru">
@@ -23697,7 +27250,7 @@ caused segmentation fault.
 </changes>
 
 
-<changes ver="0.1.14" date="18.01.2005">
+<changes ver="0.1.14" date="2005-01-18">
 
 <change type="feature">
 <para lang="ru">
@@ -23821,7 +27374,7 @@ Thanks to Sergey Skvortsov for SSL-accelerator.
 </changes>
 
 
-<changes ver="0.1.13" date="21.12.2004">
+<changes ver="0.1.13" date="2004-12-21">
 
 <change type="feature">
 <para lang="ru">
@@ -23853,7 +27406,7 @@ the %request_length log parameter logged the incorrect length.
 </changes>
 
 
-<changes ver="0.1.12" date="06.12.2004">
+<changes ver="0.1.12" date="2004-12-06">
 
 <change type="feature">
 <para lang="ru">
@@ -23893,7 +27446,7 @@ the SO_SNDLOWAT option.
 </changes>
 
 
-<changes ver="0.1.11" date="02.12.2004">
+<changes ver="0.1.11" date="2004-12-02">
 
 <change type="feature">
 <para lang="ru">
@@ -24034,7 +27587,7 @@ the double slashes in "://" in the URI were converted to ":/".
 </changes>
 
 
-<changes ver="0.1.10" date="26.11.2004">
+<changes ver="0.1.10" date="2004-11-26">
 
 <change type="bugfix">
 <para lang="ru">
@@ -24061,7 +27614,7 @@ the fix in 0.1.9 for the files bigger than 2G on Linux did not work.
 </changes>
 
 
-<changes ver="0.1.9" date="25.11.2004">
+<changes ver="0.1.9" date="2004-11-25">
 
 <change type="bugfix">
 <para lang="ru">
@@ -24109,7 +27662,7 @@ the bug had appeared in 0.1.8.
 </changes>
 
 
-<changes ver="0.1.8" date="20.11.2004">
+<changes ver="0.1.8" date="2004-11-20">
 
 <change type="bugfix">
 <para lang="ru">
@@ -24141,7 +27694,7 @@ the proxy_max_temp_file_size directive.
 </changes>
 
 
-<changes ver="0.1.7" date="12.11.2004">
+<changes ver="0.1.7" date="2004-11-12">
 
 <change type="bugfix">
 <para lang="ru">
@@ -24159,7 +27712,7 @@ the bug had appeared in 0.1.5.
 </changes>
 
 
-<changes ver="0.1.6" date="11.11.2004">
+<changes ver="0.1.6" date="2004-11-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -24175,7 +27728,7 @@ the wrong configuration choose.
 </changes>
 
 
-<changes ver="0.1.5" date="11.11.2004">
+<changes ver="0.1.5" date="2004-11-11">
 
 <change type="bugfix">
 <para lang="ru">
@@ -24261,7 +27814,7 @@ the userid_p3p directive.
 </changes>
 
 
-<changes ver="0.1.4" date="26.10.2004">
+<changes ver="0.1.4" date="2004-10-26">
 
 <change type="bugfix">
 <para lang="ru">
@@ -24275,7 +27828,7 @@ in the ngx_http_autoindex_module.
 </changes>
 
 
-<changes ver="0.1.3" date="25.10.2004">
+<changes ver="0.1.3" date="2004-10-25">
 
 <change type="feature">
 <para lang="ru">
@@ -24308,7 +27861,7 @@ proxy module may get caught in an endless loop when sendfile is not used.
 </changes>
 
 
-<changes ver="0.1.2" date="21.10.2004">
+<changes ver="0.1.2" date="2004-10-21">
 
 <change type="feature">
 <para lang="ru">
@@ -24394,7 +27947,7 @@ the gzip module compressed the proxied responses that was already compressed.
 </changes>
 
 
-<changes ver="0.1.1" date="11.10.2004">
+<changes ver="0.1.1" date="2004-10-11">
 
 <change type="feature">
 <para lang="ru">
@@ -24494,7 +28047,7 @@ was required.
 </changes>
 
 
-<changes ver="0.1.0" date="04.10.2004">
+<changes ver="0.1.0" date="2004-10-04">
 
 <change>
 <para lang="ru">
