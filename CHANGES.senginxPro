@@ -1,3 +1,13 @@
+Changes with senginx Pro 1.10.3                                      1 July 2023
+
+    *) Fixed: Nginx_status "writing connections" grows up if using whitelist module
+
+    *) Fixed: duplication a blacklist counter while registering modules in the blacklist module
+
+    *) Change (Pro): naxsi module finishes a standard request processing instead of returning NGX_ERROR if senginx blacklist counter reaches a ban limit 
+
+    *) Change: whitelist module: NGX_HTTP_WL_ADDR_TIMEOUT => 5s
+
 Changes with senginx Pro 1.10.2                                      16 November 2022
 
     *) Security: upgrade to original nginx 1.22.1.
