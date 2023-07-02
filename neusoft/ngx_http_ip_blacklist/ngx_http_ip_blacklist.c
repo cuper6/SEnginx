@@ -1086,6 +1086,11 @@ ngx_http_ip_blacklist_register_mod(ngx_module_t *mod)
     ngx_int_t i;
 
     for(i = 0; i < NGX_HTTP_IP_BLACKLIST_MOD_NUM; i++) {
+        if (ngx_http_ip_blacklist_modules[i] == mod) {
+            /* already added */
+            return NGX_OK;
+        }
+
         if (ngx_http_ip_blacklist_modules[i] == NULL) {
             ngx_http_ip_blacklist_modules[i] = mod;
             return NGX_OK;
