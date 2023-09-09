@@ -463,6 +463,7 @@ ngx_http_wl_resolve_addr_handler(ngx_resolver_ctx_t *ctx)
     r->wl_resolve_ctx = NULL;
     if (r->pool != NULL) {
         ngx_http_core_run_phases(r);
+        ngx_http_run_posted_requests(r->connection);
     }
 
     return;
