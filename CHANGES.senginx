@@ -2,6 +2,14 @@
 Note: Changes with SEnginx Pro see at the file CHANGES.senginxPro 
 ====
 
+Changes with senginx 1.8.6                                      9 September 2023
+
+    *) Fixed: Nginx_status "writing connections" grows up if using whitelist module
+
+    *) Fixed: duplication a blacklist counter while registering modules in the blacklist module
+
+    *) Change: whitelist module: NGX_HTTP_WL_ADDR_TIMEOUT => 5s
+
 Changes with senginx 1.8.5                                      3 August 2022
 
     *) Fixed: limit_req directive in senginx can accept up to 5 parameters.
