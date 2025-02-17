@@ -7,6 +7,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 const char *tpl = "'X X(){X.X=\\\\'X=X; X-X=X; X=/\\\\';X.X.X()};X X(){X.X=\\\\'X=X; X-X=X; X=/\\\\';X.X.X()}'";
 const char *key_tpl = "'%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s'.split('|')";
