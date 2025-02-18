@@ -1,3 +1,11 @@
+Changes with senginx Pro 1.10.4                                      1 March 2025
+
+    *) Feature (Pro): add challenge type "captcha" in the robot_mitigation module (robot_mitigation_mode config parameter)
+
+    *) Fixed (Pro): naxsi 1.3 compilation error (pcre2 patch applied)
+
+    *) Fixed: robot_mitigation module compilation warning (gen-random-js-tpl.c)
+
 Changes with senginx Pro 1.10.3                                      1 July 2023
 
     *) Fixed: Nginx_status "writing connections" grows up if using whitelist module
