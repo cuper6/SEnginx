@@ -255,7 +255,6 @@ if [ "$NGX_PLATFORM" != win32 ]; then
                            return 1;"
      . auto/feature
 
-
 #    ngx_feature="inline"
 #    ngx_feature_name=
 #    ngx_feature_run=no
