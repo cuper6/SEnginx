@@ -12,6 +12,7 @@
 #include <ngx_http_status_page.h>
 #endif
 
+
 static ngx_int_t ngx_http_write_filter_init(ngx_conf_t *cf);
 
 
@@ -336,18 +337,13 @@ ngx_http_write_filter(ngx_http_request_t *r, ngx_chain_t *in)
         delay = (ngx_msec_t) ((nsent - sent) * 1000 / r->limit_rate);
 
         if (delay > 0) {
-            limit = 0;
             c->write->delayed = 1;
             ngx_add_timer(c->write, delay);
         }
     }
 
-    if (limit
-        && c->write->ready
-        && c->sent - sent >= limit - (off_t) (2 * ngx_pagesize))
-    {
-        c->write->delayed = 1;
-        ngx_add_timer(c->write, 1);
+    if (chain && c->write->ready && !c->write->delayed) {
+        ngx_post_event(c->write, &ngx_posted_next_events);
     }
 
     for (cl = r->out; cl && cl != chain; /* void */) {

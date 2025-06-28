@@ -113,11 +113,9 @@ typedef struct {
     ngx_uint_t                       max_conns;
     ngx_uint_t                       max_fails;
     time_t                           fail_timeout;
-
 #if (NGX_DYNAMIC_RESOLVE || NGX_HTTP_UPSTREAM_FAIR)
     ngx_str_t                        host;
 #endif
-
     ngx_msec_t                       slow_start;
     ngx_uint_t                       down;
 
@@ -158,13 +156,11 @@ struct ngx_http_upstream_srv_conf_s {
     u_char                          *file_name;
     ngx_uint_t                       line;
     in_port_t                        port;
-    in_port_t                        default_port; /* eska */
+    in_port_t                        default_port;
     ngx_uint_t                       no_port;  /* unsigned no_port:1 */
-
 #if (NGX_DYNAMIC_RESOLVE && NGX_HTTP_UPSTREAM_CHECK)
     unsigned                         no_check;
 #endif
-
 #if (NGX_HTTP_UPSTREAM_ZONE)
     ngx_shm_zone_t                  *shm_zone;
 #endif
@@ -279,6 +275,10 @@ typedef struct {
     ngx_http_complex_value_t        *ssl_name;
     ngx_flag_t                       ssl_server_name;
     ngx_flag_t                       ssl_verify;
+
+    ngx_http_complex_value_t        *ssl_certificate;
+    ngx_http_complex_value_t        *ssl_certificate_key;
+    ngx_array_t                     *ssl_passwords;
 #endif
 
 #if (NGX_HTTP_CACHE_EXTEND)
@@ -445,6 +445,7 @@ struct ngx_http_upstream_s {
     unsigned                         buffering:1;
     unsigned                         keepalive:1;
     unsigned                         upgrade:1;
+    unsigned                         error:1;
 
     unsigned                         request_sent:1;
     unsigned                         request_body_sent:1;
@@ -465,6 +466,7 @@ typedef struct {
     ngx_uint_t  skip_empty;
 } ngx_http_upstream_param_t;
 
+
 typedef struct {
     ngx_int_t   total;
     ngx_int_t   domains;
@@ -473,6 +475,8 @@ typedef struct {
 
 ngx_int_t ngx_http_upstream_create(ngx_http_request_t *r);
 void ngx_http_upstream_init(ngx_http_request_t *r);
+ngx_int_t ngx_http_upstream_non_buffered_filter_init(void *data);
+ngx_int_t ngx_http_upstream_non_buffered_filter(void *data, ssize_t bytes);
 ngx_http_upstream_srv_conf_t *ngx_http_upstream_add(ngx_conf_t *cf,
     ngx_url_t *u, ngx_uint_t flags);
 char *ngx_http_upstream_bind_set_slot(ngx_conf_t *cf, ngx_command_t *cmd,

@@ -46,6 +46,7 @@ static char *
 ngx_http_rewrite_if_condition_extend (ngx_conf_t *cf, ngx_http_rewrite_loc_conf_t *lcf);
 #endif
 
+
 static ngx_command_t  ngx_http_rewrite_commands[] = {
 
     { ngx_string("rewrite"),
@@ -1120,6 +1121,7 @@ ngx_http_rewrite_value(ngx_conf_t *cf, ngx_http_rewrite_loc_conf_t *lcf,
 
     return NGX_CONF_OK;
 }
+
 
 #if (NGX_IF_EXTEND)
 
