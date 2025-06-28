@@ -6,7 +6,7 @@ SEnginx (Security Enhanced Nginx) is a variant of nginx - the famous HTTP and re
 
 SEnginx open source project was originally launched by Neusoft Corporation. Since 2021 SEnginx is developed at new SEnginx GitHub repository because Neusoft project was abandoned at 2017.
  
-SEnginx is based on nginx 1.18.0.
+SEnginx is based on nginx 1.22.1.
 
 SEnginx is free.
 

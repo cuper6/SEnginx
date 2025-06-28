@@ -2,6 +2,12 @@
 Note: Changes with SEnginx Pro see at the file CHANGES.senginxPro 
 ====
 
+Changes with senginx 1.8.7                                      28 June 2025
+
+    *) Feature: upgrade to original nginx 1.22.1.
+
+    *) Fixed: compilation warning for gen-random-js-tpl.c
+
 Changes with senginx 1.8.6                                      9 September 2023
 
     *) Fixed: Nginx_status "writing connections" grows up if using whitelist module
