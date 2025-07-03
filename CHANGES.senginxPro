@@ -1,3 +1,21 @@
+Changes with senginx Pro 1.10.5                                      3 July 2025
+
+    *) Feature: upgrade to original nginx 1.28.0
+
+    *) Fixed: naxsi 1.3 compilation errors with nginx 1.28.0
+
+    *) Fixed: srcache-nginx-module compilation errors with nginx 1.28.0
+
+    *) Fixed: Cookie Poisoning module compilation errors with nginx 1.28.0
+
+    *) Fixed: Dynamic IP Blacklist module compilation errors with nginx 1.28.0
+
+    *) Fixed: HTTP Robot Mitigation module compilation errors with nginx 1.28.0
+
+    *) Fixed: HTTP Session module compilation errors with nginx 1.28.0
+
+    *) Fixed: Upstream Persistence module compilation errors with nginx 1.28.0
+
 Changes with senginx Pro 1.10.4                                      1 March 2025
 
     *) Feature (Pro): add challenge type "captcha" in the robot_mitigation module (robot_mitigation_mode config parameter)
