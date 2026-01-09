@@ -1,3 +1,7 @@
+Changes with senginx Pro 1.10.6                                      9 January 2026
+
+    *) Feature: upgrade to original nginx 1.28.1
+
 Changes with senginx Pro 1.10.5                                      3 July 2025
 
     *) Feature: upgrade to original nginx 1.28.0
