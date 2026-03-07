@@ -1,3 +1,9 @@
+Changes with senginx Pro 1.10.7                                      7 March 2026
+
+    *) Feature: upgrade to original nginx 1.28.2
+
+    *) Change (Pro): robot_mitigation: Protection for ddos with incorrect or empty POST requests.
+
 Changes with senginx Pro 1.10.6                                      9 January 2026
 
     *) Feature: upgrade to original nginx 1.28.1
