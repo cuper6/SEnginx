@@ -1,3 +1,11 @@
+Changes with senginx Pro 1.10.9                                      3 May 2026
+
+    *) Feature: upgrade to original nginx 1.30.0
+
+    *) Feature: upgrade modules for nginx 1.30.0: Cookie poisoning, Robot mitigation, Session, Upstream persistence
+
+    *) Fixed: several outdated tests
+
 Changes with senginx Pro 1.10.8                                      27 March 2026
 
     *) Feature: upgrade to original nginx 1.28.3
