@@ -1,4 +1,4 @@
-![senginx_logo](https://user-images.githubusercontent.com/19606735/151982748-bdac9e49-6081-4901-8c6b-8d0fe4745360.png)
+<img width="520" height="176" alt="senginx_logo" src="https://github.com/user-attachments/assets/26365030-6029-45b7-a7e0-ddd8a17c8000" />
 
 SEnginx
 =======
