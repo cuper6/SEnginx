@@ -1,4 +1,4 @@
-<img width="520" height="176" alt="senginx_logo" src="https://github.com/user-attachments/assets/26365030-6029-45b7-a7e0-ddd8a17c8000" />
+<img width="520" height="176" alt="senginx_logo" src="https://github.com/user-attachments/assets/8ebab4a5-60ab-4fcf-b851-25df01d4b780" />
 
 SEnginx
 =======
