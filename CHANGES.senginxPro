@@ -1,3 +1,7 @@
+Changes with senginx Pro 1.11.1                                      20 November 2026
+
+    *) Feature: upgrade to original nginx 1.30.7
+
 Changes with senginx Pro 1.11.0                                      16 November 2026
 
     *) Feature (Pro): add js_difficulty option in the robot_mitigation module
